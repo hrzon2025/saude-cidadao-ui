@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Calendar, Heart, MapPin, MessageSquare, Pill, CreditCard, Stethoscope, Building, FileText, ShoppingBag, Users } from "lucide-react";
+import { Plus, Calendar, Heart, MapPin, MessageSquare, Pill, CreditCard, Building, FileText, ShoppingBag } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,18 +14,16 @@ import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 
 const shortcuts = [
+  { id: 'agendamentos', label: 'Agendamentos', icon: Calendar, path: '/agendamentos/novo', color: 'text-primary' },
+  { id: 'atendimentos', label: 'Atendimentos', icon: Calendar, path: '/atendimentos', color: 'text-teal-500' },
   { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-red-500' },
   { id: 'vacinas', label: 'Vacinas', icon: Plus, path: '/vacinacao', color: 'text-blue-500' },
-  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-green-500' },
-  { id: 'servicos', label: 'Serviços', icon: Stethoscope, path: '/servicos', color: 'text-purple-500' },
-  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-orange-500' },
-  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-cyan-500' },
-  { id: 'faq', label: 'FAQ', icon: FileText, path: '/faq', color: 'text-yellow-600' },
   { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-indigo-500' },
-  { id: 'atendimentos', label: 'Atendimentos', icon: Calendar, path: '/atendimentos', color: 'text-teal-500' },
+  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-green-500' },
   { id: 'farmacia', label: 'Farmácia', icon: ShoppingBag, path: '/farmacia', color: 'text-pink-500' },
-  { id: 'agendamentos', label: 'Agendamentos', icon: Calendar, path: '/agendamentos/novo', color: 'text-primary' },
-  { id: 'fila-regulacao', label: 'Fila Regulação', icon: Users, path: '/fila-regulacao', color: 'text-slate-500' }
+  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-orange-500' },
+  { id: 'faq', label: 'FAQ', icon: FileText, path: '/faq', color: 'text-yellow-600' },
+  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-cyan-500' }
 ];
 
 export default function Inicio() {
