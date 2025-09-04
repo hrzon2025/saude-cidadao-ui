@@ -15,8 +15,10 @@ import {
   FAIXAS_ETARIAS 
 } from "@/lib/stubs/vacinacao";
 import { Unidade } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 export default function Vacinacao() {
+  const navigate = useNavigate();
   const { showNotification } = useAppStore();
   
   // Calendar tab state
@@ -220,7 +222,7 @@ export default function Vacinacao() {
         title="Vacinação" 
         subtitle="Calendário vacinal e locais para vacinação"
         showBack 
-        onBack={() => window.history.back()} 
+        onBack={() => navigate('/')} 
       />
 
       <div className="max-w-md mx-auto p-4">
