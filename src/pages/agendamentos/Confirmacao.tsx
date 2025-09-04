@@ -77,7 +77,10 @@ export default function ConfirmacaoAgendamento() {
       const resultado = await criarAgendamento(novoAgendamento);
       
       if (resultado.success) {
-        showNotification('Agendamento realizado com sucesso!', 'success');
+        showNotification(
+          `Agendamento confirmado! Sua consulta de ${tipoConsulta?.nome} está marcada para ${formatted.data} às ${formatted.hora} na ${unidade?.nome}.`, 
+          'success'
+        );
         navigate('/agendamentos');
       } else {
         showNotification(resultado.error || 'Erro ao realizar agendamento', 'error');
