@@ -32,8 +32,7 @@ export default function Cadastro() {
   const [fotoPerfilUrl, setFotoPerfilUrl] = useState<string>("");
 
   // Dados pessoais
-  const [tipoDocumento, setTipoDocumento] = useState("CPF");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [cpf, setCpf] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [genero, setGenero] = useState("");
   const [celular, setCelular] = useState("");
@@ -114,7 +113,7 @@ export default function Cadastro() {
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !numeroDocumento || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
+    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
       showNotification("Preencha todos os campos obrigatórios", "error");
       return;
     }
@@ -126,6 +125,13 @@ export default function Cadastro() {
 
     if (senha.length < 6) {
       showNotification("A senha deve ter pelo menos 6 caracteres", "error");
+      return;
+    }
+
+    // Validar CPF
+    const cpfLimpo = cpf.replace(/\D/g, "");
+    if (cpfLimpo.length !== 11) {
+      showNotification("CPF deve ter 11 dígitos", "error");
       return;
     }
 
@@ -309,37 +315,19 @@ export default function Cadastro() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Tipo de documento</Label>
-                    <Select value={tipoDocumento} onValueChange={setTipoDocumento}>
-                      <SelectTrigger className="h-12">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CPF">CPF</SelectItem>
-                        <SelectItem value="RG">RG</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="documento">
-                      Número do documento <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="documento"
-                      value={numeroDocumento}
-                      onChange={(e) => {
-                        const formatted = tipoDocumento === "CPF" 
-                          ? formatarCPF(e.target.value)
-                          : e.target.value;
-                        setNumeroDocumento(formatted);
-                      }}
-                      className="h-12"
-                      required
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="cpf">
+                    CPF <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="cpf"
+                    value={cpf}
+                    onChange={(e) => setCpf(formatarCPF(e.target.value))}
+                    placeholder="000.000.000-00"
+                    className="h-12"
+                    maxLength={14}
+                    required
+                  />
                 </div>
 
                 <div className="flex items-center space-x-2 text-sm text-purple-600">
