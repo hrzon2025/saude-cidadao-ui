@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Syringe, MapPin, Calendar as CalendarIcon, CheckCircle } from "lucide-react";
+import { Syringe, MapPin, Calendar as CalendarIcon } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,8 +15,6 @@ import {
   FAIXAS_ETARIAS 
 } from "@/lib/stubs/vacinacao";
 import { Unidade } from "@/lib/types";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 export default function Vacinacao() {
   const { showNotification } = useAppStore();
@@ -87,14 +85,6 @@ export default function Vacinacao() {
     showNotification(`Abrindo navegação para localização`, 'info');
   };
 
-  const formatarData = (data: string) => {
-    try {
-      return format(new Date(data), "dd/MM/yyyy", { locale: ptBR });
-    } catch {
-      return data;
-    }
-  };
-
   const renderVacinaCard = (vacina: Vacina) => (
     <Card key={vacina.id} className="p-4 transition-smooth hover:shadow-medium">
       <div className="space-y-3">
@@ -110,13 +100,6 @@ export default function Vacinacao() {
             <div className="flex items-center text-muted-foreground">
               <Syringe className="h-4 w-4 mr-2" />
               <span>{vacina.doses} doses</span>
-            </div>
-          )}
-
-          {vacina.dataAplicacao && (
-            <div className="flex items-center text-muted-foreground">
-              <CheckCircle className="h-4 w-4 mr-2" />
-              <span>Aplicada em {formatarData(vacina.dataAplicacao)}</span>
             </div>
           )}
 
