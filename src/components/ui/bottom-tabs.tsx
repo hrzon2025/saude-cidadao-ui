@@ -35,7 +35,7 @@ export function BottomTabs() {
   const setActiveTab = useAppStore((state) => state.setActiveTab);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 gradient-primary border-t border-primary/20 safe-bottom">
       <div className="max-w-md mx-auto">
         <div className="flex">
           {tabs.map((tab) => {
@@ -49,10 +49,10 @@ export function BottomTabs() {
                 className={({ isActive }) =>
                   cn(
                     "flex-1 flex flex-col items-center justify-center py-2 px-1 min-h-touch transition-smooth",
-                    "hover:bg-accent/50 active:scale-95",
+                    "hover:bg-primary-foreground/10 active:scale-95",
                     isActive
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-primary-foreground"
+                      : "text-primary-foreground/70 hover:text-primary-foreground"
                   )
                 }
               >
@@ -66,7 +66,7 @@ export function BottomTabs() {
                     />
                     <span className={cn(
                       "text-xs font-medium transition-smooth",
-                      isActive && "text-primary"
+                      isActive && "text-primary-foreground"
                     )}>
                       {tab.label}
                     </span>

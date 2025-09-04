@@ -27,8 +27,8 @@ export function AppHeader({
 }: AppHeaderProps) {
   return (
     <header className={cn(
-      "sticky top-0 z-40 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60",
-      "border-b border-border shadow-soft",
+      "sticky top-0 z-40 w-full gradient-primary text-primary-foreground shadow-primary",
+      "border-b border-primary/20",
       className
     )}>
       <div className="max-w-md mx-auto">
@@ -40,7 +40,7 @@ export function AppHeader({
                 variant="ghost"
                 size="sm"
                 onClick={onBack}
-                className="mr-2 h-9 w-9 p-0"
+                className="mr-2 h-9 w-9 p-0 text-primary-foreground hover:bg-primary-foreground/10"
               >
                 <ArrowLeft className="h-5 w-5" />
                 <span className="sr-only">Voltar</span>
@@ -52,7 +52,7 @@ export function AppHeader({
                 variant="ghost"
                 size="sm"
                 onClick={onMenu}
-                className="mr-2 h-9 w-9 p-0"
+                className="mr-2 h-9 w-9 p-0 text-primary-foreground hover:bg-primary-foreground/10"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Menu</span>
@@ -62,7 +62,7 @@ export function AppHeader({
 
           {/* Center - Title */}
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-semibold truncate">
+            <h1 className="text-lg font-semibold truncate text-primary-foreground">
               {title}
             </h1>
           </div>
@@ -74,7 +74,7 @@ export function AppHeader({
                 variant="ghost"
                 size="sm"
                 onClick={onNotifications}
-                className="h-9 w-9 p-0"
+                className="h-9 w-9 p-0 text-primary-foreground hover:bg-primary-foreground/10"
               >
                 <Bell className="h-5 w-5" />
                 <span className="sr-only">Notificações</span>
