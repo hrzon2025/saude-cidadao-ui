@@ -87,25 +87,29 @@ export const mockProfissionais: Profissional[] = [
     id: '1',
     nome: 'Dr. João Santos',
     especialidade: 'Clínico Geral',
-    crm: 'CRM/SP 123456'
+    crm: 'CRM/SP 123456',
+    unidadeId: '1'
   },
   {
     id: '2',
     nome: 'Dra. Ana Oliveira',
     especialidade: 'Pediatra',
-    crm: 'CRM/SP 234567'
+    crm: 'CRM/SP 234567',
+    unidadeId: '2'
   },
   {
     id: '3',
     nome: 'Dr. Carlos Lima',
     especialidade: 'Cardiologista',
-    crm: 'CRM/SP 345678'
+    crm: 'CRM/SP 345678',
+    unidadeId: '3'
   },
   {
     id: '4',
     nome: 'Dra. Patricia Costa',
     especialidade: 'Ginecologista',
-    crm: 'CRM/SP 456789'
+    crm: 'CRM/SP 456789',
+    unidadeId: '1'
   }
 ];
 
@@ -113,24 +117,28 @@ export const mockTiposConsulta: TipoConsulta[] = [
   {
     id: '1',
     nome: 'Consulta Clínica Geral',
+    duracao: 30,
     descricao: 'Consulta com médico clínico geral',
     icone: 'stethoscope'
   },
   {
     id: '2',
     nome: 'Consulta Pediátrica',  
+    duracao: 30,
     descricao: 'Consulta com pediatra',
     icone: 'baby'
   },
   {
     id: '3',
     nome: 'Consulta Cardiológica',
+    duracao: 45,
     descricao: 'Consulta com cardiologista',
     icone: 'heart'
   },
   {
     id: '4',
     nome: 'Consulta Ginecológica',
+    duracao: 45,
     descricao: 'Consulta com ginecologista',
     icone: 'user-check'
   }
@@ -162,7 +170,7 @@ export const mockAtendimentos: Atendimento[] = [
     tipo: 'Consulta Cardiológica',
     profissional: 'Dr. Carlos Lima',
     unidade: 'Centro de Especialidades',
-    status: 'Realizado',
+    status: 'Concluído',
     podeAvaliar: true
   },
   {
@@ -190,7 +198,7 @@ export const mockAtendimentos: Atendimento[] = [
     tipo: 'Consulta Clínica Geral',
     profissional: 'Dr. João Santos',
     unidade: 'UBS Jardim Primavera',
-    status: 'Realizado',
+    status: 'Concluído',
     podeAvaliar: false
   }
 ];

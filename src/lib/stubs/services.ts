@@ -154,9 +154,9 @@ export async function agendarConsulta(dados: {
   
   return {
     id: Date.now().toString(),
-    unidade,
-    profissional,
-    tipo,
+    unidade: unidade.nome,
+    profissional: profissional.nome,
+    tipo: tipo.nome,
     data: dados.data,
     hora: dados.hora,
     status: 'Agendado'

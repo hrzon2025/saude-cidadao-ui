@@ -12,6 +12,10 @@ import Inicio from "./pages/Inicio";
 import Funcionalidades from "./pages/Funcionalidades";
 import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
+import ListaAgendamentos from "./pages/agendamentos/Lista";
+import NovoAgendamento from "./pages/agendamentos/Novo";
+import HorariosAgendamento from "./pages/agendamentos/Horarios";
+import ConfirmacaoAgendamento from "./pages/agendamentos/Confirmacao";
 
 const queryClient = new QueryClient();
 
@@ -50,9 +54,10 @@ const App = () => {
               <Route path="/funcionalidades" element={<Funcionalidades />} />
               <Route path="/perfil" element={<Perfil />} />
               
-              {/* Agendamentos */}
-              <Route path="/agendamentos/novo" element={<div className="p-8 text-center">Agendamento - Em desenvolvimento</div>} />
-              <Route path="/agendamentos/confirmacao" element={<div className="p-8 text-center">Confirmação - Em desenvolvimento</div>} />
+              <Route path="/agendamentos" element={<ListaAgendamentos />} />
+              <Route path="/agendamentos/novo" element={<NovoAgendamento />} />
+              <Route path="/agendamentos/horarios" element={<HorariosAgendamento />} />
+              <Route path="/agendamentos/confirmacao" element={<ConfirmacaoAgendamento />} />
               
               {/* Atendimentos */}
               <Route path="/atendimentos" element={<div className="p-8 text-center">Atendimentos - Em desenvolvimento</div>} />

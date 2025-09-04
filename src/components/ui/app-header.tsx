@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface AppHeaderProps {
   title: string;
+  subtitle?: string;
   showBack?: boolean;
   onBack?: () => void;
   showMenu?: boolean;
@@ -16,6 +17,7 @@ interface AppHeaderProps {
 
 export function AppHeader({
   title,
+  subtitle,
   showBack = false,
   onBack,
   showMenu = false,
@@ -62,9 +64,16 @@ export function AppHeader({
 
           {/* Center - Title */}
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg font-semibold truncate text-primary-foreground">
-              {title}
-            </h1>
+            <div>
+              <h1 className="text-lg font-semibold truncate text-primary-foreground">
+                {title}
+              </h1>
+              {subtitle && (
+                <p className="text-sm text-primary-foreground/80 truncate">
+                  {subtitle}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Right side */}

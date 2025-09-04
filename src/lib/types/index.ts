@@ -1,6 +1,6 @@
 // Tipos essenciais para o app Saúde Cidadão
 
-export type Unidade = {
+export interface Unidade {
   id: string;
   nome: string;
   endereco: string;
@@ -12,32 +12,61 @@ export type Unidade = {
     lat: number;
     lng: number;
   };
-};
+}
 
-export type Profissional = {
+export interface Profissional {
   id: string;
   nome: string;
   especialidade: string;
-  crm?: string;
-};
+  crm: string;
+  unidadeId: string;
+}
 
-export type TipoConsulta = {
+export interface TipoConsulta {
   id: string;
   nome: string;
+  duracao: number; // em minutos
   descricao?: string;
   icone?: string;
-};
+  especialidadeId?: string;
+}
 
-export type Agendamento = {
+export interface Agendamento {
   id: string;
-  unidade: Unidade;
-  profissional: Profissional;
-  tipo: TipoConsulta;
   data: string;
   hora: string;
-  status: 'Agendado' | 'Realizado' | 'Cancelado';
+  tipo: string;
+  profissional: string;
+  unidade: string;
+  status: 'Agendado' | 'Cancelado';
   observacoes?: string;
-};
+}
+
+export interface Atendimento {
+  id: string;
+  data: string;
+  hora: string;
+  tipo: string;
+  profissional: string;
+  unidade: string;
+  status: 'Agendado' | 'Concluído' | 'Cancelado';
+  podeAvaliar?: boolean;
+  avaliacao?: Avaliacao;
+}
+
+export interface HorarioDisponivel {
+  hora: string;
+  disponivel: boolean;
+}
+
+export interface NovoAgendamento {
+  unidadeId: string;
+  profissionalId: string;
+  tipoId: string;
+  data: string;
+  hora: string;
+  observacoes?: string;
+}
 
 export type Avaliacao = {
   id: string;
@@ -103,18 +132,6 @@ export type SolicitacaoRegulacao = {
   dataSolicitacao: string;
   status: 'Em análise' | 'Aguardando vaga' | 'Autorizado' | 'Concluído';
   observacoes?: string;
-};
-
-export type Atendimento = {
-  id: string;
-  data: string;
-  hora: string;
-  tipo: string;
-  profissional: string;
-  unidade: string;
-  status: 'Agendado' | 'Realizado' | 'Cancelado';
-  podeAvaliar?: boolean;
-  avaliacao?: Avaliacao;
 };
 
 export type FAQ = {
