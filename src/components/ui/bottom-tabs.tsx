@@ -35,7 +35,7 @@ export function BottomTabs() {
   const setActiveTab = useAppStore((state) => state.setActiveTab);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 gradient-primary border-t border-primary/20 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-primary border-t border-primary/20 safe-bottom">
       <div className="max-w-md mx-auto">
         <div className="flex">
           {tabs.map((tab) => {

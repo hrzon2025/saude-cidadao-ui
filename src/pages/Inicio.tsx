@@ -108,7 +108,7 @@ export default function Inicio() {
               onRetry={loadProximaConsulta}
             />
           ) : proximaConsulta ? (
-            <Card className="p-4 gradient-hero text-primary-foreground shadow-primary">
+            <Card className="p-4 bg-primary text-primary-foreground shadow-primary">
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>

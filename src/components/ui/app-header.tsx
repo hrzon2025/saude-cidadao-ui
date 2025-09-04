@@ -27,7 +27,7 @@ export function AppHeader({
 }: AppHeaderProps) {
   return (
     <header className={cn(
-      "sticky top-0 z-40 w-full gradient-primary text-primary-foreground shadow-primary",
+      "sticky top-0 z-40 w-full bg-primary text-primary-foreground shadow-primary",
       "border-b border-primary/20",
       className
     )}>
