@@ -96,6 +96,12 @@ export default function Vacinacao() {
         </div>
 
         <div className="space-y-2 text-sm">
+          {vacina.descricaoDetalhada && (
+            <p className="text-muted-foreground leading-relaxed">
+              {vacina.descricaoDetalhada}
+            </p>
+          )}
+
           {vacina.doses > 1 && (
             <div className="flex items-center text-muted-foreground">
               <Syringe className="h-4 w-4 mr-2" />

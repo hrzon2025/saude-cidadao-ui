@@ -4,6 +4,7 @@ export interface Vacina {
   id: string;
   nome: string;
   descricao: string;
+  descricaoDetalhada?: string;
   faixaEtaria: FaixaEtaria;
   doses: number;
   status: 'aplicada' | 'recomendada' | 'atrasada';
@@ -41,7 +42,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: 'ao_nascimento',
     doses: 1,
     status: 'aplicada',
-    dataAplicacao: '2024-01-15'
+    dataAplicacao: '2024-01-15',
+    descricaoDetalhada: 'Protege contra as formas graves de tuberculose, principalmente meningite tuberculosa e tuberculose disseminada.'
   },
   {
     id: '2', 
@@ -50,7 +52,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: 'ao_nascimento',
     doses: 1,
     status: 'aplicada',
-    dataAplicacao: '2024-01-15'
+    dataAplicacao: '2024-01-15',
+    descricaoDetalhada: 'Previne a hepatite B, infecção viral que afeta o fígado e pode causar cirrose e câncer hepático.'
   },
 
   // 2 meses
@@ -61,7 +64,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '2_meses',
     doses: 3,
     status: 'aplicada',
-    dataAplicacao: '2024-03-15'
+    dataAplicacao: '2024-03-15',
+    descricaoDetalhada: 'Protege contra cinco doenças importantes: difteria, tétano, coqueluche, meningite por Haemophilus e hepatite B.'
   },
   {
     id: '4',
@@ -70,7 +74,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '2_meses',
     doses: 3,
     status: 'aplicada',
-    dataAplicacao: '2024-03-15'
+    dataAplicacao: '2024-03-15',
+    descricaoDetalhada: 'Previne a poliomielite (paralisia infantil), doença viral que pode causar paralisia permanente dos membros.'
   },
   {
     id: '5',
@@ -79,7 +84,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '2_meses',
     doses: 2,
     status: 'aplicada',
-    dataAplicacao: '2024-03-15'
+    dataAplicacao: '2024-03-15',
+    descricaoDetalhada: 'Protege contra gastroenterite por rotavírus, principal causa de diarreia grave em crianças menores de 5 anos.'
   },
 
   // 4 meses
@@ -90,7 +96,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '4_meses',
     doses: 3,
     status: 'aplicada',
-    dataAplicacao: '2024-05-15'
+    dataAplicacao: '2024-05-15',
+    descricaoDetalhada: 'Segunda dose da vacina que protege contra difteria, tétano, coqueluche, meningite por Haemophilus e hepatite B.'
   },
   {
     id: '7',
@@ -99,7 +106,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '4_meses',
     doses: 3,
     status: 'aplicada',
-    dataAplicacao: '2024-05-15'
+    dataAplicacao: '2024-05-15',
+    descricaoDetalhada: 'Segunda dose da vacina contra poliomielite, reforçando a proteção contra a paralisia infantil.'
   },
   {
     id: '8',
@@ -108,7 +116,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '4_meses',
     doses: 2,
     status: 'recomendada',
-    proximaDose: '2024-12-15'
+    proximaDose: '2024-12-15',
+    descricaoDetalhada: 'Segunda dose da vacina contra rotavírus, completando a proteção contra diarreia grave causada por este vírus.'
   },
 
   // 6 meses
@@ -119,7 +128,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '6_meses',
     doses: 3,
     status: 'recomendada',
-    proximaDose: '2024-12-20'
+    proximaDose: '2024-12-20',
+    descricaoDetalhada: 'Terceira dose que completa o esquema básico de proteção contra as cinco doenças contempladas.'
   },
   {
     id: '10',
@@ -128,7 +138,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '6_meses',
     doses: 3,
     status: 'recomendada',
-    proximaDose: '2024-12-20'
+    proximaDose: '2024-12-20',
+    descricaoDetalhada: 'Terceira dose que completa o esquema básico de proteção contra a poliomielite.'
   },
 
   // 12 meses
@@ -139,7 +150,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '12_meses',
     doses: 2,
     status: 'recomendada',
-    proximaDose: '2024-12-25'
+    proximaDose: '2024-12-25',
+    descricaoDetalhada: 'Protege contra sarampo, caxumba e rubéola, doenças virais com potencial de complicações graves.'
   },
   {
     id: '12',
@@ -148,7 +160,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: '12_meses',
     doses: 1,
     status: 'recomendada',
-    proximaDose: '2024-12-25'
+    proximaDose: '2024-12-25',
+    descricaoDetalhada: 'Reforço que protege contra infecções pneumocócicas, incluindo pneumonia, otite e meningite bacteriana.'
   },
 
   // Adulto
@@ -160,7 +173,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     doses: 1,
     status: 'aplicada',
     dataAplicacao: '2023-08-10',
-    observacoes: 'Reforço a cada 10 anos'
+    observacoes: 'Reforço a cada 10 anos',
+    descricaoDetalhada: 'Mantém a proteção contra difteria e tétano em adultos. Recomendada a cada 10 anos.'
   },
   {
     id: '14',
@@ -169,7 +183,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: 'adulto',
     doses: 3,
     status: 'aplicada',
-    dataAplicacao: '2023-02-15'
+    dataAplicacao: '2023-02-15',
+    descricaoDetalhada: 'Esquema completo de proteção contra hepatite B para adultos não vacinados na infância.'
   },
   {
     id: '15',
@@ -178,7 +193,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: 'adulto',
     doses: 1,
     status: 'recomendada',
-    proximaDose: '2024-12-01'
+    proximaDose: '2024-12-01',
+    descricaoDetalhada: 'Protege contra febre amarela, doença viral transmitida por mosquitos em áreas de risco.'
   },
 
   // Idoso
@@ -190,7 +206,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     doses: 1,
     status: 'aplicada',
     dataAplicacao: '2024-04-20',
-    observacoes: 'Anual'
+    observacoes: 'Anual',
+    descricaoDetalhada: 'Vacina anual contra os vírus da gripe mais circulantes, prevenindo complicações respiratórias graves.'
   },
   {
     id: '17',
@@ -199,7 +216,8 @@ export const CALENDARIO_VACINACAO: Vacina[] = [
     faixaEtaria: 'idoso',
     doses: 1,
     status: 'recomendada',
-    proximaDose: '2024-12-30'
+    proximaDose: '2024-12-30',
+    descricaoDetalhada: 'Protege idosos contra 23 tipos de pneumococo, reduzindo risco de pneumonia e outras infecções graves.'
   }
 ];
 
