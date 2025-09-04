@@ -23,12 +23,13 @@ export default function Cadastro() {
   // Dados da conta
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");
-  const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
+  const [fotoPerfilUrl, setFotoPerfilUrl] = useState<string>("");
 
   // Dados pessoais
   const [tipoDocumento, setTipoDocumento] = useState("CPF");
@@ -50,6 +51,15 @@ export default function Cadastro() {
   // Estado do formulário
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFotoPerfil(file);
+      const url = URL.createObjectURL(file);
+      setFotoPerfilUrl(url);
+    }
+  };
 
   const buscarCep = async (cepValue: string) => {
     const cepLimpo = cepValue.replace(/\D/g, "");
@@ -104,7 +114,7 @@ export default function Cadastro() {
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !numeroDocumento || !dataNascimento || !aceitouTermos) {
+    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !numeroDocumento || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
       showNotification("Preencha todos os campos obrigatórios", "error");
       return;
     }
@@ -164,14 +174,30 @@ export default function Cadastro() {
                 {/* Foto de perfil */}
                 <div className="flex justify-center mb-6">
                   <div className="relative">
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground flex items-center justify-center bg-muted/50">
-                      <Camera className="h-8 w-8 text-muted-foreground" />
+                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground flex items-center justify-center bg-muted/50 overflow-hidden">
+                      {fotoPerfilUrl ? (
+                        <img 
+                          src={fotoPerfilUrl} 
+                          alt="Foto de perfil" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Camera className="h-8 w-8 text-muted-foreground" />
+                      )}
                     </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleFotoPerfilChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      aria-label="Adicionar foto de perfil"
+                    />
                     <button
                       type="button"
-                      className="text-purple-600 text-sm mt-2 block text-center w-full"
+                      className="text-purple-600 text-sm mt-2 block text-center w-full pointer-events-none"
                     >
-                      Adicionar
+                      {fotoPerfilUrl ? "Alterar" : "Adicionar"}
                     </button>
                   </div>
                 </div>
@@ -200,16 +226,6 @@ export default function Cadastro() {
                       onChange={(e) => setSobrenome(e.target.value)}
                       className="h-12"
                       required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="usuario">Usuário</Label>
-                    <Input
-                      id="usuario"
-                      value={usuario}
-                      onChange={(e) => setUsuario(e.target.value)}
-                      className="h-12"
                     />
                   </div>
 
@@ -382,7 +398,9 @@ export default function Cadastro() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="cep">CEP</Label>
+                  <Label htmlFor="cep">
+                    CEP <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="cep"
                     value={cep}
@@ -390,28 +408,35 @@ export default function Cadastro() {
                     placeholder="00000-000"
                     className="h-12"
                     maxLength={9}
+                    required
                   />
                   {loadingCep && <div className="text-xs text-muted-foreground mt-1">Buscando CEP...</div>}
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
-                    <Label htmlFor="logradouro">Logradouro</Label>
+                    <Label htmlFor="logradouro">
+                      Logradouro <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="logradouro"
                       value={logradouro}
                       onChange={(e) => setLogradouro(e.target.value)}
                       className="h-12"
+                      required
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="numero">Número</Label>
+                    <Label htmlFor="numero">
+                      Número <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="numero"
                       value={numero}
                       onChange={(e) => setNumero(e.target.value)}
                       className="h-12"
+                      required
                     />
                   </div>
                 </div>
@@ -427,31 +452,39 @@ export default function Cadastro() {
                 </div>
 
                 <div>
-                  <Label htmlFor="bairro">Bairro</Label>
+                  <Label htmlFor="bairro">
+                    Bairro <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="bairro"
                     value={bairro}
                     onChange={(e) => setBairro(e.target.value)}
                     className="h-12"
+                    required
                   />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
-                    <Label htmlFor="cidade">Cidade</Label>
+                    <Label htmlFor="cidade">
+                      Cidade <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="cidade"
                       value={cidade}
                       onChange={(e) => setCidade(e.target.value)}
                       className="h-12"
+                      required
                     />
                   </div>
 
                   <div>
-                    <Label>UF</Label>
-                    <Select value={uf} onValueChange={setUf}>
+                    <Label>
+                      UF <span className="text-red-500">*</span>
+                    </Label>
+                    <Select value={uf} onValueChange={setUf} required>
                       <SelectTrigger className="h-12">
-                        <SelectValue />
+                        <SelectValue placeholder="UF" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="SP">SP</SelectItem>
