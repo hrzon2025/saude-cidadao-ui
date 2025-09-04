@@ -14,8 +14,8 @@ import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 
 const shortcuts = [
-  { id: 'agendamentos', label: 'Agendamentos', icon: Calendar, path: '/agendamentos/novo', color: 'text-primary' },
-  { id: 'atendimentos', label: 'Atendimentos', icon: Calendar, path: '/atendimentos', color: 'text-teal-500' },
+  { id: 'agendamentos-novo', label: 'Novo Agendamento', icon: Plus, path: '/agendamentos/novo', color: 'text-primary' },
+  { id: 'agendamentos-lista', label: 'Meus Agendamentos', icon: Calendar, path: '/agendamentos', color: 'text-teal-500' },
   { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-red-500' },
   { id: 'vacinas', label: 'Vacinas', icon: Plus, path: '/vacinacao', color: 'text-blue-500' },
   { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-indigo-500' },
