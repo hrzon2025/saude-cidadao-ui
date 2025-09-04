@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -46,57 +45,72 @@ const EsqueciSenha = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-purple-950 dark:via-blue-950 dark:to-indigo-950 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center space-x-2 mb-4">
-            <Link to="/login">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-          <div className="flex items-center justify-center mb-4">
-            <div className="bg-purple-100 dark:bg-purple-900 p-3 rounded-full">
-              <Mail className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-            </div>
-          </div>
-          <CardTitle className="text-2xl text-center">Esqueci minha senha</CardTitle>
-          <CardDescription className="text-center">
-            Digite seu email para receber as instruções de redefinição de senha
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">
-                Email <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Digite seu email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Enviando..." : "Enviar instruções"}
-            </Button>
-            
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Header com botão de voltar */}
+      <div className="flex items-center p-4 border-b">
+        <Link to="/login">
+          <Button variant="ghost" size="icon">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+        </Link>
+      </div>
+
+      {/* Conteúdo principal */}
+      <div className="flex-1 flex flex-col justify-center px-6 py-12">
+        <div className="mx-auto w-full max-w-sm">
+          <div className="space-y-6">
+            {/* Ícone e título */}
             <div className="text-center">
-              <Link 
-                to="/login" 
-                className="text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
-              >
-                Voltar para o login
-              </Link>
+              <div className="flex items-center justify-center mb-6">
+                <div className="bg-purple-100 p-3 rounded-full">
+                  <Mail className="h-8 w-8 text-purple-600" />
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                Esqueci minha senha
+              </h1>
+              <p className="text-muted-foreground text-sm">
+                Digite seu email para receber as instruções de redefinição de senha
+              </p>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+
+            {/* Formulário */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Digite seu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12"
+                  required
+                />
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl" 
+                disabled={loading}
+              >
+                {loading ? "Enviando..." : "Enviar instruções"}
+              </Button>
+              
+              <div className="text-center">
+                <Link 
+                  to="/login" 
+                  className="text-purple-600 hover:text-purple-700 transition-colors text-sm"
+                >
+                  Voltar para o login
+                </Link>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
