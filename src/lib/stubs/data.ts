@@ -147,7 +147,7 @@ export const mockTiposConsulta: TipoConsulta[] = [
 export const mockAtendimentos: Atendimento[] = [
   {
     id: '1',
-    data: '2024-01-25',
+    data: '2025-10-15',
     hora: '10:30',
     tipo: 'Consulta Clínica Geral',
     profissional: 'Dr. João Santos',
@@ -156,7 +156,7 @@ export const mockAtendimentos: Atendimento[] = [
   },
   {
     id: '2',
-    data: '2024-01-30',
+    data: '2025-10-22',
     hora: '14:00',
     tipo: 'Consulta Pediátrica',
     profissional: 'Dra. Ana Oliveira',
@@ -184,7 +184,7 @@ export const mockAtendimentos: Atendimento[] = [
   },
   {
     id: '5',
-    data: '2024-02-15',
+    data: '2025-11-05',
     hora: '11:00',
     tipo: 'Consulta Ginecológica',
     profissional: 'Dra. Patricia Costa',

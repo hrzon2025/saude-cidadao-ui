@@ -168,9 +168,10 @@ export async function consultarAtendimentos(status?: string): Promise<Atendiment
   // TODO: GET /api/atendimentos?status={status}
   await simulateLatency();
   
-  if (simulateError()) {
-    throw new Error('Erro ao carregar atendimentos');
-  }
+// Para estabilidade no Início, desabilite a falha simulada nesta chamada
+if (simulateError(0)) {
+  throw new Error('Erro ao carregar atendimentos');
+}
   
   let atendimentos = mockAtendimentos;
   
