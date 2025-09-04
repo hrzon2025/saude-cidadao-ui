@@ -103,7 +103,7 @@ export default function Cadastro() {
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!nome || !sobrenome || !email || !senha || !numeroDocumento || !aceitouTermos) {
+    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !numeroDocumento || !dataNascimento || !aceitouTermos) {
       showNotification("Preencha todos os campos obrigatórios", "error");
       return;
     }
@@ -133,15 +133,15 @@ export default function Cadastro() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex flex-col">
       {/* Header */}
-      <div className="bg-blue-600 text-white px-4 py-4 sticky top-0 z-10">
+      <div className="bg-purple-600 text-white px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/login")}
-            className="text-white hover:bg-blue-700 mr-4"
+            className="text-white hover:bg-purple-700 mr-4"
           >
             <ChevronLeft className="h-6 w-6" />
           </Button>
@@ -149,7 +149,9 @@ export default function Cadastro() {
         </div>
       </div>
 
-      <form onSubmit={handleCadastro} className="max-w-md mx-auto p-6 space-y-8">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12">
+        <div className="mx-auto w-full max-w-sm">
+          <form onSubmit={handleCadastro} className="space-y-6">
         {/* Seção Conta */}
         <div className="space-y-4">
           <h2 className="text-sm font-medium text-muted-foreground text-center mb-6">
@@ -173,23 +175,27 @@ export default function Cadastro() {
 
           <div className="space-y-4">
             <div>
-              <Label htmlFor="nome">Nome</Label>
+              <Label htmlFor="nome">
+                Nome <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="nome"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="sobrenome">Sobrenome</Label>
+              <Label htmlFor="sobrenome">
+                Sobrenome <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="sobrenome"
                 value={sobrenome}
                 onChange={(e) => setSobrenome(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
                 required
               />
             </div>
@@ -200,24 +206,28 @@ export default function Cadastro() {
                 id="usuario"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
               />
             </div>
 
             <div>
-              <Label htmlFor="email-cadastro">E-mail</Label>
+              <Label htmlFor="email-cadastro">
+                E-mail <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="email-cadastro"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="senha-cadastro">Senha</Label>
+              <Label htmlFor="senha-cadastro">
+                Senha <span className="text-red-500">*</span>
+              </Label>
               <div className="relative">
                 <Input
                   id="senha-cadastro"
@@ -225,7 +235,7 @@ export default function Cadastro() {
                   placeholder="Senha (mínimo de 6 caracteres)"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
-                  className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary pr-10"
+                  className="h-12 pr-10"
                   required
                 />
                 <button
@@ -243,14 +253,16 @@ export default function Cadastro() {
             </div>
 
             <div>
-              <Label htmlFor="confirmar-senha">Repetir senha</Label>
+              <Label htmlFor="confirmar-senha">
+                Repetir senha <span className="text-red-500">*</span>
+              </Label>
               <div className="relative">
                 <Input
                   id="confirmar-senha"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmarSenha}
                   onChange={(e) => setConfirmarSenha(e.target.value)}
-                  className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary pr-10"
+                  className="h-12 pr-10"
                   required
                 />
                 <button
@@ -279,7 +291,7 @@ export default function Cadastro() {
             <div>
               <Label>Tipo de documento</Label>
               <Select value={tipoDocumento} onValueChange={setTipoDocumento}>
-                <SelectTrigger className="border-0 border-b border-muted-foreground rounded-none bg-transparent">
+                <SelectTrigger className="h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -290,7 +302,9 @@ export default function Cadastro() {
             </div>
 
             <div>
-              <Label htmlFor="documento">Número do documento</Label>
+              <Label htmlFor="documento">
+                Número do documento <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="documento"
                 value={numeroDocumento}
@@ -300,7 +314,7 @@ export default function Cadastro() {
                     : e.target.value;
                   setNumeroDocumento(formatted);
                 }}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
                 required
               />
             </div>
@@ -312,13 +326,15 @@ export default function Cadastro() {
           </div>
 
           <div>
-            <Label htmlFor="nascimento">Data de nascimento</Label>
+            <Label htmlFor="nascimento">
+              Data de nascimento <span className="text-red-500">*</span>
+            </Label>
             <Input
               id="nascimento"
               type="date"
               value={dataNascimento}
               onChange={(e) => setDataNascimento(e.target.value)}
-              className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+              className="h-12"
               required
             />
           </div>
@@ -326,7 +342,7 @@ export default function Cadastro() {
           <div>
             <Label>Gênero</Label>
             <Select value={genero} onValueChange={setGenero}>
-              <SelectTrigger className="border-0 border-b border-muted-foreground rounded-none bg-transparent">
+              <SelectTrigger className="h-12">
                 <SelectValue placeholder="Selecione" />
               </SelectTrigger>
               <SelectContent>
@@ -345,7 +361,7 @@ export default function Cadastro() {
               value={celular}
               onChange={(e) => setCelular(formatarTelefone(e.target.value))}
               placeholder="(11) 99999-9999"
-              className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+              className="h-12"
             />
           </div>
         </div>
@@ -363,7 +379,7 @@ export default function Cadastro() {
               value={cep}
               onChange={handleCepChange}
               placeholder="00000-000"
-              className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+              className="h-12"
               maxLength={9}
             />
             {loadingCep && <div className="text-xs text-muted-foreground mt-1">Buscando CEP...</div>}
@@ -376,7 +392,7 @@ export default function Cadastro() {
                 id="logradouro"
                 value={logradouro}
                 onChange={(e) => setLogradouro(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
               />
             </div>
 
@@ -386,7 +402,7 @@ export default function Cadastro() {
                 id="numero"
                 value={numero}
                 onChange={(e) => setNumero(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
               />
             </div>
           </div>
@@ -397,7 +413,7 @@ export default function Cadastro() {
               id="complemento"
               value={complemento}
               onChange={(e) => setComplemento(e.target.value)}
-              className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+              className="h-12"
             />
           </div>
 
@@ -407,7 +423,7 @@ export default function Cadastro() {
               id="bairro"
               value={bairro}
               onChange={(e) => setBairro(e.target.value)}
-              className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+              className="h-12"
             />
           </div>
 
@@ -418,14 +434,14 @@ export default function Cadastro() {
                 id="cidade"
                 value={cidade}
                 onChange={(e) => setCidade(e.target.value)}
-                className="border-0 border-b border-muted-foreground rounded-none bg-transparent focus:border-primary"
+                className="h-12"
               />
             </div>
 
             <div>
               <Label>UF</Label>
               <Select value={uf} onValueChange={setUf}>
-                <SelectTrigger className="border-0 border-b border-muted-foreground rounded-none bg-transparent">
+                <SelectTrigger className="h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -459,17 +475,17 @@ export default function Cadastro() {
           </label>
         </div>
 
-        {/* Botão de cadastro */}
-        <Button 
-          type="submit" 
-          className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl"
-          disabled={loading || !aceitouTermos}
-        >
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </Button>
-
-        <div className="pb-6"></div>
-      </form>
+            {/* Botão de cadastro */}
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl"
+              disabled={loading || !aceitouTermos}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
