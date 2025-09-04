@@ -330,11 +330,6 @@ export default function Cadastro() {
                   />
                 </div>
 
-                <div className="flex items-center space-x-2 text-sm text-purple-600">
-                  <Info className="h-4 w-4" />
-                  <span>Por que preciso informar um documento?</span>
-                </div>
-
                 <div>
                   <Label htmlFor="nascimento">
                     Data de nascimento <span className="text-red-500">*</span>
