@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { ChevronLeft, Eye, EyeOff, Camera, Info } from "lucide-react";
+import { ChevronLeft, Eye, EyeOff, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
 
@@ -150,171 +150,165 @@ export default function Cadastro() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex flex-col">
-      {/* Header */}
-      <div className="bg-purple-600 text-white px-4 py-4 sticky top-0 z-10">
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/login")}
-            className="text-white hover:bg-purple-700 mr-4"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-xl font-semibold">Cadastro</h1>
-        </div>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Header com botão de voltar */}
+      <div className="flex items-center p-4 border-b">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate("/login")}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-xl font-semibold ml-2">Cadastro</h1>
       </div>
 
+      {/* Conteúdo principal */}
       <div className="flex-1 px-6 py-6">
-        <div className="mx-auto w-full max-w-md space-y-6">
+        <div className="mx-auto w-full max-w-sm">
           <form onSubmit={handleCadastro} className="space-y-6">
+            {/* Foto de perfil */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground flex items-center justify-center bg-muted/50 overflow-hidden">
+                  {fotoPerfilUrl ? (
+                    <img 
+                      src={fotoPerfilUrl} 
+                      alt="Foto de perfil" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Camera className="h-8 w-8 text-muted-foreground" />
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleFotoPerfilChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  aria-label="Adicionar foto de perfil"
+                />
+                <button
+                  type="button"
+                  className="text-purple-600 text-sm mt-2 block text-center w-full pointer-events-none"
+                >
+                  {fotoPerfilUrl ? "Alterar" : "Adicionar"}
+                </button>
+              </div>
+            </div>
+
             {/* Seção Conta */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground text-center">
-                  CONTA
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Foto de perfil */}
-                <div className="flex justify-center mb-6">
+            <div className="space-y-4">
+              <h2 className="text-sm font-medium text-muted-foreground text-center uppercase tracking-wider">
+                Conta
+              </h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="nome">
+                    Nome <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="nome"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="sobrenome">
+                    Sobrenome <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="sobrenome"
+                    value={sobrenome}
+                    onChange={(e) => setSobrenome(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="email-cadastro">
+                    E-mail <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email-cadastro"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-12"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="senha-cadastro">
+                    Senha <span className="text-red-500">*</span>
+                  </Label>
                   <div className="relative">
-                    <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground flex items-center justify-center bg-muted/50 overflow-hidden">
-                      {fotoPerfilUrl ? (
-                        <img 
-                          src={fotoPerfilUrl} 
-                          alt="Foto de perfil" 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Camera className="h-8 w-8 text-muted-foreground" />
-                      )}
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={handleFotoPerfilChange}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
-                      aria-label="Adicionar foto de perfil"
+                    <Input
+                      id="senha-cadastro"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Senha (mínimo de 6 caracteres)"
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                      className="h-12 pr-10"
+                      required
                     />
                     <button
                       type="button"
-                      className="text-purple-600 text-sm mt-2 block text-center w-full pointer-events-none"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
                     >
-                      {fotoPerfilUrl ? "Alterar" : "Adicionar"}
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-muted-foreground" />
+                      )}
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="nome">
-                      Nome <span className="text-red-500">*</span>
-                    </Label>
+                <div>
+                  <Label htmlFor="confirmar-senha">
+                    Repetir senha <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="relative">
                     <Input
-                      id="nome"
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
-                      className="h-12"
+                      id="confirmar-senha"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmarSenha}
+                      onChange={(e) => setConfirmarSenha(e.target.value)}
+                      className="h-12 pr-10"
                       required
                     />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="sobrenome">
-                      Sobrenome <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="sobrenome"
-                      value={sobrenome}
-                      onChange={(e) => setSobrenome(e.target.value)}
-                      className="h-12"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="email-cadastro">
-                      E-mail <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email-cadastro"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="senha-cadastro">
-                      Senha <span className="text-red-500">*</span>
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="senha-cadastro"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Senha (mínimo de 6 caracteres)"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                        className="h-12 pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="confirmar-senha">
-                      Repetir senha <span className="text-red-500">*</span>
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="confirmar-senha"
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={confirmarSenha}
-                        onChange={(e) => setConfirmarSenha(e.target.value)}
-                        className="h-12 pr-10"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-5 w-5 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-5 w-5 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Seção Dados Pessoais */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground text-center">
-                  DADOS PESSOAIS
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="space-y-4">
+              <h2 className="text-sm font-medium text-muted-foreground text-center uppercase tracking-wider">
+                Dados Pessoais
+              </h2>
+              
+              <div className="space-y-4">
                 <div>
                   <Label htmlFor="cpf">
                     CPF <span className="text-red-500">*</span>
@@ -369,17 +363,16 @@ export default function Cadastro() {
                     className="h-12"
                   />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Seção Endereço */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground text-center">
-                  ENDEREÇO
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="space-y-4">
+              <h2 className="text-sm font-medium text-muted-foreground text-center uppercase tracking-wider">
+                Endereço
+              </h2>
+              
+              <div className="space-y-4">
                 <div>
                   <Label htmlFor="cep">
                     CEP <span className="text-red-500">*</span>
@@ -484,8 +477,8 @@ export default function Cadastro() {
                     </Select>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Termos de uso */}
             <div className="flex items-start space-x-2 px-1">
