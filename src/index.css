@@ -8,7 +8,7 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Saúde Cidadão - Design System Roxo */
+    /* Saúde Cidadão - Design System com #943dff */
     --background: 0 0% 100%;
     --foreground: 256 15% 15%;
 
@@ -18,25 +18,25 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 256 15% 15%;
 
-    /* Roxo vibrante como cor primária (baseado no Minha Vacina) */
-    --primary: 269 90% 54%;
+    /* Roxo #943dff como cor primária */
+    --primary: 270 100% 62%;
     --primary-foreground: 0 0% 98%;
-    --primary-hover: 269 90% 59%;
-    --primary-light: 269 50% 90%;
+    --primary-hover: 270 100% 67%;
+    --primary-light: 270 50% 90%;
 
     /* Roxo mais claro como secundária */
-    --secondary: 269 30% 95%;
-    --secondary-foreground: 269 90% 25%;
-    --secondary-hover: 269 30% 90%;
+    --secondary: 270 30% 95%;
+    --secondary-foreground: 270 100% 25%;
+    --secondary-hover: 270 30% 90%;
 
     /* Tons neutros com leve toque roxo */
-    --muted: 269 15% 95%;
+    --muted: 270 15% 95%;
     --muted-foreground: 256 10% 45%;
 
     /* Accent roxo mais saturado */
-    --accent: 269 85% 58%;
+    --accent: 270 95% 65%;
     --accent-foreground: 0 0% 98%;
-    --accent-light: 269 50% 95%;
+    --accent-light: 270 50% 95%;
 
     /* Estados de feedback */
     --success: 142 69% 30%;
@@ -47,21 +47,21 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 98%;
 
     /* Bordas e inputs */
-    --border: 269 20% 88%;
-    --input: 269 20% 88%;
-    --ring: 269 90% 54%;
+    --border: 270 20% 88%;
+    --input: 270 20% 88%;
+    --ring: 270 100% 62%;
 
-    /* Gradientes roxos inspirados no Minha Vacina */
-    --gradient-primary: linear-gradient(135deg, hsl(269 95% 60%), hsl(280 90% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(269 70% 70%), hsl(269 60% 80%));
-    --gradient-hero: linear-gradient(135deg, hsl(269 95% 60%), hsl(280 85% 50%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(269 30% 98%));
+    /* Gradientes roxos com #943dff */
+    --gradient-primary: linear-gradient(135deg, hsl(270 100% 62%), hsl(275 95% 67%));
+    --gradient-secondary: linear-gradient(135deg, hsl(270 70% 70%), hsl(270 60% 80%));
+    --gradient-hero: linear-gradient(135deg, hsl(270 100% 62%), hsl(275 90% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(270 30% 98%));
 
     /* Sombras roxas elegantes */
-    --shadow-sm: 0 2px 4px hsl(269 50% 20% / 0.08);
-    --shadow-md: 0 4px 12px hsl(269 50% 20% / 0.12);
-    --shadow-lg: 0 8px 24px hsl(269 50% 20% / 0.16);
-    --shadow-primary: 0 4px 20px hsl(269 90% 54% / 0.25);
+    --shadow-sm: 0 2px 4px hsl(270 50% 20% / 0.08);
+    --shadow-md: 0 4px 12px hsl(270 50% 20% / 0.12);
+    --shadow-lg: 0 8px 24px hsl(270 50% 20% / 0.16);
+    --shadow-primary: 0 4px 20px hsl(270 100% 62% / 0.25);
 
     /* Raio de borda maior para design moderno */
     --radius: 0.75rem;
@@ -83,10 +83,10 @@ All colors MUST be HSL.
     --popover: 256 20% 10%;
     --popover-foreground: 210 40% 95%;
 
-    --primary: 269 85% 65%;
+    --primary: 270 95% 70%;
     --primary-foreground: 256 25% 8%;
-    --primary-hover: 269 85% 70%;
-    --primary-light: 269 30% 15%;
+    --primary-hover: 270 95% 75%;
+    --primary-light: 270 30% 15%;
 
     --secondary: 256 20% 15%;
     --secondary-foreground: 210 40% 95%;
@@ -95,9 +95,9 @@ All colors MUST be HSL.
     --muted: 256 20% 15%;
     --muted-foreground: 256 10% 65%;
 
-    --accent: 269 80% 68%;
+    --accent: 270 90% 72%;
     --accent-foreground: 256 25% 8%;
-    --accent-light: 269 30% 15%;
+    --accent-light: 270 30% 15%;
 
     --success: 142 69% 45%;
     --success-foreground: 256 25% 8%;
@@ -108,17 +108,17 @@ All colors MUST be HSL.
 
     --border: 256 20% 20%;
     --input: 256 20% 20%;
-    --ring: 269 85% 65%;
+    --ring: 270 95% 70%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(269 90% 65%), hsl(280 85% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(269 50% 40%), hsl(269 40% 50%));
-    --gradient-hero: linear-gradient(135deg, hsl(269 90% 65%), hsl(280 80% 55%));
+    --gradient-primary: linear-gradient(135deg, hsl(270 95% 70%), hsl(275 90% 75%));
+    --gradient-secondary: linear-gradient(135deg, hsl(270 50% 40%), hsl(270 40% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(270 95% 70%), hsl(275 85% 60%));
     --gradient-subtle: linear-gradient(180deg, hsl(256 25% 8%), hsl(256 20% 10%));
 
     --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.2);
     --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.3);
     --shadow-lg: 0 8px 24px hsl(0 0% 0% / 0.4);
-    --shadow-primary: 0 4px 20px hsl(269 85% 65% / 0.3);
+    --shadow-primary: 0 4px 20px hsl(270 95% 70% / 0.3);
   }
 }
 
