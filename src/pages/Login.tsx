@@ -39,23 +39,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex flex-col">
-      {/* Logo */}
+      {/* Formulário de Login */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12">
         <div className="mx-auto w-full max-w-sm">
-          <div className="text-center mb-8">
-            <div className="text-4xl font-bold mb-2">
-              <span className="text-purple-600">MINHA</span>
-            </div>
-            <div className="text-4xl font-bold mb-8">
-              <span className="text-purple-600">V</span>
-              <span className="text-yellow-500">A</span>
-              <span className="text-purple-600">C</span>
-              <span className="text-green-500">I</span>
-              <span className="text-blue-500">N</span>
-              <span className="text-purple-600">A</span>
-            </div>
-          </div>
-
           <div className="space-y-6">
             <div className="text-center">
               <h1 className="text-2xl font-bold text-foreground mb-2">
