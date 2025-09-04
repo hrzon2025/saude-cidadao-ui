@@ -20,6 +20,7 @@ import Vacinacao from "./pages/Vacinacao";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import EsqueciSenha from "./pages/EsqueciSenha";
+import CartaoSus from "./pages/CartaoSus";
 
 const queryClient = new QueryClient();
 
@@ -68,7 +69,7 @@ const App = () => {
               <Route path="/avaliacao/:id" element={<div className="p-8 text-center">Avaliação - Em desenvolvimento</div>} />
               
               {/* Funcionalidades */}
-              <Route path="/cartao-sus" element={<div className="p-8 text-center">Cartão SUS - Em desenvolvimento</div>} />
+              <Route path="/cartao-sus" element={<CartaoSus />} />
               <Route path="/unidades" element={<div className="p-8 text-center">Unidades - Em desenvolvimento</div>} />
               <Route path="/servicos" element={<div className="p-8 text-center">Serviços - Em desenvolvimento</div>} />
               <Route path="/ouvidoria" element={<div className="p-8 text-center">Ouvidoria - Em desenvolvimento</div>} />
