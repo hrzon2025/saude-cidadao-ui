@@ -9,6 +9,7 @@ import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { obterAgendamentos, cancelarAgendamento } from "@/lib/stubs/agendamentos";
 import { Agendamento } from "@/lib/types";
@@ -208,27 +209,36 @@ export default function ListaAgendamentos() {
                     )}
 
                     {podeCantelar && (
-                      <div className="flex gap-2 pt-2 border-t">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleCancelar(agendamento.id)}
-                          disabled={cancelando === agendamento.id}
-                          className="flex-1"
-                        >
-                          {cancelando === agendamento.id ? 'Cancelando...' : 'Cancelar'}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => {
-                            // TODO: Implementar reagendamento
-                            showNotification('Funcionalidade em desenvolvimento', 'info');
-                          }}
-                        >
-                          Reagendar
-                        </Button>
+                      <div className="pt-2 border-t">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={cancelando === agendamento.id}
+                              className="w-full"
+                            >
+                              {cancelando === agendamento.id ? 'Cancelando...' : 'Cancelar'}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Cancelar Agendamento</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Não, manter</AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => handleCancelar(agendamento.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Sim, cancelar
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     )}
                   </div>
