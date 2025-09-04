@@ -15,6 +15,16 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Layout component to wrap pages with BottomTabs
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="min-h-screen bg-background">
+      {children}
+      <BottomTabs />
+    </div>
+  );
+};
+
 const App = () => {
   const { isDarkMode } = useAppStore();
 
@@ -33,7 +43,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-background">
+          <Layout>
             <Routes>
               {/* Main Tabs */}
               <Route path="/" element={<Inicio />} />
@@ -71,9 +81,7 @@ const App = () => {
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            
-            <BottomTabs />
-          </div>
+          </Layout>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
