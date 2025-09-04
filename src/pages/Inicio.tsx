@@ -106,14 +106,14 @@ export default function Inicio() {
               onRetry={loadProximaConsulta}
             />
           ) : proximaConsulta ? (
-            <Card className="p-4 bg-primary text-primary-foreground shadow-primary">
+            <Card className="p-4 bg-primary/5 border-primary/20 shadow-sm">
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-lg">
+                    <h3 className="font-semibold text-lg text-foreground">
                       {proximaConsulta.tipo}
                     </h3>
-                    <p className="text-primary-foreground/80">
+                    <p className="text-muted-foreground">
                       {proximaConsulta.profissional}
                     </p>
                   </div>
@@ -122,7 +122,7 @@ export default function Inicio() {
                   </StatusBadge>
                 </div>
                 
-                <div className="space-y-1 text-primary-foreground/90">
+                <div className="space-y-1 text-muted-foreground">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2" />
                     <span>
