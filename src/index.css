@@ -8,35 +8,35 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Saúde Cidadão - Design System */
+    /* Saúde Cidadão - Design System Roxo */
     --background: 0 0% 100%;
-    --foreground: 215 25% 15%;
+    --foreground: 256 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 256 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 256 15% 15%;
 
-    /* Verde saúde como cor primária */
-    --primary: 142 69% 30%;
+    /* Roxo vibrante como cor primária (baseado no Minha Vacina) */
+    --primary: 269 90% 54%;
     --primary-foreground: 0 0% 98%;
-    --primary-hover: 142 69% 35%;
-    --primary-light: 142 50% 90%;
+    --primary-hover: 269 90% 59%;
+    --primary-light: 269 50% 90%;
 
-    /* Azul profissional como secundária */
-    --secondary: 213 94% 95%;
-    --secondary-foreground: 213 94% 25%;
-    --secondary-hover: 213 94% 90%;
+    /* Roxo mais claro como secundária */
+    --secondary: 269 30% 95%;
+    --secondary-foreground: 269 90% 25%;
+    --secondary-hover: 269 30% 90%;
 
-    /* Verde mais claro para muted */
-    --muted: 146 30% 95%;
-    --muted-foreground: 215 20% 45%;
+    /* Tons neutros com leve toque roxo */
+    --muted: 269 15% 95%;
+    --muted-foreground: 256 10% 45%;
 
-    /* Accent verde vibrante */
-    --accent: 142 76% 36%;
+    /* Accent roxo mais saturado */
+    --accent: 269 85% 58%;
     --accent-foreground: 0 0% 98%;
-    --accent-light: 142 50% 95%;
+    --accent-light: 269 50% 95%;
 
     /* Estados de feedback */
     --success: 142 69% 30%;
@@ -47,20 +47,21 @@ All colors MUST be HSL.
     --destructive-foreground: 0 0% 98%;
 
     /* Bordas e inputs */
-    --border: 146 30% 88%;
-    --input: 146 30% 88%;
-    --ring: 142 69% 30%;
+    --border: 269 20% 88%;
+    --input: 269 20% 88%;
+    --ring: 269 90% 54%;
 
-    /* Gradientes para destaque */
-    --gradient-primary: linear-gradient(135deg, hsl(142 69% 30%), hsl(142 76% 36%));
-    --gradient-secondary: linear-gradient(135deg, hsl(213 94% 68%), hsl(213 94% 58%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(146 30% 98%));
+    /* Gradientes roxos inspirados no Minha Vacina */
+    --gradient-primary: linear-gradient(135deg, hsl(269 95% 60%), hsl(280 90% 65%));
+    --gradient-secondary: linear-gradient(135deg, hsl(269 70% 70%), hsl(269 60% 80%));
+    --gradient-hero: linear-gradient(135deg, hsl(269 95% 60%), hsl(280 85% 50%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(269 30% 98%));
 
-    /* Sombras elegantes */
-    --shadow-sm: 0 2px 4px hsl(142 50% 20% / 0.08);
-    --shadow-md: 0 4px 12px hsl(142 50% 20% / 0.12);
-    --shadow-lg: 0 8px 24px hsl(142 50% 20% / 0.16);
-    --shadow-primary: 0 4px 16px hsl(142 69% 30% / 0.2);
+    /* Sombras roxas elegantes */
+    --shadow-sm: 0 2px 4px hsl(269 50% 20% / 0.08);
+    --shadow-md: 0 4px 12px hsl(269 50% 20% / 0.12);
+    --shadow-lg: 0 8px 24px hsl(269 50% 20% / 0.16);
+    --shadow-primary: 0 4px 20px hsl(269 90% 54% / 0.25);
 
     /* Raio de borda maior para design moderno */
     --radius: 0.75rem;
@@ -73,50 +74,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 215 28% 8%;
+    --background: 256 25% 8%;
     --foreground: 210 40% 95%;
 
-    --card: 215 25% 10%;
+    --card: 256 20% 10%;
     --card-foreground: 210 40% 95%;
 
-    --popover: 215 25% 10%;
+    --popover: 256 20% 10%;
     --popover-foreground: 210 40% 95%;
 
-    --primary: 142 69% 45%;
-    --primary-foreground: 215 28% 8%;
-    --primary-hover: 142 69% 50%;
-    --primary-light: 142 30% 15%;
+    --primary: 269 85% 65%;
+    --primary-foreground: 256 25% 8%;
+    --primary-hover: 269 85% 70%;
+    --primary-light: 269 30% 15%;
 
-    --secondary: 215 25% 15%;
+    --secondary: 256 20% 15%;
     --secondary-foreground: 210 40% 95%;
-    --secondary-hover: 215 25% 20%;
+    --secondary-hover: 256 20% 20%;
 
-    --muted: 215 25% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 256 20% 15%;
+    --muted-foreground: 256 10% 65%;
 
-    --accent: 142 76% 50%;
-    --accent-foreground: 215 28% 8%;
-    --accent-light: 142 30% 15%;
+    --accent: 269 80% 68%;
+    --accent-foreground: 256 25% 8%;
+    --accent-light: 269 30% 15%;
 
     --success: 142 69% 45%;
-    --success-foreground: 215 28% 8%;
+    --success-foreground: 256 25% 8%;
     --warning: 38 92% 55%;
-    --warning-foreground: 215 28% 8%;
+    --warning-foreground: 256 25% 8%;
     --destructive: 0 84% 65%;
-    --destructive-foreground: 215 28% 8%;
+    --destructive-foreground: 256 25% 8%;
 
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 142 69% 45%;
+    --border: 256 20% 20%;
+    --input: 256 20% 20%;
+    --ring: 269 85% 65%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(142 69% 45%), hsl(142 76% 50%));
-    --gradient-secondary: linear-gradient(135deg, hsl(213 50% 40%), hsl(213 50% 50%));
-    --gradient-subtle: linear-gradient(180deg, hsl(215 28% 8%), hsl(215 25% 10%));
+    --gradient-primary: linear-gradient(135deg, hsl(269 90% 65%), hsl(280 85% 70%));
+    --gradient-secondary: linear-gradient(135deg, hsl(269 50% 40%), hsl(269 40% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(269 90% 65%), hsl(280 80% 55%));
+    --gradient-subtle: linear-gradient(180deg, hsl(256 25% 8%), hsl(256 20% 10%));
 
     --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.2);
     --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.3);
     --shadow-lg: 0 8px 24px hsl(0 0% 0% / 0.4);
-    --shadow-primary: 0 4px 16px hsl(142 69% 45% / 0.3);
+    --shadow-primary: 0 4px 20px hsl(269 85% 65% / 0.3);
   }
 }
 
@@ -142,13 +144,17 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Classes utilitárias do design system */
+  /* Classes utilitárias do design system roxo */
   .gradient-primary {
     background: var(--gradient-primary);
   }
   
   .gradient-secondary {
     background: var(--gradient-secondary);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
   }
   
   .gradient-subtle {
