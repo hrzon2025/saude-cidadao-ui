@@ -19,6 +19,7 @@ import ConfirmacaoAgendamento from "./pages/agendamentos/Confirmacao";
 import Vacinacao from "./pages/Vacinacao";
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
+import EsqueciSenha from "./pages/EsqueciSenha";
 
 const queryClient = new QueryClient();
 
@@ -85,7 +86,7 @@ const App = () => {
               {/* Auth */}
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
-              <Route path="/esqueci-senha" element={<div className="p-8 text-center">Esqueci Senha - Em desenvolvimento</div>} />
+              <Route path="/esqueci-senha" element={<EsqueciSenha />} />
               
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
