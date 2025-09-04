@@ -137,15 +137,6 @@ export default function Inicio() {
                     <span>{proximaConsulta.unidade}</span>
                   </div>
                 </div>
-                
-                <Button 
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => navigate('/atendimentos')}
-                  className="w-full mt-3"
-                >
-                  Ver detalhes
-                </Button>
               </div>
             </Card>
           ) : (
