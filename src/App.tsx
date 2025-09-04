@@ -17,6 +17,8 @@ import NovoAgendamento from "./pages/agendamentos/Novo";
 import HorariosAgendamento from "./pages/agendamentos/Horarios";
 import ConfirmacaoAgendamento from "./pages/agendamentos/Confirmacao";
 import Vacinacao from "./pages/Vacinacao";
+import Login from "./pages/Login";
+import Cadastro from "./pages/Cadastro";
 
 const queryClient = new QueryClient();
 
@@ -81,8 +83,9 @@ const App = () => {
               <Route path="/perfil/configuracoes" element={<div className="p-8 text-center">Configurações - Em desenvolvimento</div>} />
               
               {/* Auth */}
-              <Route path="/login" element={<div className="p-8 text-center">Login - Em desenvolvimento</div>} />
-              <Route path="/cadastro" element={<div className="p-8 text-center">Cadastro - Em desenvolvimento</div>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/esqueci-senha" element={<div className="p-8 text-center">Esqueci Senha - Em desenvolvimento</div>} />
               
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
