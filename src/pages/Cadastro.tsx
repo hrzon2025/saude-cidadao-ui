@@ -496,6 +496,9 @@ export default function Cadastro() {
           </form>
         </div>
       </div>
+      
+      {/* Espaçamento para evitar sobreposição com a barra de navegação */}
+      <div className="h-20"></div>
     </div>
   );
 }
