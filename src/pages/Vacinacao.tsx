@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Syringe, MapPin, Calendar as CalendarIcon, Clock, CheckCircle } from "lucide-react";
+import { Syringe, MapPin, Calendar as CalendarIcon, CheckCircle } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SkeletonCard, SkeletonCardList } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
@@ -96,32 +95,6 @@ export default function Vacinacao() {
     }
   };
 
-  const renderVacinaBadge = (vacina: Vacina) => {
-    switch (vacina.status) {
-      case 'aplicada':
-        return (
-          <Badge variant="default" className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900 dark:text-green-100">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Aplicada
-          </Badge>
-        );
-      case 'atrasada':
-        return (
-          <Badge variant="destructive">
-            <Clock className="h-3 w-3 mr-1" />
-            Atrasada
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="secondary">
-            <CalendarIcon className="h-3 w-3 mr-1" />
-            Recomendada
-          </Badge>
-        );
-    }
-  };
-
   const renderVacinaCard = (vacina: Vacina) => (
     <Card key={vacina.id} className="p-4 transition-smooth hover:shadow-medium">
       <div className="space-y-3">
@@ -130,7 +103,6 @@ export default function Vacinacao() {
             <h4 className="font-semibold text-foreground">{vacina.nome}</h4>
             <p className="text-sm text-muted-foreground mt-1">{vacina.descricao}</p>
           </div>
-          {renderVacinaBadge(vacina)}
         </div>
 
         <div className="space-y-2 text-sm">
@@ -145,13 +117,6 @@ export default function Vacinacao() {
             <div className="flex items-center text-muted-foreground">
               <CheckCircle className="h-4 w-4 mr-2" />
               <span>Aplicada em {formatarData(vacina.dataAplicacao)}</span>
-            </div>
-          )}
-
-          {vacina.proximaDose && (
-            <div className="flex items-center text-muted-foreground">
-              <CalendarIcon className="h-4 w-4 mr-2" />
-              <span>Próxima dose: {formatarData(vacina.proximaDose)}</span>
             </div>
           )}
 
