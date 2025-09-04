@@ -16,6 +16,7 @@ import ListaAgendamentos from "./pages/agendamentos/Lista";
 import NovoAgendamento from "./pages/agendamentos/Novo";
 import HorariosAgendamento from "./pages/agendamentos/Horarios";
 import ConfirmacaoAgendamento from "./pages/agendamentos/Confirmacao";
+import Vacinacao from "./pages/Vacinacao";
 
 const queryClient = new QueryClient();
 
@@ -71,7 +72,7 @@ const App = () => {
               <Route path="/faq" element={<div className="p-8 text-center">FAQ - Em desenvolvimento</div>} />
               <Route path="/minha-saude" element={<div className="p-8 text-center">Minha Saúde - Em desenvolvimento</div>} />
               <Route path="/medicamentos" element={<div className="p-8 text-center">Medicamentos - Em desenvolvimento</div>} />
-              <Route path="/vacinacao" element={<div className="p-8 text-center">Vacinação - Em desenvolvimento</div>} />
+              <Route path="/vacinacao" element={<Vacinacao />} />
               <Route path="/farmacia" element={<div className="p-8 text-center">Farmácia - Em desenvolvimento</div>} />
               <Route path="/fila-regulacao" element={<div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div>} />
               
