@@ -32,6 +32,7 @@ import Farmacia from "./pages/Farmacia";
 import SobreFarmacia from "./pages/SobreFarmacia";
 import RelacaoMedicamentos from "./pages/RelacaoMedicamentos";
 import FarmaciaPopular from "./pages/FarmaciaPopular";
+import ComponentesEspecializados from "./pages/ComponentesEspecializados";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +103,7 @@ const App = () => {
                <Route path="/sobre-farmacia" element={<SobreFarmacia />} />
                <Route path="/relacao-medicamentos" element={<RelacaoMedicamentos />} />
                <Route path="/farmacia-popular" element={<FarmaciaPopular />} />
+               <Route path="/componentes-especializados" element={<ComponentesEspecializados />} />
               <Route path="/fila-regulacao" element={<div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div>} />
               
               {/* Perfil */}
