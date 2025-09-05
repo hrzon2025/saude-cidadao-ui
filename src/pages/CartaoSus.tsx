@@ -70,7 +70,7 @@ const CartaoSus = () => {
       <div className="flex-1 p-6">
         <div className="max-w-sm mx-auto">
           {/* Card do Cartão SUS */}
-          <Card className="text-white mb-6" style={{ background: 'var(--gradient-sus)' }}>
+          <Card className="bg-gradient-to-r from-green-600 to-green-700 text-white mb-6">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
