@@ -66,7 +66,7 @@ export default function Login() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12"
+                  className="h-12 bg-white"
                 />
               </div>
 
@@ -81,7 +81,7 @@ export default function Login() {
                     placeholder="Senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
-                    className="h-12 pr-10"
+                    className="h-12 pr-10 bg-white"
                   />
                   <button
                     type="button"
