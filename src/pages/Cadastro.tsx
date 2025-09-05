@@ -337,10 +337,10 @@ export default function Cadastro() {
               {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
 
-            {/* Botão voltar ao início */}
+            {/* Botão voltar ao login */}
             <div className="text-center mt-4">
-              <button type="button" onClick={() => navigate("/")} className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors">
-                Voltar ao início
+              <button type="button" onClick={() => navigate("/login")} className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors">
+                Voltar ao login
               </button>
             </div>
           </form>
