@@ -25,6 +25,8 @@ import ConsultasRealizadas from "./pages/ConsultasRealizadas";
 import MinhaSaude from "./pages/MinhaSaude";
 import Unidades from "./pages/Unidades";
 import Ouvidoria from "./pages/Ouvidoria";
+import Avaliacao1 from "./pages/avaliacao/Avaliacao1";
+import Avaliacao2 from "./pages/avaliacao/Avaliacao2";
 
 const queryClient = new QueryClient();
 
@@ -76,7 +78,8 @@ const App = () => {
               
               {/* Atendimentos */}
               <Route path="/atendimentos" element={<ConsultasRealizadas />} />
-              <Route path="/avaliacao/:id" element={<div className="p-8 text-center">Avaliação - Em desenvolvimento</div>} />
+              <Route path="/avaliacao/1/:id" element={<Avaliacao1 />} />
+              <Route path="/avaliacao/2/:id" element={<Avaliacao2 />} />
               
               {/* Funcionalidades */}
               <Route path="/cartao-sus" element={<CartaoSus />} />

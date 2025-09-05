@@ -41,8 +41,8 @@ export default function ConsultasRealizadas() {
   };
 
   const handleAvaliar = async (atendimentoId: string) => {
-    // Navegar para tela de avaliação (ainda não implementada)
-    navigate(`/avaliacao/${atendimentoId}`);
+    // Navegar para tela de avaliação
+    navigate(`/avaliacao/1/${atendimentoId}`);
   };
 
   // Filtrar atendimentos por data se houver filtro
