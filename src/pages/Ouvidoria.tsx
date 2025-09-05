@@ -32,42 +32,44 @@ export default function Ouvidoria() {
         className="bg-primary text-primary-foreground"
       />
       
-      <div className="p-6 space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-foreground">Entre em Contato</h1>
-          <p className="text-muted-foreground">
-            Preencha o formulário abaixo para entrar em contato com nossa equipe de suporte.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+      <div className="p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Assunto</label>
-            <Input
-              placeholder="Digite o assunto do seu contato"
-              value={assunto}
-              onChange={(e) => setAssunto(e.target.value)}
-              className="bg-background"
-            />
+            <h1 className="text-2xl font-bold text-gray-900">Entre em Contato</h1>
+            <p className="text-gray-600">
+              Preencha o formulário abaixo para entrar em contato com nossa equipe de suporte.
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Mensagem</label>
-            <Textarea
-              placeholder="Digite sua mensagem"
-              value={mensagem}
-              onChange={(e) => setMensagem(e.target.value)}
-              className="min-h-[120px] bg-background resize-none"
-            />
-          </div>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">Assunto</label>
+              <Input
+                placeholder="Digite o assunto do seu contato"
+                value={assunto}
+                onChange={(e) => setAssunto(e.target.value)}
+                className="bg-white border-gray-200"
+              />
+            </div>
 
-          <Button 
-            onClick={handleEnviar}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-            size="lg"
-          >
-            Enviar mensagem
-          </Button>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-900">Mensagem</label>
+              <Textarea
+                placeholder="Digite sua mensagem"
+                value={mensagem}
+                onChange={(e) => setMensagem(e.target.value)}
+                className="min-h-[120px] bg-white border-gray-200 resize-none"
+              />
+            </div>
+
+            <Button 
+              onClick={handleEnviar}
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              size="lg"
+            >
+              Enviar mensagem
+            </Button>
+          </div>
         </div>
       </div>
     </div>
