@@ -45,12 +45,8 @@ export default function Avaliacao1() {
   const form = useForm<AvaliacaoForm>();
 
   const onSubmit = (data: AvaliacaoForm) => {
-    console.log("Avaliação enviada:", data);
-    toast({
-      title: "Avaliação enviada com sucesso!",
-      description: "Obrigado pelo seu feedback.",
-    });
-    navigate("/atendimentos");
+    console.log("Dados da primeira parte:", data);
+    navigate(`/avaliacao/2/${id}`);
   };
 
   return (
@@ -110,7 +106,7 @@ export default function Avaliacao1() {
 
               <div className="pt-4">
                 <Button type="submit" className="w-full">
-                  Enviar Avaliação
+                  Próximo
                 </Button>
               </div>
             </form>
