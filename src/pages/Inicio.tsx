@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Calendar, Heart, MapPin, MessageSquare, Pill, CreditCard, Building, FileText, ShoppingBag } from "lucide-react";
+import { Plus, Calendar, Heart, MapPin, MessageSquare, Pill, CreditCard, Building, FileText, ShoppingBag, Syringe } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ const shortcuts = [
   { id: 'agendamentos-lista', label: 'Meus Agendamentos', icon: Calendar, path: '/agendamentos', color: 'text-teal-500' },
   { id: 'atendimentos', label: 'Consultas realizadas', icon: FileText, path: '/atendimentos', color: 'text-purple-500' },
   { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-red-500' },
-  { id: 'vacinas', label: 'Vacinas', icon: Plus, path: '/vacinacao', color: 'text-blue-500' },
+  { id: 'vacinas', label: 'Vacinas', icon: Syringe, path: '/vacinacao', color: 'text-blue-500' },
   { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-indigo-500' },
   { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-green-500' },
   { id: 'farmacia', label: 'Farmácia', icon: ShoppingBag, path: '/farmacia', color: 'text-pink-500' },
