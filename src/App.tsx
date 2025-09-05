@@ -34,6 +34,7 @@ import RelacaoMedicamentos from "./pages/RelacaoMedicamentos";
 import FarmaciaPopular from "./pages/FarmaciaPopular";
 import ComponentesEspecializados from "./pages/ComponentesEspecializados";
 import ComissaoFarmacologia from "./pages/ComissaoFarmacologia";
+import FAQ from "./pages/FAQ";
 
 const queryClient = new QueryClient();
 
@@ -96,7 +97,7 @@ const App = () => {
               <Route path="/unidades" element={<Unidades />} />
               <Route path="/servicos" element={<div className="p-8 text-center">Serviços - Em desenvolvimento</div>} />
               <Route path="/ouvidoria" element={<Ouvidoria />} />
-              <Route path="/faq" element={<div className="p-8 text-center">FAQ - Em desenvolvimento</div>} />
+              <Route path="/faq" element={<FAQ />} />
               <Route path="/minha-saude" element={<MinhaSaude />} />
               <Route path="/medicamentos" element={<Medicamentos />} />
               <Route path="/vacinacao" element={<Vacinacao />} />
