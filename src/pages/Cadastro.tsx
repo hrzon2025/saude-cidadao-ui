@@ -150,19 +150,7 @@ export default function Cadastro() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header com botão de voltar */}
-      <div className="flex items-center p-4 border-b">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/login")}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-semibold ml-2">Cadastro</h1>
-      </div>
-
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Conteúdo principal */}
       <div className="flex-1 px-6 py-6">
         <div className="mx-auto w-full max-w-sm">
@@ -213,7 +201,7 @@ export default function Cadastro() {
                     id="nome"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                     required
                   />
                 </div>
@@ -226,7 +214,7 @@ export default function Cadastro() {
                     id="sobrenome"
                     value={sobrenome}
                     onChange={(e) => setSobrenome(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                     required
                   />
                 </div>
@@ -240,7 +228,7 @@ export default function Cadastro() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                     required
                   />
                 </div>
@@ -256,7 +244,7 @@ export default function Cadastro() {
                       placeholder="Senha (mínimo de 6 caracteres)"
                       value={senha}
                       onChange={(e) => setSenha(e.target.value)}
-                      className="h-12 pr-10"
+                      className="h-12 pr-10 bg-white"
                       required
                     />
                     <button
@@ -283,7 +271,7 @@ export default function Cadastro() {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmarSenha}
                       onChange={(e) => setConfirmarSenha(e.target.value)}
-                      className="h-12 pr-10"
+                      className="h-12 pr-10 bg-white"
                       required
                     />
                     <button
@@ -318,7 +306,7 @@ export default function Cadastro() {
                     value={cpf}
                     onChange={(e) => setCpf(formatarCPF(e.target.value))}
                     placeholder="000.000.000-00"
-                    className="h-12"
+                    className="h-12 bg-white"
                     maxLength={14}
                     required
                   />
@@ -333,7 +321,7 @@ export default function Cadastro() {
                     type="date"
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                     required
                   />
                 </div>
@@ -341,7 +329,7 @@ export default function Cadastro() {
                 <div>
                   <Label>Gênero</Label>
                   <Select value={genero} onValueChange={setGenero}>
-                    <SelectTrigger className="h-12">
+                    <SelectTrigger className="h-12 bg-white">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
@@ -360,7 +348,7 @@ export default function Cadastro() {
                     value={celular}
                     onChange={(e) => setCelular(formatarTelefone(e.target.value))}
                     placeholder="(11) 99999-9999"
-                    className="h-12"
+                    className="h-12 bg-white"
                   />
                 </div>
               </div>
@@ -382,7 +370,7 @@ export default function Cadastro() {
                     value={cep}
                     onChange={handleCepChange}
                     placeholder="00000-000"
-                    className="h-12"
+                    className="h-12 bg-white"
                     maxLength={9}
                     required
                   />
@@ -398,7 +386,7 @@ export default function Cadastro() {
                       id="logradouro"
                       value={logradouro}
                       onChange={(e) => setLogradouro(e.target.value)}
-                      className="h-12"
+                      className="h-12 bg-white"
                       required
                     />
                   </div>
@@ -411,7 +399,7 @@ export default function Cadastro() {
                       id="numero"
                       value={numero}
                       onChange={(e) => setNumero(e.target.value)}
-                      className="h-12"
+                      className="h-12 bg-white"
                       required
                     />
                   </div>
@@ -423,7 +411,7 @@ export default function Cadastro() {
                     id="complemento"
                     value={complemento}
                     onChange={(e) => setComplemento(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                   />
                 </div>
 
@@ -435,7 +423,7 @@ export default function Cadastro() {
                     id="bairro"
                     value={bairro}
                     onChange={(e) => setBairro(e.target.value)}
-                    className="h-12"
+                    className="h-12 bg-white"
                     required
                   />
                 </div>
@@ -449,7 +437,7 @@ export default function Cadastro() {
                       id="cidade"
                       value={cidade}
                       onChange={(e) => setCidade(e.target.value)}
-                      className="h-12"
+                      className="h-12 bg-white"
                       required
                     />
                   </div>
@@ -459,7 +447,7 @@ export default function Cadastro() {
                       UF <span className="text-red-500">*</span>
                     </Label>
                     <Select value={uf} onValueChange={setUf} required>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger className="h-12 bg-white">
                         <SelectValue placeholder="UF" />
                       </SelectTrigger>
                       <SelectContent>
@@ -502,6 +490,17 @@ export default function Cadastro() {
             >
               {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
+
+            {/* Botão voltar ao início */}
+            <div className="text-center mt-4">
+              <button
+                type="button"
+                onClick={() => navigate("/")}
+                className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors"
+              >
+                Voltar ao início
+              </button>
+            </div>
           </form>
         </div>
       </div>
