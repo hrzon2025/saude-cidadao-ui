@@ -77,32 +77,6 @@ export function CardAtendimento({ atendimento, onAvaliar, className }: CardAtend
             <span className="truncate">{atendimento.unidade}</span>
           </div>
         </div>
-
-        {/* Avaliação se existir */}
-        {atendimento.avaliacao && (
-          <div className="mt-3 p-2 bg-accent/10 rounded-lg">
-            <div className="flex items-center mb-1">
-              <span className="text-sm font-medium">Sua avaliação:</span>
-              <div className="flex ml-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < atendimento.avaliacao!.nota
-                        ? 'fill-warning text-warning'
-                        : 'text-muted-foreground'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-            {atendimento.avaliacao.comentario && (
-              <p className="text-sm text-muted-foreground">
-                "{atendimento.avaliacao.comentario}"
-              </p>
-            )}
-          </div>
-        )}
       </div>
     </Card>
   );
