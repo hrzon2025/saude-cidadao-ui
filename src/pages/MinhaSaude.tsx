@@ -117,18 +117,16 @@ export default function MinhaSaude() {
               {isEditing ? (
                 <div className="flex space-x-2">
                   <Button size="sm" variant="outline" onClick={handleCancel}>
-                    <X className="w-4 h-4 mr-2" />
-                    Cancelar
+                    <X className="w-4 h-4" />
                   </Button>
                   <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={handleSave}>
-                    <Check className="w-4 h-4 mr-2" />
-                    Salvar
+                    <Check className="w-4 h-4" />
                   </Button>
                 </div>
               ) : (
                 <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => setIsEditing(true)}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Adicionar
+                  Editar
                 </Button>
               )}
             </div>
