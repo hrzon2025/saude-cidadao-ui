@@ -23,7 +23,7 @@ export default function Ouvidoria() {
   return <div className="min-h-screen bg-background">
       <AppHeader title="Ouvidoria" showBack={true} onBack={() => navigate(-1)} className="bg-primary text-primary-foreground" />
       
-      <div className="p-6 px-[12px] py-[16px]">
+      <div className="px-[12px] pt-[8px] pb-[16px]">
         <div className="bg-white rounded-lg shadow-sm p-6 space-y-6 px-[24px] py-[24px]">
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-gray-900">Entre em Contato</h1>
