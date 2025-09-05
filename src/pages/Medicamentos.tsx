@@ -1,9 +1,16 @@
 import { AppHeader } from "@/components/ui/app-header";
+import { useNavigate } from "react-router-dom";
 
 export default function Medicamentos() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gradient-subtle pb-20">
-      <AppHeader title="Medicamentos" />
+      <AppHeader 
+        title="Medicamentos" 
+        showBack 
+        onBack={() => navigate(-1)} 
+      />
       
       <div className="h-[calc(100vh-8rem)]">
         <iframe
