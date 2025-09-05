@@ -263,15 +263,15 @@ export default function ConfirmacaoAgendamento() {
         <DialogContent className="max-w-sm mx-auto p-0 bg-white rounded-3xl border-0 shadow-xl">
           <div className="p-8 text-center space-y-6">
             {/* Success Icon */}
-            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="mx-auto w-20 h-20 bg-[#4a9c4a]/20 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-[#4a9c4a] rounded-full flex items-center justify-center">
                 <Check className="w-8 h-8 text-white" strokeWidth={3} />
               </div>
             </div>
 
             {/* Title */}
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-green-600">
+              <h2 className="text-2xl font-bold text-[#4a9c4a]">
                 Agendamento
                 <br />
                 Confirmado!
