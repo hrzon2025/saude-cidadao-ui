@@ -113,7 +113,7 @@ export default function NovoAgendamento() {
         title="Novo Agendamento" 
         subtitle="Passo 1 de 3: Selecione os detalhes"
         showBack 
-        onBack={() => navigate('/agendamentos')} 
+        onBack={() => navigate('/')} 
       />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
