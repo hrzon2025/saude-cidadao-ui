@@ -46,15 +46,6 @@ const EsqueciSenha = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {/* Header com botão de voltar */}
-      <div className="flex items-center p-4 border-b">
-        <Link to="/login">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-      </div>
-
       {/* Conteúdo principal */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12">
         <div className="mx-auto w-full max-w-sm">
