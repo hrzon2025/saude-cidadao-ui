@@ -119,7 +119,7 @@ const CartaoSus = () => {
               Baixar PDF
             </Button>
 
-            <Button onClick={handleCompartilhar} variant="outline" className="w-full h-12">
+            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12 bg-white border">
               <Share className="w-4 h-4 mr-2" />
               Compartilhar
             </Button>
