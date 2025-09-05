@@ -54,27 +54,16 @@ const CartaoSus = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <div className="flex items-center p-4 border-b">
+      <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => navigate(-1)}
+          className="text-primary-foreground hover:bg-primary-hover"
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-xl font-semibold ml-2">Cartão SUS Virtual</h1>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="ml-auto">
-                <Info className="h-5 w-5 text-muted-foreground" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Os dados exibidos são ilustrativos</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
       </div>
 
       {/* Conteúdo */}
