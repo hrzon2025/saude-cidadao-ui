@@ -1,6 +1,7 @@
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { 
   Heart, 
   Droplet, 
@@ -97,17 +98,14 @@ export default function MinhaSaude() {
               <span className="text-sm text-muted-foreground">6 registros</span>
             </div>
 
-            {/* Medições Cards */}
-            <div className="space-y-3">
+            {/* Medições List */}
+            <div className="space-y-0">
               {medicoes.map((medicao, index) => {
                 const IconComponent = medicao.icon;
                 
                 return (
-                  <Card 
-                    key={index}
-                    className="p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between">
+                  <div key={index}>
+                    <div className="flex items-center justify-between py-4 cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex items-center space-x-3">
                         <div className={`p-2 rounded-full bg-muted ${medicao.color}`}>
                           <IconComponent className="w-5 h-5" />
@@ -146,7 +144,10 @@ export default function MinhaSaude() {
                         </svg>
                       </div>
                     </div>
-                  </Card>
+                    {index < medicoes.length - 1 && (
+                      <Separator className="bg-border/50" />
+                    )}
+                  </div>
                 );
               })}
             </div>
