@@ -106,12 +106,15 @@ export default function Avaliacao2() {
                     step={1}
                     className="w-full"
                   />
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">0</span>
-                    <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium">
-                      {npsValue[0]}
-                    </div>
-                    <span className="text-xs text-muted-foreground">10</span>
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mt-2">
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <span 
+                        key={num} 
+                        className={`${num === npsValue[0] ? 'bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium' : ''}`}
+                      >
+                        {num}
+                      </span>
+                    ))}
                   </div>
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Não recomendaria</span>
