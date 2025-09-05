@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { getUsuario } from "@/lib/stubs/usuario";
 import QRCode from "qrcode";
-
 const CartaoSus = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const usuario = getUsuario();
-
   useEffect(() => {
     // Gerar QR Code com os dados do cartão SUS
     const dadosCartao = {
@@ -22,7 +22,6 @@ const CartaoSus = () => {
       cns: usuario.cns,
       dataNascimento: usuario.dataNascimento
     };
-    
     QRCode.toDataURL(JSON.stringify(dadosCartao), {
       width: 200,
       margin: 2,
@@ -36,39 +35,30 @@ const CartaoSus = () => {
       console.error("Erro ao gerar QR Code:", err);
     });
   }, [usuario]);
-
   const handleBaixarPdf = () => {
     toast({
       title: "PDF baixado",
-      description: "O cartão SUS foi salvo como PDF com sucesso.",
+      description: "O cartão SUS foi salvo como PDF com sucesso."
     });
   };
-
   const handleCompartilhar = () => {
     toast({
       title: "Compartilhamento",
-      description: "Opções de compartilhamento abertas.",
+      description: "Opções de compartilhamento abertas."
     });
   };
-
-  return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f9fafc' }}>
+  return <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          className="text-primary-foreground hover:bg-primary-hover"
-        >
+        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-xl font-semibold ml-2">Cartão SUS Virtual</h1>
       </div>
 
       {/* Conteúdo */}
-      <div className="flex-1 p-6">
-        <div className="max-w-sm mx-auto">
+      <div className="flex-1 p-6 px-[2px]">
+        <div className="max-w-sm mx-auto px-[12px] py-px">
           {/* Card do Cartão SUS */}
           <Card className="bg-gradient-sus text-white mb-6">
             <CardContent className="p-6">
@@ -110,50 +100,33 @@ const CartaoSus = () => {
           </Card>
 
           {/* QR Code */}
-          {qrCodeUrl && (
-            <Card className="mb-6 bg-white">
+          {qrCodeUrl && <Card className="mb-6">
               <CardContent className="p-6 text-center">
                 <h3 className="font-semibold mb-4">QR Code do Cartão</h3>
                 <div className="flex justify-center mb-4">
-                  <img 
-                    src={qrCodeUrl} 
-                    alt="QR Code do Cartão SUS" 
-                    className="w-32 h-32 border rounded-lg"
-                  />
+                  <img src={qrCodeUrl} alt="QR Code do Cartão SUS" className="w-32 h-32 border rounded-lg" />
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Apresente este QR Code nos estabelecimentos de saúde
                 </p>
               </CardContent>
-            </Card>
-          )}
+            </Card>}
 
           {/* Ações */}
-          <Card className="mb-6 bg-white">
-            <CardContent className="p-4">
-              <div className="space-y-3">
-                <Button 
-                  onClick={handleBaixarPdf}
-                  className="w-full h-12"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Baixar PDF
-                </Button>
+          <div className="space-y-3">
+            <Button onClick={handleBaixarPdf} className="w-full h-12">
+              <Download className="w-4 h-4 mr-2" />
+              Baixar PDF
+            </Button>
 
-                <Button 
-                  onClick={handleCompartilhar}
-                  variant="outline" 
-                  className="w-full h-12 bg-white"
-                >
-                  <Share className="w-4 h-4 mr-2" />
-                  Compartilhar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            <Button onClick={handleCompartilhar} variant="outline" className="w-full h-12">
+              <Share className="w-4 h-4 mr-2" />
+              Compartilhar
+            </Button>
+          </div>
 
           {/* Informações adicionais */}
-          <div className="mt-6 p-4 bg-white rounded-lg">
+          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
             <h4 className="font-semibold mb-2 text-sm">Informações importantes:</h4>
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• Este cartão tem validade em todo território nacional</li>
@@ -166,8 +139,6 @@ const CartaoSus = () => {
 
       {/* Espaçamento para barra de navegação */}
       <div className="h-20"></div>
-    </div>
-  );
+    </div>;
 };
-
 export default CartaoSus;
