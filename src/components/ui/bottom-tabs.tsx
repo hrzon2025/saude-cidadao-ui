@@ -15,7 +15,7 @@ const tabs: Tab[] = [
     id: 'inicio',
     label: 'Início',
     icon: Home,
-    path: '/'
+    path: '/inicio'
   },
   {
     id: 'funcionalidades',
