@@ -3,6 +3,7 @@ import { Calendar, Filter } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CardAtendimento } from "@/components/cards/card-atendimento";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
@@ -19,18 +20,29 @@ export default function ConsultasRealizadas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filtroData, setFiltroData] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('todos');
 
   useEffect(() => {
     loadAtendimentos();
-  }, []);
+  }, [filtroStatus]);
 
   const loadAtendimentos = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // Buscar apenas atendimentos concluídos
-      const data = await consultarAtendimentos('Concluído');
+      // Buscar atendimentos baseado no status selecionado
+      let data: Atendimento[] = [];
+      if (filtroStatus === 'todos') {
+        const concluidos = await consultarAtendimentos('Concluído');
+        const cancelados = await consultarAtendimentos('Cancelado');
+        data = [...concluidos, ...cancelados];
+      } else if (filtroStatus === 'concluido') {
+        data = await consultarAtendimentos('Concluído');
+      } else if (filtroStatus === 'cancelado') {
+        data = await consultarAtendimentos('Cancelado');
+      }
+      
       setAtendimentos(data);
     } catch (err) {
       setError('Erro ao carregar consultas realizadas');
@@ -81,28 +93,48 @@ export default function ConsultasRealizadas() {
           </div>
         </div>
 
-        {/* Filtro por data */}
-        <div className="space-y-3">
+        {/* Filtros */}
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Filtrar por data:</span>
+            <span className="text-sm font-medium">Filtros:</span>
           </div>
-          <div className="flex gap-2">
-            <Input
-              type="date"
-              value={filtroData}
-              onChange={(e) => setFiltroData(e.target.value)}
-              className="flex-1 bg-white"
-            />
-            {filtroData && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setFiltroData('')}
-              >
-                Limpar
-              </Button>
-            )}
+          
+          {/* Filtro por status */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Status:</label>
+            <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+              <SelectTrigger className="bg-white">
+                <SelectValue placeholder="Selecionar status" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border shadow-lg z-50">
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="concluido">Concluído</SelectItem>
+                <SelectItem value="cancelado">Cancelado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Filtro por data */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Data:</label>
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                value={filtroData}
+                onChange={(e) => setFiltroData(e.target.value)}
+                className="flex-1 bg-white"
+              />
+              {filtroData && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setFiltroData('')}
+                >
+                  Limpar
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
