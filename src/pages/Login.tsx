@@ -29,7 +29,7 @@ export default function Login() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       showNotification("Login realizado com sucesso!", "success");
-      navigate("/");
+      navigate("/inicio");
     } catch (error) {
       showNotification("Erro ao fazer login", "error");
     } finally {

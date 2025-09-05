@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { BottomTabs } from "@/components/ui/bottom-tabs";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect } from "react";
@@ -35,7 +35,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   
   // Routes that should have BottomTabs
-  const routesWithTabs = ['/', '/funcionalidades', '/perfil'];
+  const routesWithTabs = ['/inicio', '/funcionalidades', '/perfil'];
   const shouldShowTabs = routesWithTabs.includes(location.pathname);
 
   return (
@@ -66,8 +66,11 @@ const App = () => {
         <BrowserRouter>
           <Layout>
             <Routes>
+              {/* Redirect root to login */}
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              
               {/* Main Tabs */}
-              <Route path="/" element={<Inicio />} />
+              <Route path="/inicio" element={<Inicio />} />
               <Route path="/funcionalidades" element={<Funcionalidades />} />
               <Route path="/perfil" element={<Perfil />} />
               
