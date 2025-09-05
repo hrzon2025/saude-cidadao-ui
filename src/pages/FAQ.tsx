@@ -17,7 +17,7 @@ export default function FAQ() {
     },
     {
       question: "Preciso levar algum documento para ser atendido?",
-      answer: "Sim, é necessário apresentar documento de identidade com foto (RG, CNH ou passaporte) e o cartão SUS. Caso não tenha o cartão SUS, pode ser feito o cadastro na própria unidade."
+      answer: "Sim. É necessário levar um documento com foto e o cartão do SUS. Caso ainda não tenha o cartão do SUS, a unidade pode orientar sobre como emitir um."
     },
     {
       question: "Tem médico todo dia na unidade?",
