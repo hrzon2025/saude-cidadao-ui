@@ -52,7 +52,7 @@ const CartaoSus = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#f9fafc' }}>
       {/* Header */}
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button
@@ -111,7 +111,7 @@ const CartaoSus = () => {
 
           {/* QR Code */}
           {qrCodeUrl && (
-            <Card className="mb-6">
+            <Card className="mb-6 bg-white">
               <CardContent className="p-6 text-center">
                 <h3 className="font-semibold mb-4">QR Code do Cartão</h3>
                 <div className="flex justify-center mb-4">
@@ -129,27 +129,31 @@ const CartaoSus = () => {
           )}
 
           {/* Ações */}
-          <div className="space-y-3">
-            <Button 
-              onClick={handleBaixarPdf}
-              className="w-full h-12"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Baixar PDF
-            </Button>
+          <Card className="mb-6 bg-white">
+            <CardContent className="p-4">
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleBaixarPdf}
+                  className="w-full h-12"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Baixar PDF
+                </Button>
 
-            <Button 
-              onClick={handleCompartilhar}
-              variant="outline" 
-              className="w-full h-12"
-            >
-              <Share className="w-4 h-4 mr-2" />
-              Compartilhar
-            </Button>
-          </div>
+                <Button 
+                  onClick={handleCompartilhar}
+                  variant="outline" 
+                  className="w-full h-12 bg-white"
+                >
+                  <Share className="w-4 h-4 mr-2" />
+                  Compartilhar
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Informações adicionais */}
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+          <div className="mt-6 p-4 bg-white rounded-lg">
             <h4 className="font-semibold mb-2 text-sm">Informações importantes:</h4>
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• Este cartão tem validade em todo território nacional</li>
