@@ -3,6 +3,7 @@ import { ChevronLeft, Check, Calendar, MapPin, User, Stethoscope, Clock } from "
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
 import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
@@ -23,6 +24,7 @@ export default function ConfirmacaoAgendamento() {
   
   const [confirmando, setConfirmando] = useState(false);
   const [dadosCarregados, setDadosCarregados] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   
   // Dados para exibir
   const [unidade, setUnidade] = useState<Unidade | null>(null);
@@ -73,11 +75,7 @@ export default function ConfirmacaoAgendamento() {
       const resultado = await criarAgendamento(novoAgendamento);
       
       if (resultado.success) {
-        showNotification(
-          `Agendamento confirmado! Sua consulta de ${tipoConsulta?.nome} está marcada para ${formatted.data} às ${formatted.hora} na ${unidade?.nome}.`, 
-          'success'
-        );
-        navigate('/agendamentos');
+        setShowSuccessDialog(true);
       } else {
         showNotification(resultado.error || 'Erro ao realizar agendamento', 'error');
       }
@@ -259,6 +257,80 @@ export default function ConfirmacaoAgendamento() {
           </Button>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="max-w-sm mx-auto p-0 bg-white rounded-3xl border-0 shadow-xl">
+          <div className="p-8 text-center space-y-6">
+            {/* Success Icon */}
+            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                <Check className="w-8 h-8 text-white" strokeWidth={3} />
+              </div>
+            </div>
+
+            {/* Title */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-green-600">
+                Agendamento
+                <br />
+                Confirmado!
+              </h2>
+              <p className="text-gray-500">
+                Seu agendamento foi realizado
+                <br />
+                com sucesso.
+              </p>
+            </div>
+
+            {/* Details */}
+            <div className="space-y-3 text-left bg-gray-50 rounded-2xl p-4">
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Paciente:</span>
+                <span className="text-gray-600 text-right">Usuário do Sistema</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Consulta:</span>
+                <span className="text-gray-600 text-right">{tipoConsulta?.nome}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Unidade:</span>
+                <span className="text-gray-600 text-right">{unidade?.nome}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Endereço:</span>
+                <span className="text-gray-600 text-right text-sm">{unidade?.endereco}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Data:</span>
+                <span className="text-gray-600 text-right">{formatted.data}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-semibold text-gray-900">Hora:</span>
+                <span className="text-gray-600 text-right">{formatted.hora}</span>
+              </div>
+            </div>
+
+            {/* Bottom Text */}
+            <p className="text-sm text-gray-500 italic">
+              Você pode visualizar todos os seus
+              <br />
+              agendamentos na aba 'Meus
+              <br />
+              Agendamentos'.
+            </p>
+
+            {/* Action Button */}
+            <Button 
+              onClick={() => navigate('/agendamentos')}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-2xl text-lg font-semibold"
+            >
+              <Calendar className="w-5 h-5 mr-2" />
+              Ver Agendamentos
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
