@@ -73,7 +73,7 @@ All colors MUST be HSL.
     --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Gradiente SUS - Cores do Brasil */
-    --gradient-sus: linear-gradient(135deg, #007f43 0%, #fcbf03 50%, #0063b4 100%);
+    --gradient-sus: linear-gradient(135deg, #007f43 0%, #007f43 40%, #fcbf03 45%, #fcbf03 55%, #0063b4 60%, #0063b4 100%);
   }
 
   .dark {
