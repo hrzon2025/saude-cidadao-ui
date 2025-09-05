@@ -31,7 +31,7 @@ export default function Farmacia() {
               className="w-full bg-card rounded-lg p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow border border-border"
             >
               <div className="flex items-center flex-1">
-                <IconComponent className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
+                <IconComponent className="h-5 w-5 text-foreground mr-3 flex-shrink-0" />
                 <span className="text-foreground font-medium text-left">
                   {item.title}
                 </span>
