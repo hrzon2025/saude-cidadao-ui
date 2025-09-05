@@ -57,8 +57,8 @@ All colors MUST be HSL.
     --gradient-hero: linear-gradient(135deg, hsl(270 100% 62%), hsl(275 90% 55%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(270 30% 98%));
     
-    /* Gradiente SUS com formas triangulares como na referência */
-    --gradient-sus: linear-gradient(135deg, #007f43 0%, #007f43 65%, #fcbf03 65%, #fcbf03 80%, #0063b4 80%, #0063b4 100%), linear-gradient(45deg, transparent 70%, #fcbf03 70%, #fcbf03 85%, #0063b4 85%);
+    /* Background SUS replicando o design da imagem enviada */
+    --gradient-sus: radial-gradient(ellipse at bottom right, #0063b4 0%, #0063b4 35%, #fcbf03 35%, #fcbf03 60%, #007f43 60%, #007f43 100%);
 
     /* Sombras roxas elegantes */
     --shadow-sm: 0 2px 4px hsl(270 50% 20% / 0.08);
@@ -118,7 +118,7 @@ All colors MUST be HSL.
     --gradient-hero: linear-gradient(135deg, hsl(270 95% 70%), hsl(275 85% 60%));
     --gradient-subtle: linear-gradient(180deg, hsl(256 25% 8%), hsl(256 20% 10%));
     
-    --gradient-sus: linear-gradient(135deg, #007f43 0%, #007f43 65%, #fcbf03 65%, #fcbf03 80%, #0063b4 80%, #0063b4 100%), linear-gradient(45deg, transparent 70%, #fcbf03 70%, #fcbf03 85%, #0063b4 85%);
+    --gradient-sus: radial-gradient(ellipse at bottom right, #0063b4 0%, #0063b4 35%, #fcbf03 35%, #fcbf03 60%, #007f43 60%, #007f43 100%);
 
     --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.2);
     --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.3);
