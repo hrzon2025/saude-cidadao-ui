@@ -158,7 +158,7 @@ export default function ConfirmacaoAgendamento() {
         </div>
 
         {/* Resumo do Agendamento */}
-        <Card className="p-4 bg-primary/5 border-primary/20">
+        <Card className="p-4 bg-muted/50 border-muted">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Check className="h-5 w-5 text-primary" />
