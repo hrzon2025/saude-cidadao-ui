@@ -7,7 +7,7 @@ export default function RelacaoMedicamentos() {
   const navigate = useNavigate();
 
   const handleOpenLink = () => {
-    window.open("https://suzano.sp.gov.br/saude/rede-de-assistencia-farmaceutica/programa-farmacia-popular/", "_blank");
+    window.open("https://suzano.sp.gov.br/saude/rede-de-assistencia-farmaceutica/relacao-municipal-de-medicamentos-remume/", "_blank");
   };
 
   return (
