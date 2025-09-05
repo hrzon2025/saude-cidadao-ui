@@ -23,6 +23,7 @@ import EsqueciSenha from "./pages/EsqueciSenha";
 import CartaoSus from "./pages/CartaoSus";
 import ConsultasRealizadas from "./pages/ConsultasRealizadas";
 import MinhaSaude from "./pages/MinhaSaude";
+import Unidades from "./pages/Unidades";
 
 const queryClient = new QueryClient();
 
@@ -78,7 +79,7 @@ const App = () => {
               
               {/* Funcionalidades */}
               <Route path="/cartao-sus" element={<CartaoSus />} />
-              <Route path="/unidades" element={<div className="p-8 text-center">Unidades - Em desenvolvimento</div>} />
+              <Route path="/unidades" element={<Unidades />} />
               <Route path="/servicos" element={<div className="p-8 text-center">Serviços - Em desenvolvimento</div>} />
               <Route path="/ouvidoria" element={<div className="p-8 text-center">Ouvidoria - Em desenvolvimento</div>} />
               <Route path="/faq" element={<div className="p-8 text-center">FAQ - Em desenvolvimento</div>} />
