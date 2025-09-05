@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { obterAgendamentos, cancelarAgendamento } from "@/lib/stubs/agendamentos";
@@ -23,24 +23,30 @@ export default function ListaAgendamentos() {
   const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filtroStatus, setFiltroStatus] = useState<'todos' | 'Agendado' | 'Cancelado'>('todos');
   const [busca, setBusca] = useState('');
   const [cancelando, setCancelando] = useState<string | null>(null);
 
   useEffect(() => {
     loadAgendamentos();
-  }, [filtroStatus, busca]);
+  }, [busca]);
 
   const loadAgendamentos = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const statusFilter = filtroStatus === 'todos' ? undefined : filtroStatus;
       const buscaFilter = busca.trim() || undefined;
       
-      const data = await obterAgendamentos(statusFilter, buscaFilter);
-      setAgendamentos(data);
+      const data = await obterAgendamentos('Agendado', buscaFilter);
+      
+      // Filtrar apenas agendamentos futuros
+      const hoje = new Date();
+      const agendamentosFuturos = data.filter(agendamento => {
+        const dataAgendamento = new Date(`${agendamento.data}T${agendamento.hora}`);
+        return dataAgendamento >= hoje && agendamento.status === 'Agendado';
+      });
+      
+      setAgendamentos(agendamentosFuturos);
     } catch (err) {
       setError('Erro ao carregar agendamentos');
       console.error('Erro ao carregar agendamentos:', err);
@@ -111,28 +117,15 @@ export default function ListaAgendamentos() {
 
         {/* Filtros */}
         <div className="space-y-3">
-          <div className="flex gap-2">
-            <div className="flex-1">
-              <Input
-                placeholder="Buscar por tipo, profissional ou unidade..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                className="pr-10"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            </div>
+          <div className="relative">
+            <Input
+              placeholder="Buscar por tipo, profissional ou unidade..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="pr-10"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
-          
-          <Select value={filtroStatus} onValueChange={(value: any) => setFiltroStatus(value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Filtrar por status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todos">Todos os status</SelectItem>
-              <SelectItem value="Agendado">Agendado</SelectItem>
-              <SelectItem value="Cancelado">Cancelado</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {/* Lista */}
@@ -152,9 +145,9 @@ export default function ListaAgendamentos() {
               icon={Calendar}
               title="Nenhum agendamento encontrado"
               description={
-                filtroStatus !== 'todos' || busca 
-                  ? "Tente ajustar os filtros para encontrar seus agendamentos"
-                  : "Você ainda não possui agendamentos. Que tal agendar sua primeira consulta?"
+                busca 
+                  ? "Tente ajustar a busca para encontrar seus agendamentos"
+                  : "Você ainda não possui agendamentos futuros. Que tal agendar sua primeira consulta?"
               }
             action={{
               label: 'Agendar consulta',
