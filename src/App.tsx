@@ -22,6 +22,7 @@ import Cadastro from "./pages/Cadastro";
 import EsqueciSenha from "./pages/EsqueciSenha";
 import CartaoSus from "./pages/CartaoSus";
 import ConsultasRealizadas from "./pages/ConsultasRealizadas";
+import MinhaSaude from "./pages/MinhaSaude";
 
 const queryClient = new QueryClient();
 
@@ -81,7 +82,7 @@ const App = () => {
               <Route path="/servicos" element={<div className="p-8 text-center">Serviços - Em desenvolvimento</div>} />
               <Route path="/ouvidoria" element={<div className="p-8 text-center">Ouvidoria - Em desenvolvimento</div>} />
               <Route path="/faq" element={<div className="p-8 text-center">FAQ - Em desenvolvimento</div>} />
-              <Route path="/minha-saude" element={<div className="p-8 text-center">Minha Saúde - Em desenvolvimento</div>} />
+              <Route path="/minha-saude" element={<MinhaSaude />} />
               <Route path="/medicamentos" element={<div className="p-8 text-center">Medicamentos - Em desenvolvimento</div>} />
               <Route path="/vacinacao" element={<Vacinacao />} />
               <Route path="/farmacia" element={<div className="p-8 text-center">Farmácia - Em desenvolvimento</div>} />
