@@ -111,7 +111,6 @@ export default function NovoAgendamento() {
     <div className="min-h-screen bg-background pb-20">
       <AppHeader 
         title="Novo Agendamento" 
-        subtitle="Passo 1 de 3: Selecione os detalhes"
         showBack 
         onBack={() => navigate('/')} 
       />

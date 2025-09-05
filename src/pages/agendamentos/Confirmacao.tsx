@@ -136,8 +136,7 @@ export default function ConfirmacaoAgendamento() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <AppHeader 
-        title="Confirmar Agendamento" 
-        subtitle="Passo 3 de 3: Revisar e confirmar"
+        title="Novo Agendamento" 
         showBack 
         onBack={handleVoltar} 
       />

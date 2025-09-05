@@ -99,8 +99,7 @@ export default function HorariosAgendamento() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <AppHeader 
-        title="Escolha Data e Hora" 
-        subtitle="Passo 2 de 3: Selecione quando"
+        title="Novo Agendamento" 
         showBack 
         onBack={handleVoltar} 
       />
