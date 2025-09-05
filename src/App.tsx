@@ -21,7 +21,6 @@ import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 import EsqueciSenha from "./pages/EsqueciSenha";
 import CartaoSus from "./pages/CartaoSus";
-import ConsultasRealizadas from "./pages/ConsultasRealizadas";
 
 const queryClient = new QueryClient();
 
@@ -72,7 +71,7 @@ const App = () => {
               <Route path="/agendamentos/confirmacao" element={<ConfirmacaoAgendamento />} />
               
               {/* Atendimentos */}
-              <Route path="/consultas-realizadas" element={<ConsultasRealizadas />} />
+              <Route path="/atendimentos" element={<div className="p-8 text-center">Atendimentos - Em desenvolvimento</div>} />
               <Route path="/avaliacao/:id" element={<div className="p-8 text-center">Avaliação - Em desenvolvimento</div>} />
               
               {/* Funcionalidades */}
