@@ -172,7 +172,7 @@ export default function Inicio() {
                   onClick={() => handleShortcutClick(shortcut.path)}
                 >
                   <div className="flex flex-col items-center space-y-2">
-                    <div className="p-2 rounded-full bg-accent/10">
+                    <div className="p-2 rounded-full" style={{ backgroundColor: '#f9fafc' }}>
                       <Icon className={`h-6 w-6 ${shortcut.color}`} />
                     </div>
                     <span className="text-xs font-medium text-center leading-tight">
