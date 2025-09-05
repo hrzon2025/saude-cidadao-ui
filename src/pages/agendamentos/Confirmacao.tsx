@@ -3,8 +3,6 @@ import { ChevronLeft, Check, Calendar, MapPin, User, Stethoscope, Clock } from "
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/store/useAppStore";
 import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
 import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
@@ -23,7 +21,6 @@ export default function ConfirmacaoAgendamento() {
   const data = searchParams.get('data') || '';
   const hora = searchParams.get('hora') || '';
   
-  const [observacoes, setObservacoes] = useState('');
   const [confirmando, setConfirmando] = useState(false);
   const [dadosCarregados, setDadosCarregados] = useState(false);
   
@@ -70,8 +67,7 @@ export default function ConfirmacaoAgendamento() {
         profissionalId,
         tipoId,
         data,
-        hora,
-        observacoes: observacoes.trim() || undefined
+        hora
       };
       
       const resultado = await criarAgendamento(novoAgendamento);
@@ -221,23 +217,6 @@ export default function ConfirmacaoAgendamento() {
           </div>
         </Card>
 
-        {/* Observações */}
-        <Card className="p-4">
-          <div className="space-y-3">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
-            <Textarea
-              id="observacoes"
-              placeholder="Adicione informações relevantes para a consulta..."
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              rows={3}
-              maxLength={200}
-            />
-            <p className="text-xs text-muted-foreground">
-              {observacoes.length}/200 caracteres
-            </p>
-          </div>
-        </Card>
 
         {/* Informações Importantes */}
         <Card className="p-4 bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
