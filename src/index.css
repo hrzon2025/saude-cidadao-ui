@@ -56,6 +56,9 @@ All colors MUST be HSL.
     --gradient-secondary: linear-gradient(135deg, hsl(270 70% 70%), hsl(270 60% 80%));
     --gradient-hero: linear-gradient(135deg, hsl(270 100% 62%), hsl(275 90% 55%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(270 30% 98%));
+    
+    /* Gradiente SUS com proporções específicas */
+    --gradient-sus: linear-gradient(135deg, #007f43 0%, #007f43 60%, #fcbf03 60%, #fcbf03 70%, #0063b4 70%, #0063b4 100%);
 
     /* Sombras roxas elegantes */
     --shadow-sm: 0 2px 4px hsl(270 50% 20% / 0.08);
@@ -114,6 +117,8 @@ All colors MUST be HSL.
     --gradient-secondary: linear-gradient(135deg, hsl(270 50% 40%), hsl(270 40% 50%));
     --gradient-hero: linear-gradient(135deg, hsl(270 95% 70%), hsl(275 85% 60%));
     --gradient-subtle: linear-gradient(180deg, hsl(256 25% 8%), hsl(256 20% 10%));
+    
+    --gradient-sus: linear-gradient(135deg, #007f43 0%, #007f43 60%, #fcbf03 60%, #fcbf03 70%, #0063b4 70%, #0063b4 100%);
 
     --shadow-sm: 0 2px 4px hsl(0 0% 0% / 0.2);
     --shadow-md: 0 4px 12px hsl(0 0% 0% / 0.3);
@@ -175,6 +180,10 @@ All colors MUST be HSL.
   
   .transition-slow {
     transition: var(--transition-slow);
+  }
+
+  .bg-gradient-sus {
+    background: var(--gradient-sus);
   }
 
   /* Bottom navigation safe area */
