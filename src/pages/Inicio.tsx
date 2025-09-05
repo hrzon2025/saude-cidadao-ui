@@ -107,7 +107,7 @@ export default function Inicio() {
               onRetry={loadProximaConsulta}
             />
           ) : proximaConsulta ? (
-            <Card className="p-4 bg-primary/5 border-primary/20 shadow-sm">
+            <Card className="p-4 bg-white border-primary/20 shadow-sm">
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
