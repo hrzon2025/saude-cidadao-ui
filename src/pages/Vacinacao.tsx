@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 export default function Vacinacao() {
   const navigate = useNavigate();
   
+  console.log('Vacinacao component loaded - no tabs version');
+  
   const [calendario, setCalendario] = useState<Record<FaixaEtaria, Vacina[]>>({
     ao_nascimento: [],
     '2_meses': [],
