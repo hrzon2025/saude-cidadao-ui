@@ -132,7 +132,7 @@ const CartaoSus = () => {
           <div className="space-y-3">
             <Button 
               onClick={handleBaixarPdf}
-              className="w-full h-12 bg-green-600 hover:bg-green-700 text-white"
+              className="w-full h-12"
             >
               <Download className="w-4 h-4 mr-2" />
               Baixar PDF
