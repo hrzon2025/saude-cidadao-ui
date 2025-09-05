@@ -261,7 +261,7 @@ export default function ConfirmacaoAgendamento() {
       {/* Success Dialog */}
       <Dialog open={showSuccessDialog} onOpenChange={(open) => {
         if (!open) {
-          navigate('/inicio');
+          navigate('/');
         }
       }}>
         <DialogContent className="max-w-sm mx-auto p-0 bg-white rounded-3xl border-0 shadow-xl">
