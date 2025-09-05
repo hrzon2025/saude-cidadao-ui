@@ -92,7 +92,7 @@ export default function ConsultasRealizadas() {
               type="date"
               value={filtroData}
               onChange={(e) => setFiltroData(e.target.value)}
-              className="flex-1"
+              className="flex-1 bg-white"
             />
             {filtroData && (
               <Button 
