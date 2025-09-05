@@ -133,7 +133,7 @@ export default function Vacinacao() {
       <AppHeader 
         title="Vacinação" 
         showBack 
-        onBack={() => navigate('/')} 
+        onBack={() => navigate('/inicio')} 
       />
 
       <div className="max-w-md mx-auto p-4">

@@ -33,7 +33,7 @@ const NotFound = () => {
           
           <div className="space-y-3">
             <Button 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/inicio')}
               className="w-full"
             >
               Voltar ao Início

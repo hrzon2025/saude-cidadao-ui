@@ -73,7 +73,7 @@ export default function ConsultasRealizadas() {
       <AppHeader 
         title="Histórico" 
         showBack 
-        onBack={() => navigate('/')}
+        onBack={() => navigate('/inicio')}
         className="bg-primary text-primary-foreground"
       />
 

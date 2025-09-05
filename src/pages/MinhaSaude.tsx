@@ -101,7 +101,7 @@ export default function MinhaSaude() {
       <AppHeader
         title="Minha Saúde"
         showBack
-        onBack={() => navigate("/")}
+        onBack={() => navigate("/inicio")}
         className="bg-primary"
       />
 

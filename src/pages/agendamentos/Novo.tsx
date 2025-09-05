@@ -90,7 +90,7 @@ export default function NovoAgendamento() {
   const profissionalInfo = profissionais.find(p => p.id === profissionalSelecionado);
   const tipoInfo = tiposConsulta.find(t => t.id === tipoSelecionado);
   return <div className="min-h-screen bg-background pb-20">
-      <AppHeader title="Novo Agendamento" showBack onBack={() => navigate('/')} />
+      <AppHeader title="Novo Agendamento" showBack onBack={() => navigate('/inicio')} />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
         {/* Stepper */}

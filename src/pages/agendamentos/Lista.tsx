@@ -95,7 +95,7 @@ export default function ListaAgendamentos() {
       <AppHeader 
         title="Meus Agendamentos" 
         showBack 
-        onBack={() => navigate('/')} 
+        onBack={() => navigate('/inicio')} 
       />
 
       <div className="max-w-md mx-auto p-4 space-y-6">

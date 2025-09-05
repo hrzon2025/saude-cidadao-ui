@@ -54,7 +54,7 @@ export default function Perfil() {
   const handleLogout = () => {
     logout();
     showNotification('Logout realizado com sucesso', 'success');
-    navigate('/');
+    navigate('/login');
   };
 
   const formatCPF = (cpf: string) => {
