@@ -1,27 +1,20 @@
 import { useState, useEffect } from "react";
-import { Syringe, MapPin, Calendar as CalendarIcon } from "lucide-react";
+import { Syringe } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SkeletonCard, SkeletonCardList } from "@/components/skeletons/skeleton-card";
+import { SkeletonCardList } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
-import { CardUnidade } from "@/components/cards/card-unidade";
-import { useAppStore } from "@/store/useAppStore";
 import { 
   obterCalendarioVacinacao, 
-  obterUnidadesComVacinacao,
   Vacina, 
   FaixaEtaria, 
   FAIXAS_ETARIAS 
 } from "@/lib/stubs/vacinacao";
-import { Unidade } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 
 export default function Vacinacao() {
   const navigate = useNavigate();
-  const { showNotification } = useAppStore();
   
-  // Calendar tab state
   const [calendario, setCalendario] = useState<Record<FaixaEtaria, Vacina[]>>({
     ao_nascimento: [],
     '2_meses': [],
@@ -33,23 +26,10 @@ export default function Vacinacao() {
   });
   const [loadingCalendario, setLoadingCalendario] = useState(true);
   const [errorCalendario, setErrorCalendario] = useState<string | null>(null);
-  
-  // Units tab state
-  const [unidades, setUnidades] = useState<Unidade[]>([]);
-  const [loadingUnidades, setLoadingUnidades] = useState(false);
-  const [errorUnidades, setErrorUnidades] = useState<string | null>(null);
-  
-  const [activeTab, setActiveTab] = useState("calendario");
 
   useEffect(() => {
     loadCalendario();
   }, []);
-
-  useEffect(() => {
-    if (activeTab === "unidades" && unidades.length === 0) {
-      loadUnidades();
-    }
-  }, [activeTab]);
 
   const loadCalendario = async () => {
     try {
@@ -63,28 +43,6 @@ export default function Vacinacao() {
     } finally {
       setLoadingCalendario(false);
     }
-  };
-
-  const loadUnidades = async () => {
-    try {
-      setLoadingUnidades(true);
-      setErrorUnidades(null);
-      const data = await obterUnidadesComVacinacao();
-      setUnidades(data);
-    } catch (err) {
-      setErrorUnidades('Erro ao carregar unidades com vacinação');
-      console.error('Erro ao carregar unidades:', err);
-    } finally {
-      setLoadingUnidades(false);
-    }
-  };
-
-  const handleCall = (telefone: string) => {
-    showNotification(`Ligando para ${telefone}`, 'info');
-  };
-
-  const handleNavigate = (geo: { lat: number; lng: number }) => {
-    showNotification(`Abrindo navegação para localização`, 'info');
   };
 
   const renderVacinaCard = (vacina: Vacina) => (
@@ -168,94 +126,16 @@ export default function Vacinacao() {
     );
   };
 
-  const renderUnidades = () => {
-    if (loadingUnidades) {
-      return <SkeletonCardList count={4} />;
-    }
-
-    if (errorUnidades) {
-      return (
-        <ErrorBanner 
-          message={errorUnidades}
-          onRetry={loadUnidades}
-        />
-      );
-    }
-
-    if (unidades.length === 0) {
-      return (
-        <Card className="p-6 text-center">
-          <MapPin className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
-          <h3 className="font-medium mb-2">Nenhuma unidade encontrada</h3>
-          <p className="text-sm text-muted-foreground">
-            Não há unidades com sala de vacinação disponíveis no momento
-          </p>
-        </Card>
-      );
-    }
-
-    return (
-      <div>
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg dark:bg-blue-900/20 dark:border-blue-800">
-          <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Filtro aplicado:</strong> Exibindo apenas unidades com sala de vacinação
-          </p>
-        </div>
-        
-        <div className="space-y-4">
-          {unidades.map((unidade) => (
-            <CardUnidade
-              key={unidade.id}
-              unidade={unidade}
-              onCall={handleCall}
-              onNavigate={handleNavigate}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gradient-subtle pb-20">
       <AppHeader 
         title="Vacinação" 
-        subtitle="Calendário vacinal e locais para vacinação"
         showBack 
         onBack={() => navigate('/')} 
       />
 
       <div className="max-w-md mx-auto p-4">
-        <Tabs 
-          value={activeTab} 
-          onValueChange={setActiveTab} 
-          className="w-full"
-        >
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger 
-              value="calendario"
-              className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              <CalendarIcon className="h-4 w-4 mr-2" />
-              Calendário
-            </TabsTrigger>
-            <TabsTrigger 
-              value="unidades"
-              className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
-              <MapPin className="h-4 w-4 mr-2" />
-              Unidades
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="calendario" className="mt-0">
-            {renderCalendario()}
-          </TabsContent>
-
-          <TabsContent value="unidades" className="mt-0">
-            {renderUnidades()}
-          </TabsContent>
-        </Tabs>
+        {renderCalendario()}
       </div>
     </div>
   );
