@@ -13,7 +13,7 @@ export default function FAQ() {
   const faqData = [
     {
       question: "Como faço para marcar uma consulta na unidade de saúde?",
-      answer: "Para marcar uma consulta, você pode usar este aplicativo através da seção 'Agendamentos', comparecer presencialmente na unidade de saúde mais próxima da sua residência, ou ligar para a central de marcação. É necessário apresentar documento de identidade e cartão SUS."
+      answer: "As consultas podem ser marcadas diretamente na unidade de saúde mais próxima, levando um documento de identidade e o cartão do SUS. Algumas unidades também aceitam marcação por telefone ou aplicativo, dependendo do município."
     },
     {
       question: "Preciso levar algum documento para ser atendido?",
