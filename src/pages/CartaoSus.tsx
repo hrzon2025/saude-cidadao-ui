@@ -47,7 +47,7 @@ const CartaoSus = () => {
       description: "Opções de compartilhamento abertas."
     });
   };
-  return <div className="min-h-screen bg-white flex flex-col">
+  return <div className="min-h-screen flex flex-col" style={{backgroundColor: '#f9fafc'}}>
       {/* Header */}
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
@@ -126,7 +126,7 @@ const CartaoSus = () => {
           </div>
 
           {/* Informações adicionais */}
-          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+          <div className="mt-6 p-4 bg-white rounded-lg border">
             <h4 className="font-semibold mb-2 text-sm">Informações importantes:</h4>
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• Este cartão tem validade em todo território nacional</li>
