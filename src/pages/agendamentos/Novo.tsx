@@ -10,29 +10,25 @@ import { useAppStore } from "@/store/useAppStore";
 import { obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
 import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 export default function NovoAgendamento() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { showNotification } = useAppStore();
-  
+  const {
+    showNotification
+  } = useAppStore();
   const [unidades, setUnidades] = useState<Unidade[]>([]);
   const [profissionais, setProfissionais] = useState<Profissional[]>([]);
   const [tiposConsulta, setTiposConsulta] = useState<TipoConsulta[]>([]);
-  
   const [unidadeSelecionada, setUnidadeSelecionada] = useState(searchParams.get('unidade') || '');
   const [profissionalSelecionado, setProfissionalSelecionado] = useState(searchParams.get('profissional') || '');
   const [tipoSelecionado, setTipoSelecionado] = useState(searchParams.get('tipo') || '');
-  
   const [loadingUnidades, setLoadingUnidades] = useState(true);
   const [loadingProfissionais, setLoadingProfissionais] = useState(false);
   const [loadingTipos, setLoadingTipos] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     loadInitialData();
   }, []);
-
   useEffect(() => {
     if (unidadeSelecionada) {
       loadProfissionais();
@@ -45,19 +41,13 @@ export default function NovoAgendamento() {
       setProfissionalSelecionado('');
     }
   }, [unidadeSelecionada]);
-
   const loadInitialData = async () => {
     try {
       setError(null);
-      
-      const [unidadesData, tiposData] = await Promise.all([
-        obterUnidades(),
-        obterTiposConsulta()
-      ]);
-      
+      const [unidadesData, tiposData] = await Promise.all([obterUnidades(), obterTiposConsulta()]);
       setUnidades(unidadesData);
       setTiposConsulta(tiposData);
-      
+
       // Se tem unidade na URL, carrega profissionais
       if (searchParams.get('unidade')) {
         await loadProfissionais();
@@ -70,10 +60,8 @@ export default function NovoAgendamento() {
       setLoadingTipos(false);
     }
   };
-
   const loadProfissionais = async () => {
     if (!unidadeSelecionada) return;
-    
     try {
       setLoadingProfissionais(true);
       const profissionaisData = await obterProfissionaisPorUnidade(unidadeSelecionada);
@@ -85,35 +73,24 @@ export default function NovoAgendamento() {
       setLoadingProfissionais(false);
     }
   };
-
   const handleContinuar = () => {
     if (!unidadeSelecionada || !profissionalSelecionado || !tipoSelecionado) {
       showNotification('Por favor, selecione todos os campos', 'error');
       return;
     }
-
     const params = new URLSearchParams({
       unidade: unidadeSelecionada,
       profissional: profissionalSelecionado,
       tipo: tipoSelecionado
     });
-
     navigate(`/agendamentos/horarios?${params.toString()}`);
   };
-
   const podeAtualizar = unidadeSelecionada && profissionalSelecionado && tipoSelecionado;
-
   const unidadeInfo = unidades.find(u => u.id === unidadeSelecionada);
   const profissionalInfo = profissionais.find(p => p.id === profissionalSelecionado);
   const tipoInfo = tiposConsulta.find(t => t.id === tipoSelecionado);
-
-  return (
-    <div className="min-h-screen bg-background pb-20">
-      <AppHeader 
-        title="Novo Agendamento" 
-        showBack 
-        onBack={() => navigate('/')} 
-      />
+  return <div className="min-h-screen bg-background pb-20">
+      <AppHeader title="Novo Agendamento" showBack onBack={() => navigate('/')} />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
         {/* Stepper */}
@@ -131,12 +108,7 @@ export default function NovoAgendamento() {
           </div>
         </div>
 
-        {error && (
-          <ErrorBanner 
-            message={error}
-            onRetry={loadInitialData}
-          />
-        )}
+        {error && <ErrorBanner message={error} onRetry={loadInitialData} />}
 
         {/* Formulário */}
         <div className="space-y-4">
@@ -148,32 +120,24 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Unidade de Saúde</h3>
               </div>
               
-              {loadingUnidades ? (
-                <SkeletonCard />
-              ) : (
-                <Select value={unidadeSelecionada} onValueChange={setUnidadeSelecionada}>
+              {loadingUnidades ? <SkeletonCard /> : <Select value={unidadeSelecionada} onValueChange={setUnidadeSelecionada}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha uma unidade" />
                   </SelectTrigger>
                   <SelectContent>
-                    {unidades.map((unidade) => (
-                      <SelectItem key={unidade.id} value={unidade.id}>
+                    {unidades.map(unidade => <SelectItem key={unidade.id} value={unidade.id}>
                         <div>
                           <div className="font-medium">{unidade.nome}</div>
                           <div className="text-xs text-muted-foreground">{unidade.endereco}</div>
                         </div>
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
-                </Select>
-              )}
+                </Select>}
 
-              {unidadeInfo && (
-                <div className="bg-muted/50 rounded p-3 text-sm">
+              {unidadeInfo && <div className="bg-muted/50 rounded p-3 text-sm">
                   <p><strong>Endereço:</strong> {unidadeInfo.endereco}</p>
                   <p><strong>Telefone:</strong> {unidadeInfo.telefone}</p>
-                </div>
-              )}
+                </div>}
             </div>
           </Card>
 
@@ -185,42 +149,28 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Profissional</h3>
               </div>
               
-              {!unidadeSelecionada ? (
-                <p className="text-sm text-muted-foreground">
+              {!unidadeSelecionada ? <p className="text-sm text-muted-foreground">
                   Primeiro selecione uma unidade de saúde
-                </p>
-              ) : loadingProfissionais ? (
-                <SkeletonCard />
-              ) : (
-                <Select 
-                  value={profissionalSelecionado} 
-                  onValueChange={setProfissionalSelecionado}
-                  disabled={!unidadeSelecionada}
-                >
+                </p> : loadingProfissionais ? <SkeletonCard /> : <Select value={profissionalSelecionado} onValueChange={setProfissionalSelecionado} disabled={!unidadeSelecionada}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha um profissional" />
                   </SelectTrigger>
                   <SelectContent>
-                    {profissionais.map((profissional) => (
-                      <SelectItem key={profissional.id} value={profissional.id}>
+                    {profissionais.map(profissional => <SelectItem key={profissional.id} value={profissional.id}>
                         <div>
                           <div className="font-medium">{profissional.nome}</div>
                           <div className="text-xs text-muted-foreground">
                             {profissional.especialidade} • {profissional.crm}
                           </div>
                         </div>
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
-                </Select>
-              )}
+                </Select>}
 
-              {profissionalInfo && (
-                <div className="bg-muted/50 rounded p-3 text-sm">
+              {profissionalInfo && <div className="bg-muted/50 rounded p-3 text-sm">
                   <p><strong>Especialidade:</strong> {profissionalInfo.especialidade}</p>
                   <p><strong>CRM:</strong> {profissionalInfo.crm}</p>
-                </div>
-              )}
+                </div>}
             </div>
           </Card>
 
@@ -232,56 +182,37 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Tipo de Consulta</h3>
               </div>
               
-              {loadingTipos ? (
-                <SkeletonCard />
-              ) : (
-                <Select value={tipoSelecionado} onValueChange={setTipoSelecionado}>
+              {loadingTipos ? <SkeletonCard /> : <Select value={tipoSelecionado} onValueChange={setTipoSelecionado}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha o tipo de consulta" />
                   </SelectTrigger>
                   <SelectContent>
-                    {tiposConsulta.map((tipo) => (
-                      <SelectItem key={tipo.id} value={tipo.id}>
+                    {tiposConsulta.map(tipo => <SelectItem key={tipo.id} value={tipo.id}>
                         <div>
                           <div className="font-medium">{tipo.nome}</div>
                           <div className="text-xs text-muted-foreground">
                             Duração: {tipo.duracao} minutos
                           </div>
                         </div>
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
-                </Select>
-              )}
+                </Select>}
 
-              {tipoInfo && (
-                <div className="bg-muted/50 rounded p-3 text-sm">
+              {tipoInfo && <div className="bg-muted/50 rounded p-3 text-sm">
                   <p><strong>Duração:</strong> {tipoInfo.duracao} minutos</p>
-                </div>
-              )}
+                </div>}
             </div>
           </Card>
         </div>
 
         {/* CTAs */}
         <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/agendamentos')}
-            className="flex-1"
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleContinuar}
-            disabled={!podeAtualizar}
-            className="flex-1"
-          >
+          
+          <Button onClick={handleContinuar} disabled={!podeAtualizar} className="flex-1">
             Continuar
             <ChevronRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
