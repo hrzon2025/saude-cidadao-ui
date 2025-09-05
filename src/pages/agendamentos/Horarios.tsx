@@ -165,7 +165,7 @@ export default function HorariosAgendamento() {
 
         {/* CTAs */}
         <div className="flex gap-3">
-          <Button variant="outline" onClick={handleVoltar} className="flex-1 text-zinc-950 bg-slate-50">
+          <Button variant="outline" onClick={handleVoltar} className="flex-1 bg-white text-zinc-950">
             <ChevronLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>

@@ -236,7 +236,7 @@ export default function ConfirmacaoAgendamento() {
             variant="outline" 
             onClick={handleVoltar}
             disabled={confirmando}
-            className="flex-1"
+            className="flex-1 bg-white"
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Voltar
