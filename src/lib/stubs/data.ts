@@ -199,7 +199,41 @@ export const mockAtendimentos: Atendimento[] = [
     profissional: 'Dr. João Santos',
     unidade: 'UBS Jardim Primavera',
     status: 'Concluído',
-    podeAvaliar: false
+    podeAvaliar: true,
+    avaliacao: {
+      id: '1',
+      atendimentoId: '6',
+      nota: 5,
+      comentario: 'Excelente atendimento!',
+      createdAt: '2024-01-19'
+    }
+  },
+  {
+    id: '7',
+    data: '2024-01-05',
+    hora: '15:00',
+    tipo: 'Consulta Cardiológica',
+    profissional: 'Dr. Carlos Lima',
+    unidade: 'Centro de Especialidades',
+    status: 'Concluído',
+    podeAvaliar: true
+  },
+  {
+    id: '8',
+    data: '2023-12-20',
+    hora: '13:30',
+    tipo: 'Consulta Ginecológica',
+    profissional: 'Dra. Patricia Costa',
+    unidade: 'Centro de Especialidades',
+    status: 'Concluído',
+    podeAvaliar: true,
+    avaliacao: {
+      id: '2',
+      atendimentoId: '8',
+      nota: 4,
+      comentario: 'Muito boa consulta, médica atenciosa.',
+      createdAt: '2023-12-21'
+    }
   }
 ];
 

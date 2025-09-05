@@ -179,7 +179,11 @@ if (simulateError(0)) {
     atendimentos = atendimentos.filter(a => a.status.toLowerCase() === status.toLowerCase());
   }
   
-  return atendimentos;
+  // Garantir que todos os atendimentos concluídos possam ser avaliados
+  return atendimentos.map(atendimento => ({
+    ...atendimento,
+    podeAvaliar: atendimento.status === 'Concluído' ? true : atendimento.podeAvaliar
+  }));
 }
 
 export async function avaliarAtendimento(

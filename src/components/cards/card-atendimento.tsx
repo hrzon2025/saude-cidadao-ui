@@ -44,15 +44,16 @@ export function CardAtendimento({ atendimento, onAvaliar, className }: CardAtend
             </StatusBadge>
           </div>
           
-          {atendimento.podeAvaliar && (
+          {atendimento.status === 'Concluído' && (
             <Button
               size="sm"
-              variant="outline"
+              variant={atendimento.avaliacao ? "secondary" : "outline"}
               onClick={() => onAvaliar?.(atendimento.id)}
-              className="ml-2 shrink-0"
+              className={`ml-2 shrink-0 ${atendimento.avaliacao ? 'text-muted-foreground' : ''}`}
+              disabled={!!atendimento.avaliacao}
             >
               <Star className="h-4 w-4 mr-1" />
-              Avaliar
+              {atendimento.avaliacao ? 'Avaliado' : 'Avaliar'}
             </Button>
           )}
         </div>
