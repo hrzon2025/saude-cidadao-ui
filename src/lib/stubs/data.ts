@@ -385,6 +385,13 @@ export const mockServicos: Servico[] = [
     descricao: 'Vacinas do calendário nacional',
     icone: 'syringe',
     categoria: 'Vacinação'
+  },
+  {
+    id: '5',
+    nome: 'Medicamentos',
+    descricao: 'Consulte medicamentos disponíveis',
+    icone: 'pill',
+    categoria: 'Farmácia'
   }
 ];
 

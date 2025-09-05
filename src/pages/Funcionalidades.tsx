@@ -82,6 +82,9 @@ export default function Funcionalidades() {
       case '4': // Imunização
         navigate('/vacinacao');
         break;
+      case '5': // Medicamentos
+        navigate('/medicamentos');
+        break;
       default:
         navigate('/servicos');
     }

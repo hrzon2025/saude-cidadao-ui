@@ -146,7 +146,7 @@ export type Servico = {
   nome: string;
   descricao: string;
   icone: string;
-  categoria: 'Consultas' | 'Enfermagem' | 'Doenças crônicas' | 'Vacinação';
+  categoria: 'Consultas' | 'Enfermagem' | 'Doenças crônicas' | 'Vacinação' | 'Farmácia';
 };
 
 export type OuvidoriaTicket = {
