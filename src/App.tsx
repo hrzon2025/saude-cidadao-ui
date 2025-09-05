@@ -97,9 +97,9 @@ const App = () => {
               <Route path="/minha-saude" element={<MinhaSaude />} />
               <Route path="/medicamentos" element={<Medicamentos />} />
               <Route path="/vacinacao" element={<Vacinacao />} />
-              <Route path="/farmacia" element={<Farmacia />} />
-            <Route path="/sobre-farmacia" element={<SobreFarmacia />} />
-            <Route path="/relacao-medicamentos" element={<RelacaoMedicamentos />} />
+               <Route path="/farmacia" element={<Farmacia />} />
+               <Route path="/sobre-farmacia" element={<SobreFarmacia />} />
+               <Route path="/relacao-medicamentos" element={<RelacaoMedicamentos />} />
               <Route path="/fila-regulacao" element={<div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div>} />
               
               {/* Perfil */}
