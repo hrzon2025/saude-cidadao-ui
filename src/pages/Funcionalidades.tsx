@@ -123,219 +123,44 @@ export default function Funcionalidades() {
           />
         ) : (
           <div className="space-y-6">
-            {/* Saúde Pessoal */}
-            <section>
-              <Card className="p-6">
-                <h2 className="text-xl font-bold text-primary mb-6">Saúde Pessoal</h2>
-                <div className="space-y-4">
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/minha-saude')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Heart className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Minha Saúde</h3>
-                      <p className="text-sm text-muted-foreground">Acompanhe seus dados de saúde e histórico médico</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/consultas-realizadas')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Calendar className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Atendimentos</h3>
-                      <p className="text-sm text-muted-foreground">Consulte e agende consultas médicas</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/agendamentos/novo')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Calendar className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Pré Agendamento</h3>
-                      <p className="text-sm text-muted-foreground">Solicite agendamento de consulta na UBS</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/medicamentos')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Pill className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Medicamentos</h3>
-                      <p className="text-sm text-muted-foreground">Acesse informações sobre seus medicamentos</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/farmacia')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Cross className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Farmácia</h3>
-                      <p className="text-sm text-muted-foreground">Consulte disponibilidade de medicamentos na rede pública</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/fila-regulacao')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.List className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Fila de Regulação</h3>
-                      <p className="text-sm text-muted-foreground">Acompanhe seus encaminhamentos para especialistas e exames</p>
-                    </div>
-                  </div>
+            {Object.entries(groupedServicos).map(([categoria, servicosCategoria]) => (
+              <section key={categoria}>
+                <h2 className="text-lg font-semibold mb-3 text-foreground">
+                  {categoria}
+                </h2>
+                
+                <div className="space-y-3">
+                  {servicosCategoria.map((servico) => {
+                    const IconComponent = iconMap[servico.icone] || Icons.Circle;
+                    
+                    return (
+                      <Card
+                        key={servico.id}
+                        className="p-4 transition-smooth hover:shadow-medium active:scale-[0.98] cursor-pointer"
+                        onClick={() => handleServicoClick(servico)}
+                      >
+                        <div className="flex items-start space-x-3">
+                          <div className="p-2 rounded-full bg-primary/10 shrink-0">
+                            <IconComponent className="h-5 w-5 text-primary" />
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-card-foreground">
+                              {servico.nome}
+                            </h3>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {servico.descricao}
+                            </p>
+                          </div>
+                          
+                          <Icons.ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
-              </Card>
-            </section>
-
-            {/* Serviços de Saúde */}
-            <section>
-              <Card className="p-6">
-                <h2 className="text-xl font-bold text-primary mb-6">Serviços de Saúde</h2>
-                <div className="space-y-4">
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/unidades')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.MapPin className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Unidades de Saúde</h3>
-                      <p className="text-sm text-muted-foreground">Localize e obtenha informações sobre unidades de saúde</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/vacinacao')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Syringe className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Vacinas</h3>
-                      <p className="text-sm text-muted-foreground">Acompanhe seu cartão de vacinação digital</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/servicos')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Users className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Serviços</h3>
-                      <p className="text-sm text-muted-foreground">Conheça os serviços prestados nas UBS e USF</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </section>
-
-            {/* Informações */}
-            <section>
-              <Card className="p-6">
-                <h2 className="text-xl font-bold text-primary mb-6">Informações</h2>
-                <div className="space-y-4">
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/noticias')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.Newspaper className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Notícias</h3>
-                      <p className="text-sm text-muted-foreground">Fique por dentro das últimas notícias de saúde</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/avisos')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.AlertCircle className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Avisos</h3>
-                      <p className="text-sm text-muted-foreground">Comunicados importantes sobre saúde pública</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/perguntas-frequentes')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.HelpCircle className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Perguntas Frequentes</h3>
-                      <p className="text-sm text-muted-foreground">Respostas para as dúvidas mais comuns</p>
-                    </div>
-                  </div>
-                  
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/ouvidoria')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.MessageSquare className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">Ouvidoria</h3>
-                      <p className="text-sm text-muted-foreground">Canal para sugestões, reclamações e elogios</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </section>
-
-            {/* Documentos */}
-            <section>
-              <Card className="p-6">
-                <h2 className="text-xl font-bold text-primary mb-6">Documentos</h2>
-                <div className="space-y-4">
-                  <div 
-                    className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => navigate('/cartao-sus')}
-                  >
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <Icons.CreditCard className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">CNS</h3>
-                      <p className="text-sm text-muted-foreground">Cartão Nacional de Saúde digital</p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </section>
+              </section>
+            ))}
           </div>
         )}
       </div>
