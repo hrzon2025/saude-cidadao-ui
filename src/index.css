@@ -9,7 +9,7 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Saúde Cidadão - Design System com #943dff */
-    --background: 0 0% 100%;
+    --background: 220 33% 98%;
     --foreground: 256 15% 15%;
 
     --card: 0 0% 100%;
