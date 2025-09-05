@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Download, Share } from "lucide-react";
+import { ArrowLeft, Download, Share, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { AppHeader } from "@/components/ui/app-header";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { getUsuario } from "@/lib/stubs/usuario";
@@ -52,12 +52,30 @@ const CartaoSus = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex flex-col">
-      <AppHeader 
-        title="Cartão SUS Virtual" 
-        showBack 
-        onBack={() => navigate(-1)} 
-      />
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Header */}
+      <div className="flex items-center p-4 border-b">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-xl font-semibold ml-2">Cartão SUS Virtual</h1>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="ml-auto">
+                <Info className="h-5 w-5 text-muted-foreground" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Os dados exibidos são ilustrativos</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       {/* Conteúdo */}
       <div className="flex-1 p-6">
