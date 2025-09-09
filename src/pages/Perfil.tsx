@@ -5,35 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useAppStore } from "@/store/useAppStore";
-import { 
-  User, 
-  Edit3, 
-  Bell, 
-  Shield, 
-  Moon, 
-  LogOut, 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Calendar,
-  CreditCard,
-  Settings
-} from "lucide-react";
+import { User, Edit3, Bell, Shield, Moon, LogOut, Phone, Mail, MapPin, Calendar, CreditCard, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
 export default function Perfil() {
   const navigate = useNavigate();
-  const { usuario, logout, isDarkMode, toggleDarkMode, showNotification } = useAppStore();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(
-    usuario?.preferencias?.notificacoes ?? true
-  );
-  const [biometriaEnabled, setBiometriaEnabled] = useState(
-    usuario?.preferencias?.biometria ?? false
-  );
-
+  const {
+    usuario,
+    logout,
+    isDarkMode,
+    toggleDarkMode,
+    showNotification
+  } = useAppStore();
+  const [notificationsEnabled, setNotificationsEnabled] = useState(usuario?.preferencias?.notificacoes ?? true);
+  const [biometriaEnabled, setBiometriaEnabled] = useState(usuario?.preferencias?.biometria ?? false);
   if (!usuario) {
-    return (
-      <div className="min-h-screen bg-gradient-subtle pb-20">
+    return <div className="min-h-screen bg-gradient-subtle pb-20">
         <AppHeader title="Perfil" />
         <div className="max-w-md mx-auto p-4">
           <Card className="p-6 text-center">
@@ -47,10 +33,8 @@ export default function Perfil() {
             </Button>
           </Card>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -61,42 +45,26 @@ export default function Perfil() {
       showNotification('Erro ao fazer logout', 'error');
     }
   };
-
   const formatCPF = (cpf: string) => {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   };
-
   const formatPhone = (phone: string) => {
     return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   };
-
   const calculateAge = (birthDate: string) => {
     const today = new Date();
     const birth = new Date(birthDate);
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    if (monthDiff < 0 || monthDiff === 0 && today.getDate() < birth.getDate()) {
       age--;
     }
-    
     return age;
   };
-
-  return (
-    <div className="min-h-screen bg-gradient-subtle pb-20">
-      <AppHeader 
-        title="Perfil" 
-        actions={
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => navigate('/perfil/editar')}
-          >
+  return <div className="min-h-screen bg-gradient-subtle pb-20">
+      <AppHeader title="Perfil" actions={<Button size="sm" variant="ghost" onClick={() => navigate('/perfil/editar')}>
             <Edit3 className="h-4 w-4" />
-          </Button>
-        }
-      />
+          </Button>} />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
         {/* Profile Header */}
@@ -116,11 +84,9 @@ export default function Perfil() {
               <p className="text-sm text-muted-foreground">
                 {calculateAge(usuario.dataNascimento)} anos
               </p>
-              {usuario.cns && (
-                <p className="text-sm text-muted-foreground">
+              {usuario.cns && <p className="text-sm text-muted-foreground">
                   CNS: {usuario.cns}
-                </p>
-              )}
+                </p>}
             </div>
           </div>
         </Card>
@@ -172,8 +138,7 @@ export default function Perfil() {
               </div>
             </div>
             
-            {usuario.telefone && (
-              <div className="flex items-center space-x-3">
+            {usuario.telefone && <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Telefone</p>
@@ -181,11 +146,9 @@ export default function Perfil() {
                     {formatPhone(usuario.telefone)}
                   </p>
                 </div>
-              </div>
-            )}
+              </div>}
             
-            {usuario.endereco && (
-              <div className="flex items-center space-x-3">
+            {usuario.endereco && <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-sm font-medium">Endereço</p>
@@ -193,8 +156,7 @@ export default function Perfil() {
                     {usuario.endereco}
                   </p>
                 </div>
-              </div>
-            )}
+              </div>}
           </Card>
         </section>
 
@@ -215,10 +177,7 @@ export default function Perfil() {
                   </p>
                 </div>
               </div>
-              <Switch
-                checked={notificationsEnabled}
-                onCheckedChange={setNotificationsEnabled}
-              />
+              <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
             </div>
             
             <div className="flex items-center justify-between">
@@ -231,10 +190,7 @@ export default function Perfil() {
                   </p>
                 </div>
               </div>
-              <Switch
-                checked={biometriaEnabled}
-                onCheckedChange={setBiometriaEnabled}
-              />
+              <Switch checked={biometriaEnabled} onCheckedChange={setBiometriaEnabled} />
             </div>
             
             <div className="flex items-center justify-between">
@@ -247,10 +203,7 @@ export default function Perfil() {
                   </p>
                 </div>
               </div>
-              <Switch
-                checked={isDarkMode}
-                onCheckedChange={toggleDarkMode}
-              />
+              <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
             </div>
           </Card>
         </section>
@@ -258,35 +211,19 @@ export default function Perfil() {
         {/* Ações */}
         <section>
           <div className="space-y-3">
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/perfil/editar')}
-            >
+            <Button variant="outline" className="w-full justify-start" onClick={() => navigate('/perfil/editar')}>
               <Edit3 className="h-4 w-4 mr-3" />
               Editar Perfil
             </Button>
             
-            <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => navigate('/perfil/configuracoes')}
-            >
-              <Settings className="h-4 w-4 mr-3" />
-              Configurações Avançadas
-            </Button>
             
-            <Button
-              variant="destructive"
-              className="w-full justify-start"
-              onClick={handleLogout}
-            >
+            
+            <Button variant="destructive" className="w-full justify-start" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-3" />
               Sair da Conta
             </Button>
           </div>
         </section>
       </div>
-    </div>
-  );
+    </div>;
 }
