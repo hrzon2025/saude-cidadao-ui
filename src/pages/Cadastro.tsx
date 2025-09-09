@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,6 +51,7 @@ export default function Cadastro() {
   // Estado do formulário
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showUnidadeSaudeDialog, setShowUnidadeSaudeDialog] = useState(false);
   const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -156,6 +158,12 @@ export default function Cadastro() {
       const validacaoResult = await consultarAPIValidacao(cpfLimpo, dataFormatada);
       
       if (!validacaoResult.success) {
+        // Verificar se é a mensagem específica para procurar unidade de saúde
+        if (validacaoResult.data && validacaoResult.data.mensagem === "Procurar a unidade de saúde de referência") {
+          setShowUnidadeSaudeDialog(true);
+          return;
+        }
+        
         showNotification("Usuário não autorizado. Verifique os dados (CPF e Data de Nascimento) e tente novamente.", "error");
         return;
       }
@@ -431,6 +439,23 @@ export default function Cadastro() {
       </div>
       
       {/* Espaçamento para evitar sobreposição com a barra de navegação */}
+
+      {/* Dialog para CPF não encontrado */}
+      <Dialog open={showUnidadeSaudeDialog} onOpenChange={setShowUnidadeSaudeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>CPF não encontrado</DialogTitle>
+            <DialogDescription>
+              CPF não encontrado, por favor, procure a unidade de saúde de referência.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowUnidadeSaudeDialog(false)}>
+              Entendi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       
     </div>;
 }
