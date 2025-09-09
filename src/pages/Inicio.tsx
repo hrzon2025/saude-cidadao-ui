@@ -87,7 +87,7 @@ export default function Inicio() {
   return (
     <div className="min-h-screen bg-gradient-subtle pb-20">
       <WelcomeHeader 
-        onNotifications={() => showNotification('Sem notificações no momento', 'info')}
+        onNotifications={() => navigate('/notificacoes')}
       />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
