@@ -80,7 +80,7 @@ export default function Login() {
         telefone: usuarioData.celular,
         endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
         avatarUrl: "",
-        cns: "",
+        cns: usuarioData.cns || "",
         preferencias: {
           notificacoes: true,
           biometria: false
