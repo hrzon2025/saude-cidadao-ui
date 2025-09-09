@@ -35,6 +35,7 @@ import FarmaciaPopular from "./pages/FarmaciaPopular";
 import ComponentesEspecializados from "./pages/ComponentesEspecializados";
 import ComissaoFarmacologia from "./pages/ComissaoFarmacologia";
 import FAQ from "./pages/FAQ";
+import { AuthExample } from "./components/AuthExample";
 
 const queryClient = new QueryClient();
 
@@ -113,13 +114,16 @@ const App = () => {
               <Route path="/perfil/editar" element={<div className="p-8 text-center">Editar Perfil - Em desenvolvimento</div>} />
               <Route path="/perfil/configuracoes" element={<div className="p-8 text-center">Configurações - Em desenvolvimento</div>} />
               
-              {/* Auth */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/cadastro" element={<Cadastro />} />
-              <Route path="/esqueci-senha" element={<EsqueciSenha />} />
-              
-              {/* 404 */}
-              <Route path="*" element={<NotFound />} />
+               {/* Auth */}
+               <Route path="/login" element={<Login />} />
+               <Route path="/cadastro" element={<Cadastro />} />
+               <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+               
+               {/* API Test */}
+               <Route path="/api-test" element={<AuthExample />} />
+               
+               {/* 404 */}
+               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
         </BrowserRouter>
