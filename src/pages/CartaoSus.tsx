@@ -47,7 +47,9 @@ const CartaoSus = () => {
       description: "Opções de compartilhamento abertas."
     });
   };
-  return <div className="min-h-screen flex flex-col" style={{backgroundColor: '#f9fafc'}}>
+  return <div className="min-h-screen flex flex-col" style={{
+    backgroundColor: '#f9fafc'
+  }}>
       {/* Header */}
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
@@ -101,15 +103,7 @@ const CartaoSus = () => {
 
           {/* QR Code */}
           {qrCodeUrl && <Card className="mb-6">
-              <CardContent className="p-6 text-center">
-                <h3 className="font-semibold mb-4">QR Code do Cartão</h3>
-                <div className="flex justify-center mb-4">
-                  <img src={qrCodeUrl} alt="QR Code do Cartão SUS" className="w-32 h-32 border rounded-lg" />
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Apresente este QR Code nos estabelecimentos de saúde
-                </p>
-              </CardContent>
+              
             </Card>}
 
           {/* Ações */}
