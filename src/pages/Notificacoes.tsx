@@ -16,7 +16,7 @@ interface Notificacao {
   hora: string;
 }
 
-// Mock data
+// Mock data - apenas lembretes de consultas agendadas
 const notificacoesMock: Notificacao[] = [
   {
     id: '1',
@@ -38,12 +38,12 @@ const notificacoesMock: Notificacao[] = [
   },
   {
     id: '3',
-    titulo: 'Lembrete: tomar medicamento',
-    descricao: 'Não se esqueça de tomar seu medicamento Losartana às 20:00.',
-    tipo: 'lembrete',
+    titulo: 'Lembrete: consulta hoje às 15:00',
+    descricao: 'Não se esqueça da sua consulta com Dr. João Silva hoje às 15:00 na UBS Sul.',
+    tipo: 'agendamento',
     lida: true,
     data: '2025-09-09',
-    hora: '19:45'
+    hora: '13:45'
   },
   {
     id: '4',
@@ -56,12 +56,12 @@ const notificacoesMock: Notificacao[] = [
   },
   {
     id: '5',
-    titulo: 'Vacinação em atraso',
-    descricao: 'Sua vacina da gripe está em atraso. Procure uma unidade de saúde para se vacinar.',
-    tipo: 'saude',
+    titulo: 'Consulta reagendada',
+    descricao: 'Sua consulta foi reagendada para sexta-feira às 10:00. Verifique os detalhes em "Meus Agendamentos".',
+    tipo: 'agendamento',
     lida: false,
     data: '2025-09-07',
-    hora: '08:00'
+    hora: '16:30'
   }
 ];
 
@@ -158,18 +158,21 @@ export default function Notificacoes() {
       <div className="max-w-md mx-auto p-4 space-y-6">
         {/* Header com resumo */}
         <div className="bg-primary/5 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg font-semibold">Notificações</h2>
-              <p className="text-sm text-muted-foreground">
-                {naoLidas} não lida{naoLidas !== 1 ? 's' : ''}
-              </p>
+          <div className="flex flex-col space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold">Notificações</h2>
+                <p className="text-sm text-muted-foreground">
+                  {naoLidas} não lida{naoLidas !== 1 ? 's' : ''}
+                </p>
+              </div>
             </div>
             {naoLidas > 0 && (
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={marcarTodasComoLidas}
+                className="self-start"
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 Marcar todas como lidas
@@ -227,7 +230,6 @@ export default function Notificacoes() {
                     <div className={`p-2 rounded-full ${
                       notificacao.tipo === 'agendamento' ? 'bg-primary/10 text-primary' :
                       notificacao.tipo === 'saude' ? 'bg-destructive/10 text-destructive' :
-                      notificacao.tipo === 'lembrete' ? 'bg-warning/10 text-warning' :
                       'bg-muted text-muted-foreground'
                     } shrink-0`}>
                       <IconComponent className="h-5 w-5" />
@@ -254,9 +256,8 @@ export default function Notificacoes() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <Badge variant={getVariantByType(notificacao.tipo)} className="text-xs">
-                            {notificacao.tipo === 'agendamento' ? 'Agendamento' :
-                             notificacao.tipo === 'saude' ? 'Saúde' :
-                             notificacao.tipo === 'lembrete' ? 'Lembrete' : 'Sistema'}
+                            {notificacao.tipo === 'agendamento' ? 'Consulta' :
+                             notificacao.tipo === 'saude' ? 'Saúde' : 'Sistema'}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {formatarTempo(notificacao.data, notificacao.hora)}
