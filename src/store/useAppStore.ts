@@ -1,5 +1,6 @@
 // Store principal do app usando Zustand
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Usuario, AppTab, LoadingState, NotificationType } from '../lib/types';
 import { mockUsuario } from '../lib/stubs/data';
 
@@ -32,46 +33,58 @@ interface AppState {
   toggleDarkMode: () => void;
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
-  // Initial state - sem usuário logado por padrão
-  usuario: null,
-  isLoggedIn: false,
-  activeTab: 'inicio',
-  loadingState: 'idle',
-  notification: null,
-  isDarkMode: false,
-  
-  // Actions
-  setUsuario: (usuario) => set({ usuario, isLoggedIn: true }),
-  
-  logout: () => set({ 
-    usuario: null, 
-    isLoggedIn: false,
-    activeTab: 'inicio'
-  }),
-  
-  setActiveTab: (tab) => set({ activeTab: tab }),
-  
-  setLoadingState: (state) => set({ loadingState: state }),
-  
-  showNotification: (message, type) => set({
-    notification: { show: true, message, type }
-  }),
-  
-  hideNotification: () => set({ notification: null }),
-  
-  toggleDarkMode: () => {
-    const { isDarkMode } = get();
-    set({ isDarkMode: !isDarkMode });
-    
-    // Apply theme to document
-    if (!isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
+      // Initial state - sem usuário logado por padrão
+      usuario: null,
+      isLoggedIn: false,
+      activeTab: 'inicio',
+      loadingState: 'idle',
+      notification: null,
+      isDarkMode: false,
+      
+      // Actions
+      setUsuario: (usuario) => set({ usuario, isLoggedIn: true }),
+      
+      logout: () => set({ 
+        usuario: null, 
+        isLoggedIn: false,
+        activeTab: 'inicio'
+      }),
+      
+      setActiveTab: (tab) => set({ activeTab: tab }),
+      
+      setLoadingState: (state) => set({ loadingState: state }),
+      
+      showNotification: (message, type) => set({
+        notification: { show: true, message, type }
+      }),
+      
+      hideNotification: () => set({ notification: null }),
+      
+      toggleDarkMode: () => {
+        const { isDarkMode } = get();
+        set({ isDarkMode: !isDarkMode });
+        
+        // Apply theme to document
+        if (!isDarkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    }),
+    {
+      name: 'saude-cidadao-storage', // nome único para o localStorage
+      partialize: (state) => ({ 
+        usuario: state.usuario, 
+        isLoggedIn: state.isLoggedIn,
+        isDarkMode: state.isDarkMode 
+      }), // apenas persistir os dados essenciais
     }
-  }
-}));
+  )
+);
 
 // Selector hooks para performance
 export const useUsuario = () => useAppStore((state) => state.usuario);
