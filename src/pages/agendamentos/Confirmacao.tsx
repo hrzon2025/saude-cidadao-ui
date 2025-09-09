@@ -236,7 +236,7 @@ export default function ConfirmacaoAgendamento() {
             variant="outline" 
             onClick={handleVoltar}
             disabled={confirmando}
-            className="flex-1 bg-white"
+            className="flex-1"
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Voltar
@@ -264,18 +264,18 @@ export default function ConfirmacaoAgendamento() {
           navigate('/inicio');
         }
       }}>
-        <DialogContent className="max-w-sm mx-auto p-0 bg-white rounded-3xl border-0 shadow-xl">
+        <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
           <div className="p-8 text-center space-y-6">
             {/* Success Icon */}
-            <div className="mx-auto w-20 h-20 bg-[#4a9c4a]/20 rounded-full flex items-center justify-center">
-              <div className="w-16 h-16 bg-[#4a9c4a] rounded-full flex items-center justify-center">
-                <Check className="w-8 h-8 text-white" strokeWidth={3} />
+            <div className="mx-auto w-20 h-20 bg-success/20 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-success rounded-full flex items-center justify-center">
+                <Check className="w-8 h-8 text-success-foreground" strokeWidth={3} />
               </div>
             </div>
 
             {/* Title */}
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold text-[#4a9c4a]">
+              <h2 className="text-2xl font-bold text-success">
                 Agendamento
                 <br />
                 Confirmado!
@@ -327,7 +327,7 @@ export default function ConfirmacaoAgendamento() {
             {/* Action Button */}
             <Button 
               onClick={() => navigate('/agendamentos')}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-2xl text-lg font-semibold"
+              className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold"
             >
               <Calendar className="w-5 h-5 mr-2" />
               Ver Agendamentos
