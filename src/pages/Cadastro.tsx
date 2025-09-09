@@ -172,6 +172,7 @@ export default function Cadastro() {
         nome: nome,
         sobrenome: sobrenome,
         email: email,
+        senha: senha, // Adicionar a senha na tabela usuarios
         cpf: cpf,
         data_nascimento: dataNascimento,
         genero: genero,
