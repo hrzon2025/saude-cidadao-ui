@@ -12,7 +12,7 @@ export function WelcomeHeader({ onNotifications }: WelcomeHeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full bg-primary text-primary-foreground">
       <div className="max-w-md mx-auto">
-        <div className="flex h-24 items-center justify-between px-6 rounded-b-2xl bg-primary">
+        <div className="flex h-24 items-center justify-between px-6 rounded-b-3xl bg-primary">
           {/* Left side - User info */}
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-primary-foreground/20 rounded-full flex items-center justify-center">
