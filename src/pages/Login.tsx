@@ -87,10 +87,6 @@ export default function Login() {
         }
       });
       
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Redirecionando para a página inicial...",
-      });
       navigate("/inicio");
       
     } catch (error) {
