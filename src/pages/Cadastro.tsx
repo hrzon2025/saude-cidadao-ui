@@ -284,7 +284,7 @@ export default function Cadastro() {
                   {fotoPerfilUrl ? <img src={fotoPerfilUrl} alt="Foto de perfil" className="w-full h-full object-cover" /> : <Camera className="h-8 w-8 text-muted-foreground" />}
                 </div>
                 <input type="file" accept="image/*" capture="environment" onChange={handleFotoPerfilChange} className="absolute inset-0 opacity-0 cursor-pointer" aria-label="Adicionar foto de perfil" />
-                <button type="button" className="text-purple-600 text-sm mt-2 block text-center w-full pointer-events-none">
+                <button type="button" className="text-primary text-sm mt-2 block text-center w-full pointer-events-none">
                   {fotoPerfilUrl ? "Alterar" : "Adicionar"}
                 </button>
               </div>
@@ -301,21 +301,21 @@ export default function Cadastro() {
                   <Label htmlFor="nome">
                     Nome <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="nome" value={nome} onChange={e => setNome(e.target.value)} className="h-12 bg-white" required />
+                  <Input id="nome" value={nome} onChange={e => setNome(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label htmlFor="sobrenome">
                     Sobrenome <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="sobrenome" value={sobrenome} onChange={e => setSobrenome(e.target.value)} className="h-12 bg-white" required />
+                  <Input id="sobrenome" value={sobrenome} onChange={e => setSobrenome(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label htmlFor="email-cadastro">
                     E-mail <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="email-cadastro" type="email" value={email} onChange={e => setEmail(e.target.value)} className="h-12 bg-white" required />
+                  <Input id="email-cadastro" type="email" value={email} onChange={e => setEmail(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
@@ -323,7 +323,7 @@ export default function Cadastro() {
                     Senha <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
-                    <Input id="senha-cadastro" type={showPassword ? "text" : "password"} placeholder="Senha (mínimo de 6 caracteres)" value={senha} onChange={e => setSenha(e.target.value)} className="h-12 pr-10 bg-white" required />
+                    <Input id="senha-cadastro" type={showPassword ? "text" : "password"} placeholder="Senha (mínimo de 6 caracteres)" value={senha} onChange={e => setSenha(e.target.value)} className="h-12 pr-10" required />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
                       {showPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
                     </button>
@@ -335,7 +335,7 @@ export default function Cadastro() {
                     Repetir senha <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
-                    <Input id="confirmar-senha" type={showConfirmPassword ? "text" : "password"} value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="h-12 pr-10 bg-white" required />
+                    <Input id="confirmar-senha" type={showConfirmPassword ? "text" : "password"} value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="h-12 pr-10" required />
                     <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center">
                       {showConfirmPassword ? <EyeOff className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
                     </button>
@@ -355,20 +355,20 @@ export default function Cadastro() {
                   <Label htmlFor="cpf">
                     CPF <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="cpf" value={cpf} onChange={e => setCpf(formatarCPF(e.target.value))} placeholder="000.000.000-00" className="h-12 bg-white" maxLength={14} required />
+                  <Input id="cpf" value={cpf} onChange={e => setCpf(formatarCPF(e.target.value))} placeholder="000.000.000-00" className="h-12" maxLength={14} required />
                 </div>
 
                 <div>
                   <Label htmlFor="nascimento">
                     Data de nascimento <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="nascimento" type="date" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} className="h-12 bg-white" required />
+                  <Input id="nascimento" type="date" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label>Gênero</Label>
                   <Select value={genero} onValueChange={setGenero}>
-                    <SelectTrigger className="h-12 bg-white">
+                    <SelectTrigger className="h-12">
                       <SelectValue placeholder="Selecione" />
                     </SelectTrigger>
                     <SelectContent>
@@ -382,12 +382,12 @@ export default function Cadastro() {
 
                 <div>
                   <Label htmlFor="celular">Celular</Label>
-                  <Input id="celular" value={celular} onChange={e => setCelular(formatarTelefone(e.target.value))} placeholder="(11) 99999-9999" className="h-12 bg-white" />
+                  <Input id="celular" value={celular} onChange={e => setCelular(formatarTelefone(e.target.value))} placeholder="(11) 99999-9999" className="h-12" />
                 </div>
 
                 <div>
                   <Label htmlFor="cns">CNS (Cartão Nacional do SUS)</Label>
-                  <Input id="cns" value={cns} onChange={e => setCns(e.target.value)} placeholder="000 0000 0000 0000" className="h-12 bg-white" maxLength={15} />
+                  <Input id="cns" value={cns} onChange={e => setCns(e.target.value)} placeholder="000 0000 0000 0000" className="h-12" maxLength={15} />
                   <p className="text-xs text-muted-foreground mt-1">
                     Número do seu Cartão Nacional do SUS (opcional)
                   </p>
@@ -406,7 +406,7 @@ export default function Cadastro() {
                   <Label htmlFor="cep">
                     CEP <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="cep" value={cep} onChange={handleCepChange} placeholder="00000-000" className="h-12 bg-white" maxLength={9} required />
+                  <Input id="cep" value={cep} onChange={handleCepChange} placeholder="00000-000" className="h-12" maxLength={9} required />
                   {loadingCep && <div className="text-xs text-muted-foreground mt-1">Buscando CEP...</div>}
                 </div>
 
@@ -415,27 +415,27 @@ export default function Cadastro() {
                     <Label htmlFor="logradouro">
                       Logradouro <span className="text-red-500">*</span>
                     </Label>
-                    <Input id="logradouro" value={logradouro} onChange={e => setLogradouro(e.target.value)} className="h-12 bg-white" required />
+                    <Input id="logradouro" value={logradouro} onChange={e => setLogradouro(e.target.value)} className="h-12" required />
                   </div>
 
                   <div>
                     <Label htmlFor="numero">
                       Número <span className="text-red-500">*</span>
                     </Label>
-                    <Input id="numero" value={numero} onChange={e => setNumero(e.target.value)} className="h-12 bg-white" required />
+                    <Input id="numero" value={numero} onChange={e => setNumero(e.target.value)} className="h-12" required />
                   </div>
                 </div>
 
                 <div>
                   <Label htmlFor="complemento">Complemento</Label>
-                  <Input id="complemento" value={complemento} onChange={e => setComplemento(e.target.value)} className="h-12 bg-white" />
+                  <Input id="complemento" value={complemento} onChange={e => setComplemento(e.target.value)} className="h-12" />
                 </div>
 
                 <div>
                   <Label htmlFor="bairro">
                     Bairro <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="bairro" value={bairro} onChange={e => setBairro(e.target.value)} className="h-12 bg-white" required />
+                  <Input id="bairro" value={bairro} onChange={e => setBairro(e.target.value)} className="h-12" required />
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
@@ -443,7 +443,7 @@ export default function Cadastro() {
                     <Label htmlFor="cidade">
                       Cidade <span className="text-red-500">*</span>
                     </Label>
-                    <Input id="cidade" value={cidade} onChange={e => setCidade(e.target.value)} className="h-12 bg-white" required />
+                    <Input id="cidade" value={cidade} onChange={e => setCidade(e.target.value)} className="h-12" required />
                   </div>
 
                   <div>
@@ -451,7 +451,7 @@ export default function Cadastro() {
                       UF <span className="text-red-500">*</span>
                     </Label>
                     <Select value={uf} onValueChange={setUf} required>
-                      <SelectTrigger className="h-12 bg-white">
+                      <SelectTrigger className="h-12">
                         <SelectValue placeholder="UF" />
                       </SelectTrigger>
                       <SelectContent>
@@ -477,18 +477,18 @@ export default function Cadastro() {
               <Checkbox id="termos" checked={aceitouTermos} onCheckedChange={checked => setAceitouTermos(checked === true)} className="mt-1" />
               <label htmlFor="termos" className="text-sm leading-relaxed">
                 Ao cadastrar-se, você concorda com nosso{" "}
-                <span className="text-purple-600 underline">Termo de uso.</span>
+                <span className="text-primary underline">Termo de uso.</span>
               </label>
             </div>
 
             {/* Botão de cadastro */}
-            <Button type="submit" className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl" disabled={loading || !aceitouTermos}>
+            <Button type="submit" className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-xl" disabled={loading || !aceitouTermos}>
               {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
 
             {/* Botão voltar ao login */}
             <div className="text-center mt-4">
-              <button type="button" onClick={() => navigate("/login")} className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors">
+              <button type="button" onClick={() => navigate("/login")} className="text-primary hover:text-primary-hover text-sm font-medium transition-colors">
                 Voltar ao login
               </button>
             </div>
@@ -506,7 +506,7 @@ export default function Cadastro() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end">
-            <Button onClick={handleSuccessDialogClose} className="bg-purple-600 hover:bg-purple-700">
+            <Button onClick={handleSuccessDialogClose} className="bg-primary hover:bg-primary-hover">
               OK
             </Button>
           </div>

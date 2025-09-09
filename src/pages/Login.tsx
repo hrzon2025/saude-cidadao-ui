@@ -115,7 +115,7 @@ export default function Login() {
               </h1>
               <Link 
                 to="/cadastro" 
-                className="text-purple-600 hover:text-purple-700 transition-colors"
+                className="text-primary hover:text-primary-hover transition-colors"
               >
                 Ou crie uma nova conta
               </Link>
@@ -132,7 +132,7 @@ export default function Login() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 bg-white"
+                  className="h-12"
                 />
               </div>
 
@@ -147,7 +147,7 @@ export default function Login() {
                     placeholder="Senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
-                    className="h-12 pr-10 bg-white"
+                    className="h-12 pr-10"
                   />
                   <button
                     type="button"
@@ -166,7 +166,7 @@ export default function Login() {
               <div className="text-right">
                 <Link 
                   to="/esqueci-senha" 
-                  className="text-purple-600 hover:text-purple-700 transition-colors text-sm"
+                  className="text-primary hover:text-primary-hover transition-colors text-sm"
                 >
                   Esqueceu sua senha?
                 </Link>
@@ -174,7 +174,7 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl"
+                className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-xl"
                 disabled={loading}
               >
                 {loading ? "Entrando..." : "Entrar"}

@@ -214,9 +214,7 @@ const CartaoSus = () => {
       });
     }
   };
-  return <div className="min-h-screen flex flex-col" style={{
-    backgroundColor: '#f9fafc'
-  }}>
+  return <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       <div className="flex items-center p-4 bg-primary text-primary-foreground">
         <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
@@ -237,7 +235,7 @@ const CartaoSus = () => {
                   <p className="text-sm opacity-90">Sistema Único de Saúde</p>
                 </div>
                 <div className="text-right">
-                  <div className="w-12 h-8 bg-white rounded flex items-center justify-center">
+                  <div className="w-12 h-8 bg-primary-foreground rounded flex items-center justify-center">
                     <span className="text-green-600 font-bold text-xs">SUS</span>
                   </div>
                 </div>
@@ -280,14 +278,14 @@ const CartaoSus = () => {
               Baixar PDF
             </Button>
 
-            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12 bg-white border text-black">
+            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
               <Share className="w-4 h-4 mr-2" />
               Compartilhar
             </Button>
           </div>
 
           {/* Informações adicionais */}
-          <div className="mt-6 p-4 bg-white rounded-lg border">
+          <div className="mt-6 p-4 bg-card rounded-lg border">
             <h4 className="font-semibold mb-2 text-sm">Informações importantes:</h4>
             <ul className="text-xs text-muted-foreground space-y-1">
               <li>• Este cartão tem validade em todo território nacional</li>

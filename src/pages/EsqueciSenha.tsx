@@ -45,7 +45,7 @@ const EsqueciSenha = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Conteúdo principal */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12">
         <div className="mx-auto w-full max-w-sm">
@@ -53,8 +53,8 @@ const EsqueciSenha = () => {
             {/* Ícone e título */}
             <div className="text-center">
               <div className="flex items-center justify-center mb-6">
-                <div className="bg-purple-100 p-3 rounded-full">
-                  <Mail className="h-8 w-8 text-purple-600" />
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <Mail className="h-8 w-8 text-primary" />
                 </div>
               </div>
               <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -84,7 +84,7 @@ const EsqueciSenha = () => {
               
               <Button 
                 type="submit" 
-                className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl" 
+                className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-xl" 
                 disabled={loading}
               >
                 {loading ? "Enviando..." : "Enviar instruções"}
@@ -93,7 +93,7 @@ const EsqueciSenha = () => {
               <div className="text-center">
                 <Link 
                   to="/login" 
-                  className="text-purple-600 hover:text-purple-700 transition-colors text-sm"
+                  className="text-primary hover:text-primary-hover transition-colors text-sm"
                 >
                   Voltar para o login
                 </Link>
