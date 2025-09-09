@@ -37,6 +37,7 @@ import FarmaciaPopular from "./pages/FarmaciaPopular";
 import ComponentesEspecializados from "./pages/ComponentesEspecializados";
 import ComissaoFarmacologia from "./pages/ComissaoFarmacologia";
 import FAQ from "./pages/FAQ";
+import EditarPerfil from "./pages/EditarPerfil";
 
 const queryClient = new QueryClient();
 
@@ -113,7 +114,7 @@ const App = () => {
                <Route path="/fila-regulacao" element={<ProtectedRoute><div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div></ProtectedRoute>} />
                
                {/* Perfil - Protected Routes */}
-               <Route path="/perfil/editar" element={<ProtectedRoute><div className="p-8 text-center">Editar Perfil - Em desenvolvimento</div></ProtectedRoute>} />
+               <Route path="/perfil/editar" element={<ProtectedRoute><EditarPerfil /></ProtectedRoute>} />
                <Route path="/perfil/configuracoes" element={<ProtectedRoute><div className="p-8 text-center">Configurações - Em desenvolvimento</div></ProtectedRoute>} />
               
               {/* Auth */}
