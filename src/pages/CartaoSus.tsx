@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Download, Share, Info } from "lucide-react";
+import { ArrowLeft, Download, Share, Info, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { getUsuario } from "@/lib/stubs/usuario";
+import { useAppStore } from "@/store/useAppStore";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import { Share as CapacitorShare } from "@capacitor/share";
@@ -15,13 +15,74 @@ const CartaoSus = () => {
   const {
     toast
   } = useToast();
+  const { usuario } = useAppStore();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const cartaoRef = useRef<HTMLDivElement>(null);
-  const usuario = getUsuario();
+  
+  // Se não houver usuário ou CNS, mostrar mensagem
+  if (!usuario || !usuario.cns) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-subtle">
+        {/* Header */}
+        <div className="flex items-center p-4 bg-primary text-primary-foreground">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-xl font-semibold ml-2">Cartão SUS Virtual</h1>
+        </div>
+
+        {/* Conteúdo de CNS não registrado */}
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="max-w-sm mx-auto text-center">
+            <Card className="p-8">
+              <div className="space-y-6">
+                <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center">
+                  <CreditCard className="w-8 h-8 text-muted-foreground" />
+                </div>
+                
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Cartão Nacional do SUS não registrado
+                  </h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Para visualizar seu cartão virtual, é necessário cadastrar o número do seu CNS (Cartão Nacional do SUS) no seu perfil.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <Button 
+                    onClick={() => navigate('/perfil')} 
+                    className="w-full"
+                  >
+                    Ir para o Perfil
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => navigate('/inicio')} 
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Voltar ao Início
+                  </Button>
+                </div>
+                
+                <div className="text-xs text-muted-foreground">
+                  <p className="font-medium mb-1">Como obter o CNS:</p>
+                  <p>Procure uma unidade básica de saúde próxima com um documento oficial com foto.</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
   useEffect(() => {
+    if (!usuario?.cns) return;
+    
     // Gerar QR Code com os dados do cartão SUS
     const dadosCartao = {
-      nome: `${usuario.nome} ${usuario.sobrenome}`,
+      nome: usuario.nome,
       cpf: usuario.cpf,
       cns: usuario.cns,
       dataNascimento: usuario.dataNascimento
@@ -55,7 +116,7 @@ const CartaoSus = () => {
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.download = `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`;
+          link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -93,7 +154,7 @@ const CartaoSus = () => {
         
         await CapacitorShare.share({
           title: 'Meu Cartão SUS',
-          text: `Cartão SUS de ${usuario.nome} ${usuario.sobrenome}`,
+          text: `Cartão SUS de ${usuario.nome}`,
           url: imageData,
           dialogTitle: 'Compartilhar Cartão SUS'
         });
@@ -107,13 +168,13 @@ const CartaoSus = () => {
         if (navigator.share) {
           canvas.toBlob(async (blob) => {
             if (blob) {
-              const file = new File([blob], `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`, {
+              const file = new File([blob], `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`, {
                 type: 'image/png'
               });
               
               await navigator.share({
                 title: 'Meu Cartão SUS',
-                text: `Cartão SUS de ${usuario.nome} ${usuario.sobrenome}`,
+                text: `Cartão SUS de ${usuario.nome}`,
                 files: [file]
               });
               
@@ -130,7 +191,7 @@ const CartaoSus = () => {
               const url = URL.createObjectURL(blob);
               const link = document.createElement('a');
               link.href = url;
-              link.download = `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`;
+              link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);
@@ -185,7 +246,7 @@ const CartaoSus = () => {
               <div className="space-y-3">
                 <div>
                   <p className="text-xs opacity-75">NOME DO USUÁRIO</p>
-                  <p className="font-semibold text-sm">{usuario.nome} {usuario.sobrenome}</p>
+                  <p className="font-semibold text-sm">{usuario.nome}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -195,13 +256,13 @@ const CartaoSus = () => {
                   </div>
                   <div>
                     <p className="text-xs opacity-75">DATA NASC.</p>
-                    <p className="font-semibold text-sm">{usuario.dataNascimento}</p>
+                    <p className="font-semibold text-sm">{new Date(usuario.dataNascimento).toLocaleDateString('pt-BR')}</p>
                   </div>
                 </div>
 
                 <div>
                   <p className="text-xs opacity-75">NÚMERO DO CARTÃO SUS</p>
-                  <p className="font-bold text-lg tracking-wider">{usuario.numeroCartaoSus}</p>
+                  <p className="font-bold text-lg tracking-wider">{usuario.cns}</p>
                 </div>
               </div>
             </CardContent>

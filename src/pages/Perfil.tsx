@@ -136,6 +136,16 @@ export default function Perfil() {
                 </p>
               </div>
             </div>
+
+            <div className="flex items-center space-x-3">
+              <CreditCard className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium">CNS</p>
+                <p className="text-sm text-muted-foreground">
+                  {usuario.cns || "Não informado"}
+                </p>
+              </div>
+            </div>
             
             <div className="flex items-center space-x-3">
               <Calendar className="h-5 w-5 text-muted-foreground" />

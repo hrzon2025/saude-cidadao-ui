@@ -37,6 +37,7 @@ export default function Cadastro() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [genero, setGenero] = useState("");
   const [celular, setCelular] = useState("");
+  const [cns, setCns] = useState(""); // Campo CNS não obrigatório
 
   // Endereço
   const [cep, setCep] = useState("");
@@ -171,6 +172,7 @@ export default function Cadastro() {
         data_nascimento: dataNascimento,
         genero: genero,
         celular: celular,
+        cns: cns.trim() || null, // Incluir CNS se informado
       })
       .select()
       .single();
@@ -381,6 +383,14 @@ export default function Cadastro() {
                 <div>
                   <Label htmlFor="celular">Celular</Label>
                   <Input id="celular" value={celular} onChange={e => setCelular(formatarTelefone(e.target.value))} placeholder="(11) 99999-9999" className="h-12 bg-white" />
+                </div>
+
+                <div>
+                  <Label htmlFor="cns">CNS (Cartão Nacional do SUS)</Label>
+                  <Input id="cns" value={cns} onChange={e => setCns(e.target.value)} placeholder="000 0000 0000 0000" className="h-12 bg-white" maxLength={15} />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Número do seu Cartão Nacional do SUS (opcional)
+                  </p>
                 </div>
               </div>
             </div>
