@@ -145,7 +145,11 @@ export default function Cadastro() {
       email: email,
       password: senha,
       options: {
-        emailRedirectTo: `${window.location.origin}/`
+        emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          nome: nome,
+          sobrenome: sobrenome
+        }
       }
     });
 
@@ -157,6 +161,8 @@ export default function Cadastro() {
     if (!authData.user) {
       throw new Error("Erro ao criar conta de autenticação");
     }
+
+    console.log('Usuário criado no Auth:', authData.user.id);
 
     // 2. Inserir dados na tabela usuarios usando o ID do usuário autenticado
     const { data: usuario, error: errorUsuario } = await supabase
@@ -175,10 +181,16 @@ export default function Cadastro() {
       .single();
 
     if (errorUsuario) {
+      console.error('Erro ao inserir na tabela usuarios:', errorUsuario);
       // Se houver erro ao inserir na tabela usuarios, fazer cleanup da conta Auth
-      await supabase.auth.signOut();
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(authData.user.id);
+      if (deleteError) {
+        console.error('Erro ao fazer cleanup do usuário Auth:', deleteError);
+      }
       throw new Error("Erro ao cadastrar usuário: " + errorUsuario.message);
     }
+
+    console.log('Usuário inserido na tabela usuarios:', usuario);
 
     // 3. Inserir endereço
     const { error: errorEndereco } = await supabase
@@ -195,10 +207,19 @@ export default function Cadastro() {
       });
 
     if (errorEndereco) {
+      console.error('Erro ao inserir endereço:', errorEndereco);
       // Se houver erro no endereço, fazer cleanup
-      await supabase.auth.signOut();
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(authData.user.id);
+      if (deleteError) {
+        console.error('Erro ao fazer cleanup do usuário Auth:', deleteError);
+      }
       throw new Error("Erro ao cadastrar endereço: " + errorEndereco.message);
     }
+
+    console.log('Endereço inserido com sucesso');
+
+    // 4. Fazer logout para forçar o usuário a fazer login manual
+    await supabase.auth.signOut();
 
     return usuario;
   };
