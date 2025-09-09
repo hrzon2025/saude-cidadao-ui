@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Download, Share, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,12 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { getUsuario } from "@/lib/stubs/usuario";
 import QRCode from "qrcode";
+import html2canvas from "html2canvas";
 const CartaoSus = () => {
   const navigate = useNavigate();
   const {
     toast
   } = useToast();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
+  const cartaoRef = useRef<HTMLDivElement>(null);
   const usuario = getUsuario();
   useEffect(() => {
     // Gerar QR Code com os dados do cartão SUS
@@ -35,11 +37,42 @@ const CartaoSus = () => {
       console.error("Erro ao gerar QR Code:", err);
     });
   }, [usuario]);
-  const handleBaixarPdf = () => {
-    toast({
-      title: "PDF baixado",
-      description: "O cartão SUS foi salvo como PDF com sucesso."
-    });
+  const handleBaixarPdf = async () => {
+    if (!cartaoRef.current) return;
+    
+    try {
+      const canvas = await html2canvas(cartaoRef.current, {
+        scale: 2,
+        backgroundColor: null,
+        useCORS: true,
+      });
+      
+      // Converter canvas para blob
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          
+          toast({
+            title: "Cartão baixado",
+            description: "O cartão SUS foi salvo como imagem com sucesso."
+          });
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Erro ao gerar imagem:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível gerar a imagem do cartão.",
+        variant: "destructive"
+      });
+    }
   };
   const handleCompartilhar = () => {
     toast({
@@ -62,7 +95,7 @@ const CartaoSus = () => {
       <div className="flex-1 p-6 px-[2px]">
         <div className="max-w-sm mx-auto px-[12px] py-px">
           {/* Card do Cartão SUS */}
-          <Card className="bg-gradient-sus text-white mb-6">
+          <Card ref={cartaoRef} className="bg-gradient-sus text-white mb-6">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
