@@ -11,8 +11,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { usuario, isLoggedIn } = useAppStore();
 
   useEffect(() => {
-    console.log('ProtectedRoute - Estado atual:', { usuario: !!usuario, isLoggedIn });
-    
     if (!usuario || !isLoggedIn) {
       // Redireciona para login se não estiver logado
       navigate("/login", { replace: true });
