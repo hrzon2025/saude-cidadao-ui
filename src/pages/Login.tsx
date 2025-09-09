@@ -52,15 +52,31 @@ export default function Login() {
         password: senha,
       });
 
+      // 3. Se der erro de "email not confirmed", vamos ignorar e permitir login mesmo assim
+      if (authError && authError.message === "Email not confirmed") {
+        console.log('Email não confirmado, mas permitindo login baseado na tabela usuarios');
+        
+        // Verificar se a senha confere com a tabela usuarios
+        if (usuarioData.senha !== senha) {
+          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+          setShowErrorDialog(true);
+          return;
+        }
+        
+        // Login bem-sucedido mesmo sem confirmação
+        console.log('Login bem-sucedido (sem confirmação de email):', { usuario: usuarioData });
+        toast({
+          title: "Login realizado com sucesso!",
+          description: "Redirecionando para a página inicial...",
+        });
+        navigate("/inicio");
+        return;
+      }
+      
+      // 4. Outros erros de autenticação
       if (authError) {
         console.error('Erro de autenticação:', authError);
-        
-        // Verificar se é problema de email não confirmado
-        if (authError.message === "Email not confirmed") {
-          setErrorMessage("Sua conta foi criada mas o email ainda não foi confirmado. Entre em contato com o suporte.");
-        } else {
-          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
-        }
+        setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
         setShowErrorDialog(true);
         return;
       }
@@ -71,7 +87,7 @@ export default function Login() {
         return;
       }
 
-      // 3. Se chegou até aqui, o login foi bem-sucedido
+      // 5. Se chegou até aqui, o login foi bem-sucedido
       console.log('Login bem-sucedido:', { usuario: usuarioData, auth: authData });
       toast({
         title: "Login realizado com sucesso!",
