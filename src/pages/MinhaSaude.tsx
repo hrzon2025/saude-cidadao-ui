@@ -12,7 +12,8 @@ import {
   Info,
   Plus,
   Check,
-  X 
+  X,
+  ChevronRight 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -117,7 +118,7 @@ export default function MinhaSaude() {
       value: editValues.altura,
       status: "",
       color: "text-purple-500",
-      placeholder: "1,75 m"
+      placeholder: "175 cm"
     },
     {
       icon: Info,
@@ -312,6 +313,9 @@ export default function MinhaSaude() {
                             </div>
                           )}
                         </div>
+                        {medicao.key === "alergias" && !isEditing && (
+                          <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                        )}
                       </div>
                     </div>
                     {index < medicoesConfig.length - 1 && (
