@@ -82,7 +82,7 @@ export default function MinhaSaude() {
       value: editValues.pressao_arterial,
       status: editValues.pressao_arterial !== "N/A" ? "(normal)" : "",
       color: "text-red-500",
-      placeholder: "120/80 mmHg"
+      placeholder: "120/80"
     },
     {
       icon: Droplet,
@@ -303,7 +303,13 @@ export default function MinhaSaude() {
                           ) : (
                             <div className="flex items-center space-x-1">
                               <span className={`text-sm ${medicao.value === "N/A" ? "text-muted-foreground" : "text-foreground"}`}>
-                                {medicao.value}
+                                {medicao.value === "N/A" ? medicao.value : 
+                                  medicao.key === "peso" ? `${medicao.value} kg` :
+                                  medicao.key === "altura" ? `${medicao.value} cm` :
+                                  medicao.key === "pressao_arterial" && medicao.value !== "N/A" ? 
+                                    medicao.value.includes('/') ? medicao.value : `${medicao.value}/80` :
+                                  medicao.value
+                                }
                               </span>
                               {medicao.status && medicao.value !== "N/A" && (
                                 <span className="text-sm text-muted-foreground">
