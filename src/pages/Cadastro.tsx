@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 interface EnderecoData {
   logradouro: string;
   bairro: string;
@@ -98,6 +99,33 @@ export default function Cadastro() {
     const telLimpo = value.replace(/\D/g, "");
     return telLimpo.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
   };
+
+  const formatarDataParaAPI = (dateString: string) => {
+    // Converte de YYYY-MM-DD para YYYYMMDD
+    return dateString.replace(/-/g, '');
+  };
+
+  const consultarAPIValidacao = async (cpfLimpo: string, dataFormatada: string) => {
+    try {
+      const response = await fetch('https://homologacao.mbx.portalmas.com.br/mobilex.rule?sys=MOB&acao=consultarUsuario', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cpf: cpfLimpo,
+          dataNascimento: dataFormatada,
+          cns: ""
+        })
+      });
+
+      const data = await response.json();
+      return { success: response.status === 200, data, status: response.status };
+    } catch (error) {
+      console.error('Erro na API de validação:', error);
+      return { success: false, error };
+    }
+  };
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
@@ -119,13 +147,68 @@ export default function Cadastro() {
       showNotification("CPF deve ter 11 dígitos", "error");
       return;
     }
+
     try {
       setLoading(true);
-      // Simular cadastro
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // 1. Consultar API externa para validação
+      const dataFormatada = formatarDataParaAPI(dataNascimento);
+      const validacaoResult = await consultarAPIValidacao(cpfLimpo, dataFormatada);
+      
+      if (!validacaoResult.success) {
+        showNotification("Usuário não autorizado. Verifique os dados (CPF e Data de Nascimento) e tente novamente.", "error");
+        return;
+      }
+
+      // 2. Se validação passou - criar usuário na tabela usuarios
+      const { data: novoUsuario, error: erroUsuario } = await supabase
+        .from('usuarios')
+        .insert({
+          nome,
+          sobrenome,
+          email,
+          cpf,
+          data_nascimento: dataNascimento,
+          genero,
+          celular,
+          foto_perfil_url: fotoPerfilUrl || null,
+          senha // Em produção, use hash da senha
+        })
+        .select()
+        .single();
+
+      if (erroUsuario) {
+        console.error('Erro ao criar usuário:', erroUsuario);
+        showNotification("Erro ao criar usuário. Verifique se email ou CPF já não estão cadastrados.", "error");
+        return;
+      }
+
+      // 3. Criar endereço associado ao usuário
+      const { error: erroEndereco } = await supabase
+        .from('enderecos')
+        .insert({
+          usuario_id: novoUsuario.id,
+          cep: cep.replace(/\D/g, ''),
+          logradouro,
+          numero,
+          complemento: complemento || null,
+          bairro,
+          cidade,
+          uf
+        });
+
+      if (erroEndereco) {
+        console.error('Erro ao criar endereço:', erroEndereco);
+        showNotification("Usuário criado, mas erro ao salvar endereço.", "error");
+        return;
+      }
+
+      // 4. Sucesso - mostrar mensagem e redirecionar
       showNotification("Cadastro realizado com sucesso!", "success");
       navigate("/login");
+      
     } catch (error) {
+      console.error('Erro durante cadastro:', error);
       showNotification("Erro ao realizar cadastro", "error");
     } finally {
       setLoading(false);
