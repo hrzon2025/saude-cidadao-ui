@@ -136,6 +136,7 @@ export type Database = {
       usuarios: {
         Row: {
           celular: string | null
+          cns: string | null
           cpf: string
           created_at: string
           data_nascimento: string
@@ -149,6 +150,7 @@ export type Database = {
         }
         Insert: {
           celular?: string | null
+          cns?: string | null
           cpf: string
           created_at?: string
           data_nascimento: string
@@ -162,6 +164,7 @@ export type Database = {
         }
         Update: {
           celular?: string | null
+          cns?: string | null
           cpf?: string
           created_at?: string
           data_nascimento?: string
