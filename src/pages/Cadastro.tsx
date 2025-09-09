@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 interface EnderecoData {
   logradouro: string;
   bairro: string;
@@ -49,6 +51,10 @@ export default function Cadastro() {
   // Estado do formulário
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Estados para diálogos
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
   const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -98,6 +104,70 @@ export default function Cadastro() {
     const telLimpo = value.replace(/\D/g, "");
     return telLimpo.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
   };
+
+  const formatarDataParaAPI = (data: string) => {
+    // Converte de YYYY-MM-DD para YYYYMMDD
+    return data.replace(/-/g, "");
+  };
+
+  const consultarUsuarioAPI = async (cpfLimpo: string, dataNascimentoFormatada: string) => {
+    const response = await fetch("https://homologacao.mbx.portalmas.com.br/mobilex.rule?sys=MOB&acao=consultarUsuario", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cpf: cpfLimpo,
+        dataNascimento: dataNascimentoFormatada,
+        cns: "",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro na consulta à API");
+    }
+
+    return response.json();
+  };
+
+  const cadastrarUsuario = async (dadosUsuario: any) => {
+    const { data: usuario, error: errorUsuario } = await supabase
+      .from("usuarios")
+      .insert({
+        nome: nome,
+        sobrenome: sobrenome,
+        email: email,
+        cpf: cpf,
+        data_nascimento: dataNascimento,
+        genero: genero,
+        celular: celular,
+      })
+      .select()
+      .single();
+
+    if (errorUsuario) {
+      throw new Error("Erro ao cadastrar usuário: " + errorUsuario.message);
+    }
+
+    const { error: errorEndereco } = await supabase
+      .from("enderecos")
+      .insert({
+        usuario_id: usuario.id,
+        cep: cep,
+        logradouro: logradouro,
+        numero: numero,
+        complemento: complemento,
+        bairro: bairro,
+        cidade: cidade,
+        uf: uf,
+      });
+
+    if (errorEndereco) {
+      throw new Error("Erro ao cadastrar endereço: " + errorEndereco.message);
+    }
+
+    return usuario;
+  };
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
@@ -119,17 +189,40 @@ export default function Cadastro() {
       showNotification("CPF deve ter 11 dígitos", "error");
       return;
     }
+
     try {
       setLoading(true);
-      // Simular cadastro
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      showNotification("Cadastro realizado com sucesso!", "success");
-      navigate("/login");
+
+      // 1. Consultar API externa de validação
+      const dataNascimentoFormatada = formatarDataParaAPI(dataNascimento);
+      const apiResponse = await consultarUsuarioAPI(cpfLimpo, dataNascimentoFormatada);
+
+      // 2. Verificar resposta da API
+      if (Array.isArray(apiResponse) && apiResponse.length > 0) {
+        // API retornou dados válidos - prosseguir com cadastro
+        await cadastrarUsuario(apiResponse[0]);
+        
+        // Mostrar diálogo de sucesso
+        setShowSuccessDialog(true);
+      } else {
+        // API retornou erro ou "Procurar a unidade..."
+        setShowErrorDialog(true);
+      }
     } catch (error) {
+      console.error("Erro no cadastro:", error);
       showNotification("Erro ao realizar cadastro", "error");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSuccessDialogClose = () => {
+    setShowSuccessDialog(false);
+    navigate("/login");
+  };
+
+  const handleErrorDialogClose = () => {
+    setShowErrorDialog(false);
   };
   return <div className="min-h-screen bg-background flex flex-col">
       {/* Conteúdo principal */}
@@ -346,8 +439,41 @@ export default function Cadastro() {
           </form>
         </div>
       </div>
+
+      {/* Diálogo de Sucesso */}
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Sucesso!</DialogTitle>
+            <DialogDescription>
+              Cadastro realizado com sucesso
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button onClick={handleSuccessDialogClose} className="bg-purple-600 hover:bg-purple-700">
+              OK
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Diálogo de Erro */}
+      <Dialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Atenção</DialogTitle>
+            <DialogDescription>
+              CPF não encontrado, por favor, procure a unidade de saúde de referência
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button onClick={handleErrorDialogClose} variant="outline">
+              Fechar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
       
       {/* Espaçamento para evitar sobreposição com a barra de navegação */}
-      
     </div>;
 }
