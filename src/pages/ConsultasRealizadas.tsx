@@ -104,10 +104,10 @@ export default function ConsultasRealizadas() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">Status:</label>
             <Select value={filtroStatus} onValueChange={setFiltroStatus}>
-              <SelectTrigger className="bg-white">
+              <SelectTrigger>
                 <SelectValue placeholder="Selecionar status" />
               </SelectTrigger>
-              <SelectContent className="bg-white border shadow-lg z-50">
+              <SelectContent>
                 <SelectItem value="todos">Todos</SelectItem>
                 <SelectItem value="concluido">Concluído</SelectItem>
                 <SelectItem value="cancelado">Cancelado</SelectItem>
@@ -123,7 +123,7 @@ export default function ConsultasRealizadas() {
                 type="date"
                 value={filtroData}
                 onChange={(e) => setFiltroData(e.target.value)}
-                className="flex-1 bg-white"
+                className="flex-1"
               />
               {filtroData && (
                 <Button 

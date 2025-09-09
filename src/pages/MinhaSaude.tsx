@@ -100,7 +100,7 @@ export default function MinhaSaude() {
       key: "pressao_arterial",
       value: editValues.pressao_arterial,
       status: editValues.pressao_arterial !== "N/A" ? "(normal)" : "",
-      color: "text-red-500",
+      color: "text-destructive",
       placeholder: "120/80"
     },
     {
@@ -127,7 +127,7 @@ export default function MinhaSaude() {
       key: "peso",
       value: editValues.peso,
       status: "",
-      color: "text-orange-500",
+      color: "text-warning",
       placeholder: "72 kg"
     },
     {
@@ -136,7 +136,7 @@ export default function MinhaSaude() {
       key: "altura",
       value: editValues.altura,
       status: "",
-      color: "text-purple-500",
+      color: "text-accent",
       placeholder: "175 cm"
     },
     {
@@ -145,7 +145,7 @@ export default function MinhaSaude() {
       key: "alergias",
       value: alergias.length > 0 ? `${alergias.length} ${alergias.length === 1 ? 'alergia' : 'alergias'}` : "N/A",
       status: "",
-      color: "text-blue-600",
+      color: "text-primary",
       placeholder: "Nenhuma registrada"
     }
   ];

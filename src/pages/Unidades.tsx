@@ -35,7 +35,7 @@ const Unidades = () => {
         {/* Campo de busca */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input type="text" placeholder="Busque por uma unidade ou endereço..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-12 rounded-full bg-muted/50" />
+          <Input type="text" placeholder="Busque por uma unidade ou endereço..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-12 rounded-full" />
         </div>
 
         {/* Toggle localização atual */}

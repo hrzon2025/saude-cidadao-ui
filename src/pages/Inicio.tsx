@@ -15,16 +15,16 @@ import { useNavigate } from "react-router-dom";
 
 const shortcuts = [
   { id: 'agendamentos-novo', label: 'Novo Agendamento', icon: Plus, path: '/agendamentos/novo', color: 'text-primary' },
-  { id: 'agendamentos-lista', label: 'Meus Agendamentos', icon: Calendar, path: '/agendamentos', color: 'text-teal-500' },
-  { id: 'atendimentos', label: 'Consultas realizadas', icon: FileText, path: '/atendimentos', color: 'text-purple-500' },
-  { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-red-500' },
-  { id: 'vacinas', label: 'Vacinas', icon: Syringe, path: '/vacinacao', color: 'text-blue-500' },
-  { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-indigo-500' },
-  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-green-500' },
-  { id: 'farmacia', label: 'Farmácia', icon: ShoppingBag, path: '/farmacia', color: 'text-pink-500' },
-  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-cyan-500' },
-  { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq', color: 'text-yellow-600' },
-  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-orange-500' }
+  { id: 'agendamentos-lista', label: 'Meus Agendamentos', icon: Calendar, path: '/agendamentos', color: 'text-primary' },
+  { id: 'atendimentos', label: 'Consultas realizadas', icon: FileText, path: '/atendimentos', color: 'text-accent' },
+  { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-destructive' },
+  { id: 'vacinas', label: 'Vacinas', icon: Syringe, path: '/vacinacao', color: 'text-primary' },
+  { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-accent' },
+  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-success' },
+  { id: 'farmacia', label: 'Farmácia', icon: ShoppingBag, path: '/farmacia', color: 'text-primary' },
+  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-accent' },
+  { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq', color: 'text-warning' },
+  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-warning' }
 ];
 
 export default function Inicio() {

@@ -299,28 +299,28 @@ export default function Cadastro() {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="nome">
-                    Nome <span className="text-red-500">*</span>
+                    Nome <span className="text-destructive">*</span>
                   </Label>
                   <Input id="nome" value={nome} onChange={e => setNome(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label htmlFor="sobrenome">
-                    Sobrenome <span className="text-red-500">*</span>
+                    Sobrenome <span className="text-destructive">*</span>
                   </Label>
                   <Input id="sobrenome" value={sobrenome} onChange={e => setSobrenome(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label htmlFor="email-cadastro">
-                    E-mail <span className="text-red-500">*</span>
+                    E-mail <span className="text-destructive">*</span>
                   </Label>
                   <Input id="email-cadastro" type="email" value={email} onChange={e => setEmail(e.target.value)} className="h-12" required />
                 </div>
 
                 <div>
                   <Label htmlFor="senha-cadastro">
-                    Senha <span className="text-red-500">*</span>
+                    Senha <span className="text-destructive">*</span>
                   </Label>
                   <div className="relative">
                     <Input id="senha-cadastro" type={showPassword ? "text" : "password"} placeholder="Senha (mínimo de 6 caracteres)" value={senha} onChange={e => setSenha(e.target.value)} className="h-12 pr-10" required />
@@ -332,7 +332,7 @@ export default function Cadastro() {
 
                 <div>
                   <Label htmlFor="confirmar-senha">
-                    Repetir senha <span className="text-red-500">*</span>
+                    Repetir senha <span className="text-destructive">*</span>
                   </Label>
                   <div className="relative">
                     <Input id="confirmar-senha" type={showConfirmPassword ? "text" : "password"} value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} className="h-12 pr-10" required />
@@ -353,14 +353,14 @@ export default function Cadastro() {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="cpf">
-                    CPF <span className="text-red-500">*</span>
+                    CPF <span className="text-destructive">*</span>
                   </Label>
                   <Input id="cpf" value={cpf} onChange={e => setCpf(formatarCPF(e.target.value))} placeholder="000.000.000-00" className="h-12" maxLength={14} required />
                 </div>
 
                 <div>
                   <Label htmlFor="nascimento">
-                    Data de nascimento <span className="text-red-500">*</span>
+                    Data de nascimento <span className="text-destructive">*</span>
                   </Label>
                   <Input id="nascimento" type="date" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} className="h-12" required />
                 </div>
@@ -404,7 +404,7 @@ export default function Cadastro() {
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="cep">
-                    CEP <span className="text-red-500">*</span>
+                    CEP <span className="text-destructive">*</span>
                   </Label>
                   <Input id="cep" value={cep} onChange={handleCepChange} placeholder="00000-000" className="h-12" maxLength={9} required />
                   {loadingCep && <div className="text-xs text-muted-foreground mt-1">Buscando CEP...</div>}
@@ -413,14 +413,14 @@ export default function Cadastro() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
                     <Label htmlFor="logradouro">
-                      Logradouro <span className="text-red-500">*</span>
+                      Logradouro <span className="text-destructive">*</span>
                     </Label>
                     <Input id="logradouro" value={logradouro} onChange={e => setLogradouro(e.target.value)} className="h-12" required />
                   </div>
 
                   <div>
                     <Label htmlFor="numero">
-                      Número <span className="text-red-500">*</span>
+                      Número <span className="text-destructive">*</span>
                     </Label>
                     <Input id="numero" value={numero} onChange={e => setNumero(e.target.value)} className="h-12" required />
                   </div>
@@ -433,7 +433,7 @@ export default function Cadastro() {
 
                 <div>
                   <Label htmlFor="bairro">
-                    Bairro <span className="text-red-500">*</span>
+                    Bairro <span className="text-destructive">*</span>
                   </Label>
                   <Input id="bairro" value={bairro} onChange={e => setBairro(e.target.value)} className="h-12" required />
                 </div>
@@ -441,14 +441,14 @@ export default function Cadastro() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-2">
                     <Label htmlFor="cidade">
-                      Cidade <span className="text-red-500">*</span>
+                      Cidade <span className="text-destructive">*</span>
                     </Label>
                     <Input id="cidade" value={cidade} onChange={e => setCidade(e.target.value)} className="h-12" required />
                   </div>
 
                   <div>
                     <Label>
-                      UF <span className="text-red-500">*</span>
+                      UF <span className="text-destructive">*</span>
                     </Label>
                     <Select value={uf} onValueChange={setUf} required>
                       <SelectTrigger className="h-12">

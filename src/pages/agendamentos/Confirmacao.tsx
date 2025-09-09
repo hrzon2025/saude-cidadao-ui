@@ -280,7 +280,7 @@ export default function ConfirmacaoAgendamento() {
                 <br />
                 Confirmado!
               </h2>
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 Seu agendamento foi realizado
                 <br />
                 com sucesso.
@@ -288,35 +288,35 @@ export default function ConfirmacaoAgendamento() {
             </div>
 
             {/* Details */}
-            <div className="space-y-3 text-left bg-gray-50 rounded-2xl p-4">
+            <div className="space-y-3 text-left bg-muted rounded-2xl p-4">
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Paciente:</span>
-                <span className="text-gray-600 text-right">Usuário do Sistema</span>
+                <span className="font-semibold text-foreground">Paciente:</span>
+                <span className="text-muted-foreground text-right">Usuário do Sistema</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Consulta:</span>
-                <span className="text-gray-600 text-right">{tipoConsulta?.nome}</span>
+                <span className="font-semibold text-foreground">Consulta:</span>
+                <span className="text-muted-foreground text-right">{tipoConsulta?.nome}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Unidade:</span>
-                <span className="text-gray-600 text-right">{unidade?.nome}</span>
+                <span className="font-semibold text-foreground">Unidade:</span>
+                <span className="text-muted-foreground text-right">{unidade?.nome}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Endereço:</span>
-                <span className="text-gray-600 text-right text-sm">{unidade?.endereco}</span>
+                <span className="font-semibold text-foreground">Endereço:</span>
+                <span className="text-muted-foreground text-right text-sm">{unidade?.endereco}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Data:</span>
-                <span className="text-gray-600 text-right">{formatted.data}</span>
+                <span className="font-semibold text-foreground">Data:</span>
+                <span className="text-muted-foreground text-right">{formatted.data}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-900">Hora:</span>
-                <span className="text-gray-600 text-right">{formatted.hora}</span>
+                <span className="font-semibold text-foreground">Hora:</span>
+                <span className="text-muted-foreground text-right">{formatted.hora}</span>
               </div>
             </div>
 
             {/* Bottom Text */}
-            <p className="text-sm text-gray-500 italic">
+            <p className="text-sm text-muted-foreground italic">
               Você pode visualizar todos os seus
               <br />
               agendamentos na aba 'Meus

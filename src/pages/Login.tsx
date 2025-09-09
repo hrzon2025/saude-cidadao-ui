@@ -124,7 +124,7 @@ export default function Login() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">
-                  Email <span className="text-red-500">*</span>
+                  Email <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -138,7 +138,7 @@ export default function Login() {
 
               <div className="space-y-2">
                 <Label htmlFor="senha">
-                  Senha <span className="text-red-500">*</span>
+                  Senha <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative">
                   <Input
