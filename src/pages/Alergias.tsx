@@ -12,7 +12,6 @@ interface Alergia {
   id: string;
   nome: string;
   descricao?: string;
-  gravidade?: 'leve' | 'moderada' | 'grave';
   created_at: string;
 }
 export default function Alergias() {
@@ -29,11 +28,9 @@ export default function Alergias() {
   const [novaAlergia, setNovaAlergia] = useState<{
     nome: string;
     descricao: string;
-    gravidade: 'leve' | 'moderada' | 'grave';
   }>({
     nome: "",
-    descricao: "",
-    gravidade: "leve"
+    descricao: ""
   });
   useEffect(() => {
     if (usuario?.id) {
@@ -74,8 +71,7 @@ export default function Alergias() {
       } = await supabase.from('alergias').insert([{
         usuario_id: usuario?.id,
         nome: novaAlergia.nome.trim(),
-        descricao: novaAlergia.descricao.trim() || null,
-        gravidade: novaAlergia.gravidade
+        descricao: novaAlergia.descricao.trim() || null
       }]);
       if (error) throw error;
       toast({
@@ -84,8 +80,7 @@ export default function Alergias() {
       });
       setNovaAlergia({
         nome: "",
-        descricao: "",
-        gravidade: "leve"
+        descricao: ""
       });
       fetchAlergias();
     } catch (error) {
@@ -115,16 +110,6 @@ export default function Alergias() {
         description: "Não foi possível remover a alergia. Tente novamente.",
         variant: "destructive"
       });
-    }
-  };
-  const getGravidadeColor = (gravidade?: string) => {
-    switch (gravidade) {
-      case 'grave':
-        return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30';
-      case 'moderada':
-        return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30';
-      default:
-        return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30';
     }
   };
   if (loading) {
@@ -202,15 +187,12 @@ export default function Alergias() {
                   </div>
                 </div> : alergias.map(alergia => <div key={alergia.id} className="flex items-start justify-between p-4 rounded-lg bg-muted/50">
                     <div className="flex items-start space-x-3 flex-1">
-                      <div className={`p-2 rounded-full ${getGravidadeColor(alergia.gravidade)}`}>
+                      <div className="p-2 rounded-full bg-primary/10 text-primary">
                         <AlertTriangle className="w-4 h-4" />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
+                        <div className="mb-1">
                           <span className="text-sm font-medium text-foreground">{alergia.nome}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getGravidadeColor(alergia.gravidade)}`}>
-                            {alergia.gravidade || 'leve'}
-                          </span>
                         </div>
                         {alergia.descricao && <p className="text-xs text-muted-foreground">{alergia.descricao}</p>}
                       </div>
