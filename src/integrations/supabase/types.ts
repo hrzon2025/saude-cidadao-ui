@@ -64,6 +64,45 @@ export type Database = {
           },
         ]
       }
+      medicoes: {
+        Row: {
+          alergias: string | null
+          altura: string | null
+          created_at: string
+          glicemia: string | null
+          id: string
+          oxigenacao_sangue: string | null
+          peso: string | null
+          pressao_arterial: string | null
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          alergias?: string | null
+          altura?: string | null
+          created_at?: string
+          glicemia?: string | null
+          id?: string
+          oxigenacao_sangue?: string | null
+          peso?: string | null
+          pressao_arterial?: string | null
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          alergias?: string | null
+          altura?: string | null
+          created_at?: string
+          glicemia?: string | null
+          id?: string
+          oxigenacao_sangue?: string | null
+          peso?: string | null
+          pressao_arterial?: string | null
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
       usuarios: {
         Row: {
           celular: string | null

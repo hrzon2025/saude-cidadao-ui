@@ -15,49 +15,97 @@ import {
   X 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAppStore } from "@/store/useAppStore";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MinhaSaude() {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { usuario } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [medicoes, setMedicoes] = useState<any>(null);
   const [editValues, setEditValues] = useState({
-    "Pressão Arterial": "120/80 mmHg",
-    "Glicemia": "95 mg/dL", 
-    "Oxigenação do Sangue": "98%",
-    "Peso": "72 kg",
-    "Altura": "1,75 m",
-    "Alergias": "Nenhuma registrada"
+    pressao_arterial: "N/A",
+    glicemia: "N/A", 
+    oxigenacao_sangue: "N/A",
+    peso: "N/A",
+    altura: "N/A",
+    alergias: "N/A"
   });
 
-  const medicoes = [
+  useEffect(() => {
+    if (usuario?.id) {
+      fetchMedicoes();
+    }
+  }, [usuario]);
+
+  const fetchMedicoes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('medicoes')
+        .select('*')
+        .eq('usuario_id', usuario?.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching medicoes:', error);
+        return;
+      }
+
+      if (data) {
+        setMedicoes(data);
+        setEditValues({
+          pressao_arterial: data.pressao_arterial || "N/A",
+          glicemia: data.glicemia || "N/A",
+          oxigenacao_sangue: data.oxigenacao_sangue || "N/A",
+          peso: data.peso || "N/A",
+          altura: data.altura || "N/A",
+          alergias: data.alergias || "N/A"
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const medicoesConfig = [
     {
       icon: Heart,
       title: "Pressão Arterial",
-      value: editValues["Pressão Arterial"],
-      status: "(normal)",
+      key: "pressao_arterial",
+      value: editValues.pressao_arterial,
+      status: editValues.pressao_arterial !== "N/A" ? "(normal)" : "",
       color: "text-red-500",
       placeholder: "120/80 mmHg"
     },
     {
       icon: Droplet,
       title: "Glicemia",
-      value: editValues["Glicemia"],
-      status: "(em jejum)",
+      key: "glicemia",
+      value: editValues.glicemia,
+      status: editValues.glicemia !== "N/A" ? "(em jejum)" : "",
       color: "text-blue-500",
       placeholder: "95 mg/dL"
     },
     {
       icon: Activity,
       title: "Oxigenação do Sangue",
-      value: editValues["Oxigenação do Sangue"],
-      status: "(normal)",
+      key: "oxigenacao_sangue",
+      value: editValues.oxigenacao_sangue,
+      status: editValues.oxigenacao_sangue !== "N/A" ? "(normal)" : "",
       color: "text-green-500",
       placeholder: "98%"
     },
     {
       icon: Scale,
       title: "Peso",
-      value: editValues["Peso"],
+      key: "peso",
+      value: editValues.peso,
       status: "",
       color: "text-orange-500",
       placeholder: "72 kg"
@@ -65,7 +113,8 @@ export default function MinhaSaude() {
     {
       icon: Ruler,
       title: "Altura",
-      value: editValues["Altura"],
+      key: "altura",
+      value: editValues.altura,
       status: "",
       color: "text-purple-500",
       placeholder: "1,75 m"
@@ -73,28 +122,110 @@ export default function MinhaSaude() {
     {
       icon: Info,
       title: "Alergias",
-      value: editValues["Alergias"],
+      key: "alergias",
+      value: editValues.alergias,
       status: "",
       color: "text-blue-600",
       placeholder: "Nenhuma registrada"
     }
   ];
 
-  const handleInputChange = (title: string, value: string) => {
+  const handleInputChange = (key: string, value: string) => {
     setEditValues(prev => ({
       ...prev,
-      [title]: value
+      [key]: value
     }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const dataToSave = {
+        usuario_id: usuario?.id,
+        pressao_arterial: editValues.pressao_arterial === "N/A" ? null : editValues.pressao_arterial,
+        glicemia: editValues.glicemia === "N/A" ? null : editValues.glicemia,
+        oxigenacao_sangue: editValues.oxigenacao_sangue === "N/A" ? null : editValues.oxigenacao_sangue,
+        peso: editValues.peso === "N/A" ? null : editValues.peso,
+        altura: editValues.altura === "N/A" ? null : editValues.altura,
+        alergias: editValues.alergias === "N/A" ? null : editValues.alergias
+      };
+
+      if (medicoes) {
+        // Update existing record
+        const { error } = await supabase
+          .from('medicoes')
+          .update(dataToSave)
+          .eq('id', medicoes.id);
+
+        if (error) throw error;
+      } else {
+        // Insert new record
+        const { data, error } = await supabase
+          .from('medicoes')
+          .insert([dataToSave])
+          .select()
+          .single();
+
+        if (error) throw error;
+        setMedicoes(data);
+      }
+
+      toast({
+        title: "Medições salvas com sucesso!",
+        description: "Suas informações foram atualizadas.",
+      });
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving medicoes:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar as medições. Tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset values if needed
+    // Reset values to original data
+    if (medicoes) {
+      setEditValues({
+        pressao_arterial: medicoes.pressao_arterial || "N/A",
+        glicemia: medicoes.glicemia || "N/A",
+        oxigenacao_sangue: medicoes.oxigenacao_sangue || "N/A",
+        peso: medicoes.peso || "N/A",
+        altura: medicoes.altura || "N/A",
+        alergias: medicoes.alergias || "N/A"
+      });
+    } else {
+      setEditValues({
+        pressao_arterial: "N/A",
+        glicemia: "N/A",
+        oxigenacao_sangue: "N/A",
+        peso: "N/A",
+        altura: "N/A",
+        alergias: "N/A"
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader
+          title="Minha Saúde"
+          showBack
+          onBack={() => navigate("/inicio")}
+          className="bg-primary"
+        />
+        <div className="max-w-md mx-auto p-4">
+          <Card className="bg-card p-6">
+            <div className="text-center">Carregando...</div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,7 +277,7 @@ export default function MinhaSaude() {
 
             {/* Medições List */}
             <div className="space-y-0">
-              {medicoes.map((medicao, index) => {
+              {medicoesConfig.map((medicao, index) => {
                 const IconComponent = medicao.icon;
                 
                 return (
@@ -164,16 +295,16 @@ export default function MinhaSaude() {
                           {isEditing ? (
                             <Input
                               value={medicao.value}
-                              onChange={(e) => handleInputChange(medicao.title, e.target.value)}
+                              onChange={(e) => handleInputChange(medicao.key, e.target.value)}
                               placeholder={medicao.placeholder}
                               className="text-sm"
                             />
                           ) : (
                             <div className="flex items-center space-x-1">
-                              <span className="text-sm text-foreground">
+                              <span className={`text-sm ${medicao.value === "N/A" ? "text-muted-foreground" : "text-foreground"}`}>
                                 {medicao.value}
                               </span>
-                              {medicao.status && (
+                              {medicao.status && medicao.value !== "N/A" && (
                                 <span className="text-sm text-muted-foreground">
                                   {medicao.status}
                                 </span>
@@ -183,7 +314,7 @@ export default function MinhaSaude() {
                         </div>
                       </div>
                     </div>
-                    {index < medicoes.length - 1 && (
+                    {index < medicoesConfig.length - 1 && (
                       <Separator className="bg-border/50" />
                     )}
                   </div>
