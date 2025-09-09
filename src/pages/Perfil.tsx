@@ -51,10 +51,15 @@ export default function Perfil() {
     );
   }
 
-  const handleLogout = () => {
-    logout();
-    showNotification('Logout realizado com sucesso', 'success');
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      showNotification('Logout realizado com sucesso', 'success');
+      navigate('/login');
+    } catch (error) {
+      console.error('Erro no logout:', error);
+      showNotification('Erro ao fazer logout', 'error');
+    }
   };
 
   const formatCPF = (cpf: string) => {

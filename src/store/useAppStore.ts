@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Usuario, AppTab, LoadingState, NotificationType } from '../lib/types';
 import { mockUsuario } from '../lib/stubs/data';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AppState {
   // User state
@@ -25,7 +26,7 @@ interface AppState {
   
   // Actions
   setUsuario: (usuario: Usuario) => void;
-  logout: () => void;
+  logout: () => Promise<void>; // Tornar async para incluir Supabase logout
   setActiveTab: (tab: AppTab) => void;
   setLoadingState: (state: LoadingState) => void;
   showNotification: (message: string, type: NotificationType) => void;
@@ -47,11 +48,21 @@ export const useAppStore = create<AppState>()(
       // Actions
       setUsuario: (usuario) => set({ usuario, isLoggedIn: true }),
       
-      logout: () => set({ 
-        usuario: null, 
-        isLoggedIn: false,
-        activeTab: 'inicio'
-      }),
+      logout: async () => {
+        try {
+          // Fazer logout do Supabase Auth
+          await supabase.auth.signOut();
+        } catch (error) {
+          console.error('Erro ao fazer logout do Supabase:', error);
+        } finally {
+          // Limpar estado local independentemente do resultado
+          set({ 
+            usuario: null, 
+            isLoggedIn: false,
+            activeTab: 'inicio'
+          });
+        }
+      },
       
       setActiveTab: (tab) => set({ activeTab: tab }),
       
