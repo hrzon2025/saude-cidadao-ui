@@ -22,16 +22,34 @@ export default function Login() {
       showNotification("Preencha todos os campos", "error");
       return;
     }
-
+    
     try {
       setLoading(true);
-      // Simular login
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      showNotification("Login realizado com sucesso!", "success");
+      // Chamar edge function para login
+      const response = await fetch('https://xbpfsdngjltlkgpqmbdi.supabase.co/functions/v1/login-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password: senha
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showNotification(data.error, "error");
+        return;
+      }
+
+      showNotification(data.message, "success");
       navigate("/inicio");
     } catch (error) {
-      showNotification("Erro ao fazer login", "error");
+      console.error('Erro no login:', error);
+      showNotification("Erro ao fazer login. Tente novamente.", "error");
     } finally {
       setLoading(false);
     }
