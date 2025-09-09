@@ -84,7 +84,7 @@ export type Database = {
           data_nascimento: string
           email: string
           genero?: string | null
-          id?: string
+          id: string
           nome: string
           sobrenome: string
           updated_at?: string
