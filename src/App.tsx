@@ -24,6 +24,7 @@ import EsqueciSenha from "./pages/EsqueciSenha";
 import CartaoSus from "./pages/CartaoSus";
 import ConsultasRealizadas from "./pages/ConsultasRealizadas";
 import MinhaSaude from "./pages/MinhaSaude";
+import Alergias from "./pages/Alergias";
 import Unidades from "./pages/Unidades";
 import Ouvidoria from "./pages/Ouvidoria";
 import Avaliacao1 from "./pages/avaliacao/Avaliacao1";
@@ -99,8 +100,9 @@ const App = () => {
                <Route path="/servicos" element={<ProtectedRoute><div className="p-8 text-center">Serviços - Em desenvolvimento</div></ProtectedRoute>} />
                <Route path="/ouvidoria" element={<ProtectedRoute><Ouvidoria /></ProtectedRoute>} />
                <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
-               <Route path="/minha-saude" element={<ProtectedRoute><MinhaSaude /></ProtectedRoute>} />
-               <Route path="/medicamentos" element={<ProtectedRoute><Medicamentos /></ProtectedRoute>} />
+                <Route path="/minha-saude" element={<ProtectedRoute><MinhaSaude /></ProtectedRoute>} />
+                <Route path="/alergias" element={<ProtectedRoute><Alergias /></ProtectedRoute>} />
+                <Route path="/medicamentos" element={<ProtectedRoute><Medicamentos /></ProtectedRoute>} />
                <Route path="/vacinacao" element={<ProtectedRoute><Vacinacao /></ProtectedRoute>} />
                 <Route path="/farmacia" element={<ProtectedRoute><Farmacia /></ProtectedRoute>} />
                 <Route path="/sobre-farmacia" element={<ProtectedRoute><SobreFarmacia /></ProtectedRoute>} />

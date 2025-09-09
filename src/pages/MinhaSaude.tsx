@@ -282,7 +282,11 @@ export default function MinhaSaude() {
                 const IconComponent = medicao.icon;
                 
                 return (
-                  <div key={index}>
+                  <div 
+                    key={medicao.key}
+                    className={medicao.key === "alergias" && !isEditing ? "cursor-pointer hover:bg-muted/30 rounded-lg transition-colors" : ""}
+                    onClick={medicao.key === "alergias" && !isEditing ? () => navigate("/alergias") : undefined}
+                  >
                     <div className="flex items-center justify-between py-4">
                       <div className="flex items-center space-x-3 flex-1">
                         <div className={`p-2 rounded-full bg-muted ${medicao.color}`}>
