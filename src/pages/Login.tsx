@@ -6,45 +6,33 @@ import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { showNotification } = useAppStore();
+  const { toast } = useToast();
   
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !senha) {
-      showNotification("Preencha todos os campos", "error");
+      setErrorMessage("Preencha todos os campos para continuar.");
+      setShowErrorDialog(true);
       return;
     }
 
     try {
       setLoading(true);
       
-      // 1. Realizar autenticação no Supabase
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: senha,
-      });
-
-      if (authError) {
-        console.error('Erro de autenticação:', authError);
-        showNotification("Email ou senha incorretos", "error");
-        return;
-      }
-
-      if (!authData.user) {
-        showNotification("Erro na autenticação", "error");
-        return;
-      }
-
-      // 2. Verificar se o usuário existe na tabela usuarios
+      // 1. Primeiro verificar se o usuário existe na nossa tabela usuarios
       const { data: usuarioData, error: usuarioError } = await supabase
         .from('usuarios')
         .select('*')
@@ -53,28 +41,51 @@ export default function Login() {
 
       if (usuarioError || !usuarioData) {
         console.error('Usuário não encontrado na tabela usuarios:', usuarioError);
-        
-        // Fazer logout do Supabase já que o usuário não está cadastrado na nossa tabela
-        await supabase.auth.signOut();
-        
-        showNotification(
-          "Usuário não cadastrado. Por favor, realize o cadastro primeiro.", 
-          "error"
-        );
+        setErrorMessage("Usuário não encontrado. Por favor, crie uma conta para continuar.");
+        setShowErrorDialog(true);
+        return;
+      }
+
+      // 2. Se o usuário existe, tentar fazer a autenticação
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha,
+      });
+
+      if (authError) {
+        console.error('Erro de autenticação:', authError);
+        // Se houve erro na autenticação, as credenciais estão incorretas
+        setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+        setShowErrorDialog(true);
+        return;
+      }
+
+      if (!authData.user) {
+        setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+        setShowErrorDialog(true);
         return;
       }
 
       // 3. Se chegou até aqui, o login foi bem-sucedido
       console.log('Login bem-sucedido:', { usuario: usuarioData });
-      showNotification("Login realizado com sucesso!", "success");
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Redirecionando para a página inicial...",
+      });
       navigate("/inicio");
       
     } catch (error) {
       console.error('Erro no login:', error);
-      showNotification("Erro ao fazer login", "error");
+      setErrorMessage("Ocorreu um erro inesperado. Tente novamente.");
+      setShowErrorDialog(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseErrorDialog = () => {
+    setShowErrorDialog(false);
+    setErrorMessage("");
   };
 
   return (
@@ -157,6 +168,23 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* Diálogo de Erro */}
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Atenção</AlertDialogTitle>
+            <AlertDialogDescription>
+              {errorMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleCloseErrorDialog}>
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
