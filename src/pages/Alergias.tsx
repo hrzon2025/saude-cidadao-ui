@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppStore } from "@/store/useAppStore";
 import { useToast } from "@/hooks/use-toast";
+
+// Interface for allergy data
 interface Alergia {
   id: string;
   nome: string;
