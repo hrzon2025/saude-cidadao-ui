@@ -66,10 +66,7 @@ export function AppHeader({
                 <span className="sr-only">Notificações</span>
               </Button>}
               
-            <Button variant="ghost" size="sm" className="h-9 w-9 p-0 text-white hover:bg-white/10">
-              <User className="h-5 w-5" />
-              <span className="sr-only">Perfil</span>
-            </Button>
+            
             
             {actions}
           </div>
