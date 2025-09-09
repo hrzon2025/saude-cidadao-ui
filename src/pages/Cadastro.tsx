@@ -5,10 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 interface EnderecoData {
   logradouro: string;
   bairro: string;
@@ -51,7 +49,6 @@ export default function Cadastro() {
   // Estado do formulário
   const [aceitouTermos, setAceitouTermos] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showUnidadeSaudeDialog, setShowUnidadeSaudeDialog] = useState(false);
   const handleFotoPerfilChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -101,33 +98,6 @@ export default function Cadastro() {
     const telLimpo = value.replace(/\D/g, "");
     return telLimpo.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
   };
-
-  const formatarDataParaAPI = (dateString: string) => {
-    // Converte de YYYY-MM-DD para YYYYMMDD
-    return dateString.replace(/-/g, '');
-  };
-
-  const consultarAPIValidacao = async (cpfLimpo: string, dataFormatada: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('validar-usuario', {
-        body: {
-          cpf: cpfLimpo,
-          dataNascimento: dataFormatada,
-          cns: ""
-        }
-      });
-
-      if (error) {
-        console.error('Erro na API de validação:', error);
-        return { success: false, error };
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Erro na API de validação:', error);
-      return { success: false, error };
-    }
-  };
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
@@ -149,74 +119,13 @@ export default function Cadastro() {
       showNotification("CPF deve ter 11 dígitos", "error");
       return;
     }
-
     try {
       setLoading(true);
-      
-      // 1. Consultar API externa para validação
-      const dataFormatada = formatarDataParaAPI(dataNascimento);
-      const validacaoResult = await consultarAPIValidacao(cpfLimpo, dataFormatada);
-      
-      if (!validacaoResult.success) {
-        // Verificar se é a mensagem específica para procurar unidade de saúde
-        if (validacaoResult.data && validacaoResult.data.mensagem === "Procurar a unidade de saúde de referência") {
-          setShowUnidadeSaudeDialog(true);
-          return;
-        }
-        
-        showNotification("Usuário não autorizado. Verifique os dados (CPF e Data de Nascimento) e tente novamente.", "error");
-        return;
-      }
-
-      // 2. Se validação passou - criar usuário na tabela usuarios
-      const { data: novoUsuario, error: erroUsuario } = await supabase
-        .from('usuarios')
-        .insert({
-          nome,
-          sobrenome,
-          email,
-          cpf,
-          data_nascimento: dataNascimento,
-          genero,
-          celular,
-          foto_perfil_url: fotoPerfilUrl || null,
-          senha // Em produção, use hash da senha
-        })
-        .select()
-        .single();
-
-      if (erroUsuario) {
-        console.error('Erro ao criar usuário:', erroUsuario);
-        showNotification("Erro ao criar usuário. Verifique se email ou CPF já não estão cadastrados.", "error");
-        return;
-      }
-
-      // 3. Criar endereço associado ao usuário
-      const { error: erroEndereco } = await supabase
-        .from('enderecos')
-        .insert({
-          usuario_id: novoUsuario.id,
-          cep: cep.replace(/\D/g, ''),
-          logradouro,
-          numero,
-          complemento: complemento || null,
-          bairro,
-          cidade,
-          uf
-        });
-
-      if (erroEndereco) {
-        console.error('Erro ao criar endereço:', erroEndereco);
-        showNotification("Usuário criado, mas erro ao salvar endereço.", "error");
-        return;
-      }
-
-      // 4. Sucesso - mostrar mensagem e redirecionar
+      // Simular cadastro
+      await new Promise(resolve => setTimeout(resolve, 1500));
       showNotification("Cadastro realizado com sucesso!", "success");
       navigate("/login");
-      
     } catch (error) {
-      console.error('Erro durante cadastro:', error);
       showNotification("Erro ao realizar cadastro", "error");
     } finally {
       setLoading(false);
@@ -439,23 +348,6 @@ export default function Cadastro() {
       </div>
       
       {/* Espaçamento para evitar sobreposição com a barra de navegação */}
-
-      {/* Dialog para CPF não encontrado */}
-      <Dialog open={showUnidadeSaudeDialog} onOpenChange={setShowUnidadeSaudeDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>CPF não encontrado</DialogTitle>
-            <DialogDescription>
-              CPF não encontrado, por favor, procure a unidade de saúde de referência.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setShowUnidadeSaudeDialog(false)}>
-              Entendi
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
       
     </div>;
 }
