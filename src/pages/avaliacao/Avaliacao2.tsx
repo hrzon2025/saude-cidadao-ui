@@ -43,7 +43,7 @@ export default function Avaliacao2() {
       />
       
       <div className="p-4">
-        <Card className="bg-white">
+        <Card>
           <CardContent className="p-6">
             <h2 className="text-lg font-semibold mb-6 text-center">
               Qual sua opinião sobre o nosso atendimento
