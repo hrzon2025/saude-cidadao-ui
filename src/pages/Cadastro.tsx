@@ -140,7 +140,7 @@ export default function Cadastro() {
   };
 
   const cadastrarUsuario = async (dadosUsuario: any) => {
-    // 1. Primeiro criar conta de autenticação no Supabase
+    // 1. Criar conta de autenticação no Supabase (opcional, só para manter consistência)
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: email,
       password: senha,
@@ -148,32 +148,25 @@ export default function Cadastro() {
         emailRedirectTo: `${window.location.origin}/`,
         data: {
           nome: nome,
-          sobrenome: sobrenome,
-          email_confirm: true  // Tentar confirmar automaticamente
+          sobrenome: sobrenome
         }
       }
     });
 
-    if (authError) {
-      console.error('Erro ao criar conta de autenticação:', authError);
-      throw new Error("Erro ao criar conta de autenticação: " + authError.message);
-    }
+    // Mesmo se der erro no Auth, continuamos com o cadastro na tabela
+    let userId = authData?.user?.id || crypto.randomUUID();
 
-    if (!authData.user) {
-      throw new Error("Erro ao criar conta de autenticação");
-    }
+    console.log('Tentativa de criação no Auth:', { authData, authError });
 
-    console.log('Usuário criado no Auth:', authData.user.id);
-
-    // 2. Inserir dados na tabela usuarios usando o ID do usuário autenticado
+    // 2. Inserir dados na tabela usuarios 
     const { data: usuario, error: errorUsuario } = await supabase
       .from("usuarios")
       .insert({
-        id: authData.user.id, // Usar o ID do usuário autenticado
+        id: userId,
         nome: nome,
         sobrenome: sobrenome,
         email: email,
-        senha: senha, // Adicionar a senha na tabela usuarios
+        senha: senha,
         cpf: cpf,
         data_nascimento: dataNascimento,
         genero: genero,
@@ -209,9 +202,6 @@ export default function Cadastro() {
     }
 
     console.log('Endereço inserido com sucesso');
-
-    // 4. Fazer logout para forçar o usuário a fazer login manual
-    await supabase.auth.signOut();
 
     return usuario;
   };

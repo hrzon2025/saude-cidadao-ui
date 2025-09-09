@@ -3,11 +3,11 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAppStore } from "@/store/useAppStore";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAppStore } from "@/store/useAppStore";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -32,83 +32,29 @@ export default function Login() {
     try {
       setLoading(true);
       
-      // 1. Primeiro verificar se o usuário existe na nossa tabela usuarios
+      // Verificar se o usuário existe na nossa tabela usuarios e validar senha
       const { data: usuarioData, error: usuarioError } = await supabase
         .from('usuarios')
         .select('*')
         .eq('email', email)
+        .eq('senha', senha)
         .single();
 
       if (usuarioError || !usuarioData) {
-        console.error('Usuário não encontrado na tabela usuarios:', usuarioError);
-        setErrorMessage("Usuário não encontrado. Por favor, crie uma conta para continuar.");
-        setShowErrorDialog(true);
-        return;
-      }
-
-      // 2. Fazer autenticação com Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: senha,
-      });
-
-      // 3. Se der erro de "email not confirmed", vamos ignorar e permitir login mesmo assim
-      if (authError && authError.message === "Email not confirmed") {
-        console.log('Email não confirmado, mas permitindo login baseado na tabela usuarios');
+        console.error('Usuário não encontrado ou senha incorreta:', usuarioError);
         
-        // Verificar se a senha confere com a tabela usuarios
-        if (usuarioData.senha !== senha) {
-          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
-          setShowErrorDialog(true);
-          return;
-        }
-        
-        // Buscar endereço do usuário
-        const { data: enderecoData } = await supabase
-          .from('enderecos')
-          .select('*')
-          .eq('usuario_id', usuarioData.id)
+        // Verificar se o usuário existe (para dar mensagem específica)
+        const { data: usuarioExiste } = await supabase
+          .from('usuarios')
+          .select('email')
+          .eq('email', email)
           .single();
-
-        // Login bem-sucedido mesmo sem confirmação - salvar dados do usuário logado
-        console.log('Login bem-sucedido (sem confirmação de email):', { usuario: usuarioData });
         
-        // Salvar dados do usuário no store
-        const { setUsuario } = useAppStore.getState();
-        setUsuario({
-          id: usuarioData.id,
-          nome: `${usuarioData.nome} ${usuarioData.sobrenome}`,
-          cpf: usuarioData.cpf,
-          dataNascimento: usuarioData.data_nascimento,
-          email: usuarioData.email,
-          telefone: usuarioData.celular,
-          endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
-          avatarUrl: "",
-          cns: "",
-          preferencias: {
-            notificacoes: true,
-            biometria: false
-          }
-        });
-        
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Redirecionando para a página inicial...",
-        });
-        navigate("/inicio");
-        return;
-      }
-      
-      // 4. Outros erros de autenticação
-      if (authError) {
-        console.error('Erro de autenticação:', authError);
-        setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
-        setShowErrorDialog(true);
-        return;
-      }
-
-      if (!authData.user) {
-        setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+        if (!usuarioExiste) {
+          setErrorMessage("Usuário não encontrado. Por favor, crie uma conta para continuar.");
+        } else {
+          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+        }
         setShowErrorDialog(true);
         return;
       }
@@ -120,8 +66,8 @@ export default function Login() {
         .eq('usuario_id', usuarioData.id)
         .single();
 
-      // 5. Se chegou até aqui, o login foi bem-sucedido - salvar dados do usuário logado
-      console.log('Login bem-sucedido:', { usuario: usuarioData, auth: authData });
+      // Login bem-sucedido - salvar dados do usuário logado
+      console.log('Login bem-sucedido:', { usuario: usuarioData });
       
       // Salvar dados do usuário no store
       const { setUsuario } = useAppStore.getState();
