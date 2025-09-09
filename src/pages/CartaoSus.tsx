@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { getUsuario } from "@/lib/stubs/usuario";
 import QRCode from "qrcode";
 import html2canvas from "html2canvas";
+import { Share as CapacitorShare } from "@capacitor/share";
+import { Capacitor } from "@capacitor/core";
 const CartaoSus = () => {
   const navigate = useNavigate();
   const {
@@ -74,11 +76,82 @@ const CartaoSus = () => {
       });
     }
   };
-  const handleCompartilhar = () => {
-    toast({
-      title: "Compartilhamento",
-      description: "Opções de compartilhamento abertas."
-    });
+  const handleCompartilhar = async () => {
+    if (!cartaoRef.current) return;
+    
+    try {
+      const canvas = await html2canvas(cartaoRef.current, {
+        scale: 2,
+        backgroundColor: null,
+        useCORS: true,
+      });
+      
+      // Verificar se está rodando em dispositivo móvel
+      if (Capacitor.isNativePlatform()) {
+        // Converter canvas para base64
+        const imageData = canvas.toDataURL('image/png');
+        
+        await CapacitorShare.share({
+          title: 'Meu Cartão SUS',
+          text: `Cartão SUS de ${usuario.nome} ${usuario.sobrenome}`,
+          url: imageData,
+          dialogTitle: 'Compartilhar Cartão SUS'
+        });
+        
+        toast({
+          title: "Compartilhado",
+          description: "Cartão SUS compartilhado com sucesso."
+        });
+      } else {
+        // Fallback para web - usar Web Share API se disponível
+        if (navigator.share) {
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              const file = new File([blob], `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`, {
+                type: 'image/png'
+              });
+              
+              await navigator.share({
+                title: 'Meu Cartão SUS',
+                text: `Cartão SUS de ${usuario.nome} ${usuario.sobrenome}`,
+                files: [file]
+              });
+              
+              toast({
+                title: "Compartilhado",
+                description: "Cartão SUS compartilhado com sucesso."
+              });
+            }
+          }, 'image/png');
+        } else {
+          // Fallback - baixar a imagem
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `cartao-sus-${usuario.nome}-${usuario.sobrenome}.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              
+              toast({
+                title: "Download iniciado",
+                description: "Como o compartilhamento não está disponível, a imagem foi baixada."
+              });
+            }
+          }, 'image/png');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao compartilhar:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível compartilhar o cartão.",
+        variant: "destructive"
+      });
+    }
   };
   return <div className="min-h-screen flex flex-col" style={{
     backgroundColor: '#f9fafc'
