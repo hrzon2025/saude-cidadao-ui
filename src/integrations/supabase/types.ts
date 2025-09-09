@@ -76,6 +76,7 @@ export type Database = {
           genero: string | null
           id: string
           nome: string
+          senha_hash: string | null
           sobrenome: string
           updated_at: string
         }
@@ -90,6 +91,7 @@ export type Database = {
           genero?: string | null
           id?: string
           nome: string
+          senha_hash?: string | null
           sobrenome: string
           updated_at?: string
         }
@@ -104,6 +106,7 @@ export type Database = {
           genero?: string | null
           id?: string
           nome?: string
+          senha_hash?: string | null
           sobrenome?: string
           updated_at?: string
         }
