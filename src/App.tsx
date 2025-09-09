@@ -39,6 +39,7 @@ import ComissaoFarmacologia from "./pages/ComissaoFarmacologia";
 import FAQ from "./pages/FAQ";
 import EditarPerfil from "./pages/EditarPerfil";
 import Notificacoes from "./pages/Notificacoes";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Layout>
             <Routes>
               {/* Redirect root to login */}
