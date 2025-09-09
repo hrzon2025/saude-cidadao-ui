@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Calendar, Heart, MapPin, MessageSquare, Pill, CreditCard, Building, FileText, ShoppingBag, Syringe, HelpCircle } from "lucide-react";
-import { AppHeader } from "@/components/ui/app-header";
+import { WelcomeHeader } from "@/components/ui/welcome-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -86,9 +86,7 @@ export default function Inicio() {
 
   return (
     <div className="min-h-screen bg-gradient-subtle pb-20">
-      <AppHeader 
-        title={usuario ? `Olá, ${usuario.nome.split(' ')[0]}!` : "Saúde Cidadão"}
-        showNotifications 
+      <WelcomeHeader 
         onNotifications={() => showNotification('Sem notificações no momento', 'info')}
       />
 
