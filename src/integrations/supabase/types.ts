@@ -14,7 +14,101 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      addresses: {
+        Row: {
+          bairro: string
+          cep: string
+          cidade: string
+          complemento: string | null
+          created_at: string
+          id: string
+          logradouro: string
+          numero: string
+          uf: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bairro: string
+          cep: string
+          cidade: string
+          complemento?: string | null
+          created_at?: string
+          id?: string
+          logradouro: string
+          numero: string
+          uf: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bairro?: string
+          cep?: string
+          cidade?: string
+          complemento?: string | null
+          created_at?: string
+          id?: string
+          logradouro?: string
+          numero?: string
+          uf?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "addresses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          celular: string | null
+          cns: string | null
+          cpf: string
+          created_at: string
+          data_nascimento: string
+          email: string
+          foto: string | null
+          genero: string | null
+          id: string
+          nome: string
+          sobrenome: string
+          updated_at: string
+        }
+        Insert: {
+          celular?: string | null
+          cns?: string | null
+          cpf: string
+          created_at?: string
+          data_nascimento: string
+          email: string
+          foto?: string | null
+          genero?: string | null
+          id?: string
+          nome: string
+          sobrenome: string
+          updated_at?: string
+        }
+        Update: {
+          celular?: string | null
+          cns?: string | null
+          cpf?: string
+          created_at?: string
+          data_nascimento?: string
+          email?: string
+          foto?: string | null
+          genero?: string | null
+          id?: string
+          nome?: string
+          sobrenome?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

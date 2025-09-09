@@ -35,6 +35,7 @@ import FarmaciaPopular from "./pages/FarmaciaPopular";
 import ComponentesEspecializados from "./pages/ComponentesEspecializados";
 import ComissaoFarmacologia from "./pages/ComissaoFarmacologia";
 import FAQ from "./pages/FAQ";
+import { AuthExample } from "./components/AuthExample";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,9 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/esqueci-senha" element={<EsqueciSenha />} />
+              
+              {/* API Test */}
+              <Route path="/api-test" element={<AuthExample />} />
               
               {/* 404 */}
               <Route path="*" element={<NotFound />} />
