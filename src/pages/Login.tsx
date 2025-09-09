@@ -32,7 +32,7 @@ export default function Login() {
     try {
       setLoading(true);
       
-      // 1. Verificar se o usuário existe na nossa tabela usuarios
+      // 1. Primeiro verificar se o usuário existe na nossa tabela usuarios
       const { data: usuarioData, error: usuarioError } = await supabase
         .from('usuarios')
         .select('*')
@@ -46,16 +46,33 @@ export default function Login() {
         return;
       }
 
-      // 2. Verificar se a senha está correta comparando com a tabela usuarios
-      if (usuarioData.senha !== senha) {
-        console.error('Senha incorreta');
+      // 2. Fazer autenticação com Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha,
+      });
+
+      if (authError) {
+        console.error('Erro de autenticação:', authError);
+        
+        // Verificar se é problema de email não confirmado
+        if (authError.message === "Email not confirmed") {
+          setErrorMessage("Sua conta foi criada mas o email ainda não foi confirmado. Entre em contato com o suporte.");
+        } else {
+          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+        }
+        setShowErrorDialog(true);
+        return;
+      }
+
+      if (!authData.user) {
         setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
         setShowErrorDialog(true);
         return;
       }
 
-      // 3. Se chegou até aqui, as credenciais estão corretas
-      console.log('Login bem-sucedido:', { usuario: usuarioData });
+      // 3. Se chegou até aqui, o login foi bem-sucedido
+      console.log('Login bem-sucedido:', { usuario: usuarioData, auth: authData });
       toast({
         title: "Login realizado com sucesso!",
         description: "Redirecionando para a página inicial...",

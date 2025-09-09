@@ -140,7 +140,7 @@ export default function Cadastro() {
   };
 
   const cadastrarUsuario = async (dadosUsuario: any) => {
-    // 1. Primeiro criar conta de autenticação no Supabase
+    // 1. Primeiro criar conta de autenticação no Supabase (sem confirmação de email)
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: email,
       password: senha,
@@ -164,7 +164,25 @@ export default function Cadastro() {
 
     console.log('Usuário criado no Auth:', authData.user.id);
 
-    // 2. Inserir dados na tabela usuarios usando o ID do usuário autenticado
+    // 2. Confirmar o email automaticamente usando admin API
+    try {
+      const { data: confirmData, error: confirmError } = await supabase.auth.admin.updateUserById(
+        authData.user.id,
+        { email_confirm: true }
+      );
+      
+      if (confirmError) {
+        console.warn('Não foi possível confirmar email automaticamente:', confirmError);
+        // Continuar mesmo assim, pois o usuário foi criado
+      } else {
+        console.log('Email confirmado automaticamente');
+      }
+    } catch (confirmErr) {
+      console.warn('Erro ao confirmar email:', confirmErr);
+      // Continuar mesmo assim
+    }
+
+    // 3. Inserir dados na tabela usuarios usando o ID do usuário autenticado
     const { data: usuario, error: errorUsuario } = await supabase
       .from("usuarios")
       .insert({
@@ -188,7 +206,7 @@ export default function Cadastro() {
 
     console.log('Usuário inserido na tabela usuarios:', usuario);
 
-    // 3. Inserir endereço
+    // 4. Inserir endereço
     const { error: errorEndereco } = await supabase
       .from("enderecos")
       .insert({
@@ -209,7 +227,7 @@ export default function Cadastro() {
 
     console.log('Endereço inserido com sucesso');
 
-    // 4. Fazer logout para forçar o usuário a fazer login manual
+    // 5. Fazer logout para forçar o usuário a fazer login manual
     await supabase.auth.signOut();
 
     return usuario;
