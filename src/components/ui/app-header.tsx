@@ -31,7 +31,7 @@ export function AppHeader({
   } = useAppStore();
   return <header className={cn("sticky top-0 z-40 w-full bg-background", className)}>
       <div className="max-w-md mx-auto p-4 px-0 py-0">
-        <div className="flex h-16 items-center px-6 bg-primary rounded-2xl shadow-lg">
+        <div className="flex h-24 items-center px-6 bg-primary rounded-b-2xl shadow-lg">
           {/* Avatar */}
           <div className="flex items-center">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mr-4">
