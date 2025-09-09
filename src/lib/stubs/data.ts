@@ -366,20 +366,6 @@ export const mockServicos: Servico[] = [
     categoria: 'Consultas'
   },
   {
-    id: '2',
-    nome: 'Curativos e Procedimentos',
-    descricao: 'Procedimentos de enfermagem',
-    icone: 'bandage',
-    categoria: 'Enfermagem'
-  },
-  {
-    id: '3',
-    nome: 'Acompanhamento de Hipertensão',
-    descricao: 'Controle de pressão arterial',
-    icone: 'heart-pulse',
-    categoria: 'Doenças crônicas'
-  },
-  {
     id: '4',
     nome: 'Imunização',
     descricao: 'Vacinas do calendário nacional',
