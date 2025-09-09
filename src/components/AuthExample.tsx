@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useAuthLogin } from '@/hooks/useAuthLogin';
 
 export const AuthExample = () => {
   const { toast } = useToast();
-  const { cadastrar, login, loading, error } = useAuth();
+  const { cadastrar, loading: cadastroLoading, error: cadastroError } = useAuth();
+  const { login, logout, getStoredUser, isAuthenticated, loading: loginLoading, error: loginError } = useAuthLogin();
 
   // Estados para o formulário de cadastro
   const [cadastroData, setCadastroData] = useState({
@@ -76,7 +78,7 @@ export const AuthExample = () => {
     } else {
       toast({
         title: "Erro no cadastro",
-        description: error || "Ocorreu um erro durante o cadastro",
+        description: cadastroError || "Ocorreu um erro durante o cadastro",
         variant: "destructive",
       });
     }
@@ -94,19 +96,39 @@ export const AuthExample = () => {
       });
       
       console.log('Dados do usuário:', result.user);
-      console.log('Access Token:', result.access_token);
+      console.log('Token JWT:', result.token);
+      
+      // Limpar formulário
+      setLoginData({ email: '', senha: '' });
     } else {
       toast({
         title: "Erro no login",
-        description: error || "Credenciais inválidas",
+        description: loginError || "Credenciais inválidas",
         variant: "destructive",
       });
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logout realizado",
+      description: "Você foi desconectado com sucesso.",
+    });
+  };
+
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-6 text-center">Teste da API de Autenticação</h1>
+      
+      {isAuthenticated() && (
+        <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          <p>Usuário logado: <strong>{getStoredUser()?.nome} {getStoredUser()?.sobrenome}</strong></p>
+          <Button onClick={handleLogout} variant="outline" size="sm" className="mt-2">
+            Fazer Logout
+          </Button>
+        </div>
+      )}
       
       <Tabs defaultValue="cadastro" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -320,8 +342,8 @@ export const AuthExample = () => {
                   </div>
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Cadastrando...' : 'Cadastrar'}
+                <Button type="submit" className="w-full" disabled={cadastroLoading}>
+                  {cadastroLoading ? 'Cadastrando...' : 'Cadastrar'}
                 </Button>
               </form>
             </CardContent>
@@ -357,8 +379,8 @@ export const AuthExample = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Fazendo login...' : 'Entrar'}
+                <Button type="submit" className="w-full" disabled={loginLoading}>
+                  {loginLoading ? 'Fazendo login...' : 'Entrar'}
                 </Button>
               </form>
             </CardContent>
@@ -366,9 +388,9 @@ export const AuthExample = () => {
         </TabsContent>
       </Tabs>
 
-      {error && (
+      {(cadastroError || loginError) && (
         <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          Erro: {error}
+          Erro: {cadastroError || loginError}
         </div>
       )}
     </div>

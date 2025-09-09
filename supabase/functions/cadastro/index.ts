@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -115,6 +116,10 @@ serve(async (req) => {
       console.log('Foto enviada com sucesso:', fotoUrl);
     }
 
+    // Hash da senha usando bcrypt
+    console.log('Gerando hash da senha...');
+    const senhaHash = await bcrypt.hash(senha, 12);
+
     // Converter data de nascimento para formato ISO
     const [day, month, year] = dataNascimento.split('/');
     const dataISO = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
@@ -133,7 +138,8 @@ serve(async (req) => {
         genero,
         celular,
         cns,
-        foto: fotoUrl
+        foto: fotoUrl,
+        senha_hash: senhaHash
       })
       .select()
       .single();
@@ -180,35 +186,7 @@ serve(async (req) => {
 
     console.log('Endereço criado:', addressData.id);
 
-    // Criar usuário no Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email,
-      password: senha,
-      user_metadata: {
-        nome,
-        sobrenome,
-        user_id: userData.id
-      }
-    });
-
-    if (authError) {
-      console.error('Erro ao criar usuário no Auth:', authError);
-      // Limpar dados criados se houver erro na criação do auth
-      await supabase.from('addresses').delete().eq('user_id', userData.id);
-      await supabase.from('users').delete().eq('id', userData.id);
-      
-      return new Response(
-        JSON.stringify({ error: 'Erro ao criar conta de acesso', details: authError.message }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    console.log('Usuário criado no Auth:', authData.user?.id);
-
-    // Resposta de sucesso
+    // Resposta de sucesso (sem criar no Supabase Auth)
     const response = {
       id: userData.id,
       nome: userData.nome,
