@@ -2,7 +2,7 @@ import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertTriangle, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Plus, Trash2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,7 +137,7 @@ export default function Alergias() {
                 <p className="text-sm text-muted-foreground">Gerenciar alergias</p>
               </div>
               <Button size="sm" className="bg-primary hover:bg-primary/90" onClick={() => setIsEditing(!isEditing)}>
-                <Plus className="w-4 h-4 mr-2" />
+                {isEditing ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                 {isEditing ? "Cancelar" : "Adicionar"}
               </Button>
             </div>
