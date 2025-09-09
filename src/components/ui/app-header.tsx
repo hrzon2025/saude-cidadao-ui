@@ -42,7 +42,7 @@ export function AppHeader({
           {/* Welcome Message */}
           <div className="flex-1 min-w-0">
             <div className="text-white">
-              <p className="text-sm font-medium opacity-90">Seja Bem Vindo 👋</p>
+              <p className="text-sm font-medium opacity-90">Seja Bem Vindo(a)</p>
               <h1 className="text-lg font-semibold truncate">
                 {usuario?.nome || 'Usuário'}
               </h1>
