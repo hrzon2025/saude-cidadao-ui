@@ -182,11 +182,6 @@ export default function Cadastro() {
 
     if (errorUsuario) {
       console.error('Erro ao inserir na tabela usuarios:', errorUsuario);
-      // Se houver erro ao inserir na tabela usuarios, fazer cleanup da conta Auth
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(authData.user.id);
-      if (deleteError) {
-        console.error('Erro ao fazer cleanup do usuário Auth:', deleteError);
-      }
       throw new Error("Erro ao cadastrar usuário: " + errorUsuario.message);
     }
 
@@ -208,11 +203,6 @@ export default function Cadastro() {
 
     if (errorEndereco) {
       console.error('Erro ao inserir endereço:', errorEndereco);
-      // Se houver erro no endereço, fazer cleanup
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(authData.user.id);
-      if (deleteError) {
-        console.error('Erro ao fazer cleanup do usuário Auth:', deleteError);
-      }
       throw new Error("Erro ao cadastrar endereço: " + errorEndereco.message);
     }
 
