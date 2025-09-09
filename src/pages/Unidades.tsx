@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { AppHeader } from "@/components/ui/app-header";
 import { useNavigate } from "react-router-dom";
 import { mockUnidades } from "@/lib/stubs/data";
 const Unidades = () => {
@@ -23,12 +24,11 @@ const Unidades = () => {
   };
   return <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="flex items-center p-4 bg-primary text-primary-foreground">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="text-primary-foreground hover:bg-primary-hover">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-semibold ml-2">Unidades</h1>
-      </div>
+      <AppHeader 
+        title="Unidades" 
+        showBack 
+        onBack={() => navigate(-1)} 
+      />
 
       {/* Conteúdo */}
       <div className="flex-1 p-4 space-y-4">
