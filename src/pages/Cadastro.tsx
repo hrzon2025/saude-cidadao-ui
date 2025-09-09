@@ -109,20 +109,20 @@ export default function Cadastro() {
 
   const consultarAPIValidacao = async (cpfLimpo: string, dataFormatada: string) => {
     try {
-      const response = await fetch('https://homologacao.mbx.portalmas.com.br/mobilex.rule?sys=MOB&acao=consultarUsuario', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('validar-usuario', {
+        body: {
           cpf: cpfLimpo,
           dataNascimento: dataFormatada,
           cns: ""
-        })
+        }
       });
 
-      const data = await response.json();
-      return { success: response.status === 200, data, status: response.status };
+      if (error) {
+        console.error('Erro na API de validação:', error);
+        return { success: false, error };
+      }
+
+      return data;
     } catch (error) {
       console.error('Erro na API de validação:', error);
       return { success: false, error };
