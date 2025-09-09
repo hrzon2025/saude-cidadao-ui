@@ -122,7 +122,7 @@ export default function ListaAgendamentos() {
               placeholder="Buscar por tipo, profissional ou unidade..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className="pr-10 bg-white"
+              className="pr-10"
             />
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
