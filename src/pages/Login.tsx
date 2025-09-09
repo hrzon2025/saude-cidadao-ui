@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,12 +26,51 @@ export default function Login() {
 
     try {
       setLoading(true);
-      // Simular login
-      await new Promise(resolve => setTimeout(resolve, 1000));
       
+      // 1. Realizar autenticação no Supabase
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: senha,
+      });
+
+      if (authError) {
+        console.error('Erro de autenticação:', authError);
+        showNotification("Email ou senha incorretos", "error");
+        return;
+      }
+
+      if (!authData.user) {
+        showNotification("Erro na autenticação", "error");
+        return;
+      }
+
+      // 2. Verificar se o usuário existe na tabela usuarios
+      const { data: usuarioData, error: usuarioError } = await supabase
+        .from('usuarios')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (usuarioError || !usuarioData) {
+        console.error('Usuário não encontrado na tabela usuarios:', usuarioError);
+        
+        // Fazer logout do Supabase já que o usuário não está cadastrado na nossa tabela
+        await supabase.auth.signOut();
+        
+        showNotification(
+          "Usuário não cadastrado. Por favor, realize o cadastro primeiro.", 
+          "error"
+        );
+        return;
+      }
+
+      // 3. Se chegou até aqui, o login foi bem-sucedido
+      console.log('Login bem-sucedido:', { usuario: usuarioData });
       showNotification("Login realizado com sucesso!", "success");
       navigate("/inicio");
+      
     } catch (error) {
+      console.error('Erro no login:', error);
       showNotification("Erro ao fazer login", "error");
     } finally {
       setLoading(false);

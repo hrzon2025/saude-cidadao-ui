@@ -140,9 +140,29 @@ export default function Cadastro() {
   };
 
   const cadastrarUsuario = async (dadosUsuario: any) => {
+    // 1. Primeiro criar conta de autenticação no Supabase
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email,
+      password: senha,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`
+      }
+    });
+
+    if (authError) {
+      console.error('Erro ao criar conta de autenticação:', authError);
+      throw new Error("Erro ao criar conta de autenticação: " + authError.message);
+    }
+
+    if (!authData.user) {
+      throw new Error("Erro ao criar conta de autenticação");
+    }
+
+    // 2. Inserir dados na tabela usuarios usando o ID do usuário autenticado
     const { data: usuario, error: errorUsuario } = await supabase
       .from("usuarios")
       .insert({
+        id: authData.user.id, // Usar o ID do usuário autenticado
         nome: nome,
         sobrenome: sobrenome,
         email: email,
@@ -155,9 +175,12 @@ export default function Cadastro() {
       .single();
 
     if (errorUsuario) {
+      // Se houver erro ao inserir na tabela usuarios, fazer cleanup da conta Auth
+      await supabase.auth.signOut();
       throw new Error("Erro ao cadastrar usuário: " + errorUsuario.message);
     }
 
+    // 3. Inserir endereço
     const { error: errorEndereco } = await supabase
       .from("enderecos")
       .insert({
@@ -172,6 +195,8 @@ export default function Cadastro() {
       });
 
     if (errorEndereco) {
+      // Se houver erro no endereço, fazer cleanup
+      await supabase.auth.signOut();
       throw new Error("Erro ao cadastrar endereço: " + errorEndereco.message);
     }
 
