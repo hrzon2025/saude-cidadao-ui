@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      alergias: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          gravidade: string | null
+          id: string
+          nome: string
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          gravidade?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          gravidade?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
       enderecos: {
         Row: {
           bairro: string

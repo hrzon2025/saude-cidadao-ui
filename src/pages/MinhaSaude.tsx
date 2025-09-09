@@ -28,6 +28,7 @@ export default function MinhaSaude() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [medicoes, setMedicoes] = useState<any>(null);
+  const [alergias, setAlergias] = useState<any[]>([]);
   const [editValues, setEditValues] = useState({
     pressao_arterial: "N/A",
     glicemia: "N/A", 
@@ -39,9 +40,27 @@ export default function MinhaSaude() {
 
   useEffect(() => {
     if (usuario?.id) {
-      fetchMedicoes();
+      Promise.all([fetchMedicoes(), fetchAlergias()]);
     }
   }, [usuario]);
+
+  const fetchAlergias = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('alergias')
+        .select('*')
+        .eq('usuario_id', usuario?.id);
+
+      if (error) {
+        console.error('Error fetching alergias:', error);
+        return;
+      }
+
+      setAlergias(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const fetchMedicoes = async () => {
     try {
@@ -124,7 +143,7 @@ export default function MinhaSaude() {
       icon: Info,
       title: "Alergias",
       key: "alergias",
-      value: editValues.alergias,
+      value: alergias.length > 0 ? `${alergias.length} ${alergias.length === 1 ? 'alergia' : 'alergias'}` : "N/A",
       status: "",
       color: "text-blue-600",
       placeholder: "Nenhuma registrada"
@@ -312,6 +331,7 @@ export default function MinhaSaude() {
                                   medicao.key === "altura" ? `${medicao.value} cm` :
                                   medicao.key === "pressao_arterial" && medicao.value !== "N/A" ? 
                                     medicao.value.includes('/') ? medicao.value : `${medicao.value}/80` :
+                                  medicao.key === "alergias" ? medicao.value :
                                   medicao.value
                                 }
                               </span>
