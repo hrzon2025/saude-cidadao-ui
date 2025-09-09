@@ -33,6 +33,7 @@ export default function Cadastro() {
   // Dados pessoais
   const [cpf, setCpf] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
+  const [cns, setCns] = useState("");
   const [genero, setGenero] = useState("");
   const [celular, setCelular] = useState("");
 
@@ -100,7 +101,7 @@ export default function Cadastro() {
   };
   const handleCadastro = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
+    if (!nome || !sobrenome || !email || !senha || !confirmarSenha || !cpf || !dataNascimento || !cns || !cep || !logradouro || !numero || !bairro || !cidade || !uf || !aceitouTermos) {
       showNotification("Preencha todos os campos obrigatórios", "error");
       return;
     }
@@ -119,14 +120,42 @@ export default function Cadastro() {
       showNotification("CPF deve ter 11 dígitos", "error");
       return;
     }
+
+    // Validar CNS
+    if (cns.length < 15) {
+      showNotification("CNS deve ter 15 dígitos", "error");
+      return;
+    }
+
     try {
       setLoading(true);
-      // Simular cadastro
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      showNotification("Cadastro realizado com sucesso!", "success");
+      
+      // Chamar edge function para validar usuário
+      const response = await fetch('https://xbpfsdngjltlkgpqmbdi.supabase.co/functions/v1/validate-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cpf: cpfLimpo,
+          dataNascimento,
+          cns,
+          email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showNotification(data.error, "error");
+        return;
+      }
+
+      showNotification(data.message, "success");
       navigate("/login");
     } catch (error) {
-      showNotification("Erro ao realizar cadastro", "error");
+      console.error('Erro no cadastro:', error);
+      showNotification("Erro ao realizar cadastro. Tente novamente.", "error");
     } finally {
       setLoading(false);
     }
@@ -222,6 +251,21 @@ export default function Cadastro() {
                     Data de nascimento <span className="text-red-500">*</span>
                   </Label>
                   <Input id="nascimento" type="date" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} className="h-12 bg-white" required />
+                </div>
+
+                <div>
+                  <Label htmlFor="cns">
+                    CNS (Cartão Nacional de Saúde) <span className="text-red-500">*</span>
+                  </Label>
+                  <Input 
+                    id="cns" 
+                    value={cns} 
+                    onChange={e => setCns(e.target.value.replace(/\D/g, ''))} 
+                    placeholder="000000000000000" 
+                    className="h-12 bg-white" 
+                    maxLength={15}
+                    required 
+                  />
                 </div>
 
                 <div>
