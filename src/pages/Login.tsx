@@ -63,8 +63,34 @@ export default function Login() {
           return;
         }
         
-        // Login bem-sucedido mesmo sem confirmação
+        // Buscar endereço do usuário
+        const { data: enderecoData } = await supabase
+          .from('enderecos')
+          .select('*')
+          .eq('usuario_id', usuarioData.id)
+          .single();
+
+        // Login bem-sucedido mesmo sem confirmação - salvar dados do usuário logado
         console.log('Login bem-sucedido (sem confirmação de email):', { usuario: usuarioData });
+        
+        // Salvar dados do usuário no store
+        const { setUsuario } = useAppStore.getState();
+        setUsuario({
+          id: usuarioData.id,
+          nome: `${usuarioData.nome} ${usuarioData.sobrenome}`,
+          cpf: usuarioData.cpf,
+          dataNascimento: usuarioData.data_nascimento,
+          email: usuarioData.email,
+          telefone: usuarioData.celular,
+          endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
+          avatarUrl: "",
+          cns: "",
+          preferencias: {
+            notificacoes: true,
+            biometria: false
+          }
+        });
+        
         toast({
           title: "Login realizado com sucesso!",
           description: "Redirecionando para a página inicial...",
@@ -87,8 +113,34 @@ export default function Login() {
         return;
       }
 
-      // 5. Se chegou até aqui, o login foi bem-sucedido
+      // Buscar endereço do usuário
+      const { data: enderecoData } = await supabase
+        .from('enderecos')
+        .select('*')
+        .eq('usuario_id', usuarioData.id)
+        .single();
+
+      // 5. Se chegou até aqui, o login foi bem-sucedido - salvar dados do usuário logado
       console.log('Login bem-sucedido:', { usuario: usuarioData, auth: authData });
+      
+      // Salvar dados do usuário no store
+      const { setUsuario } = useAppStore.getState();
+      setUsuario({
+        id: usuarioData.id,
+        nome: `${usuarioData.nome} ${usuarioData.sobrenome}`,
+        cpf: usuarioData.cpf,
+        dataNascimento: usuarioData.data_nascimento,
+        email: usuarioData.email,
+        telefone: usuarioData.celular,
+        endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
+        avatarUrl: "",
+        cns: "",
+        preferencias: {
+          notificacoes: true,
+          biometria: false
+        }
+      });
+      
       toast({
         title: "Login realizado com sucesso!",
         description: "Redirecionando para a página inicial...",

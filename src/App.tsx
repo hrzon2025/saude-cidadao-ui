@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { BottomTabs } from "@/components/ui/bottom-tabs";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect } from "react";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Pages
 import Inicio from "./pages/Inicio";
@@ -77,41 +78,41 @@ const App = () => {
               {/* Redirect root to login */}
               <Route path="/" element={<Navigate to="/login" replace />} />
               
-              {/* Main Tabs */}
-              <Route path="/inicio" element={<Inicio />} />
-              <Route path="/funcionalidades" element={<Funcionalidades />} />
-              <Route path="/perfil" element={<Perfil />} />
-              
-              <Route path="/agendamentos" element={<ListaAgendamentos />} />
-              <Route path="/agendamentos/novo" element={<NovoAgendamento />} />
-              <Route path="/agendamentos/horarios" element={<HorariosAgendamento />} />
-              <Route path="/agendamentos/confirmacao" element={<ConfirmacaoAgendamento />} />
-              
-              {/* Atendimentos */}
-              <Route path="/atendimentos" element={<ConsultasRealizadas />} />
-              <Route path="/avaliacao/1/:id" element={<Avaliacao1 />} />
-              <Route path="/avaliacao/2/:id" element={<Avaliacao2 />} />
-              
-              {/* Funcionalidades */}
-              <Route path="/cartao-sus" element={<CartaoSus />} />
-              <Route path="/unidades" element={<Unidades />} />
-              <Route path="/servicos" element={<div className="p-8 text-center">Serviços - Em desenvolvimento</div>} />
-              <Route path="/ouvidoria" element={<Ouvidoria />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/minha-saude" element={<MinhaSaude />} />
-              <Route path="/medicamentos" element={<Medicamentos />} />
-              <Route path="/vacinacao" element={<Vacinacao />} />
-               <Route path="/farmacia" element={<Farmacia />} />
-               <Route path="/sobre-farmacia" element={<SobreFarmacia />} />
-               <Route path="/relacao-medicamentos" element={<RelacaoMedicamentos />} />
-               <Route path="/farmacia-popular" element={<FarmaciaPopular />} />
-               <Route path="/componentes-especializados" element={<ComponentesEspecializados />} />
-               <Route path="/comissao-farmacologia" element={<ComissaoFarmacologia />} />
-              <Route path="/fila-regulacao" element={<div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div>} />
-              
-              {/* Perfil */}
-              <Route path="/perfil/editar" element={<div className="p-8 text-center">Editar Perfil - Em desenvolvimento</div>} />
-              <Route path="/perfil/configuracoes" element={<div className="p-8 text-center">Configurações - Em desenvolvimento</div>} />
+               {/* Main Tabs - Protected Routes */}
+               <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
+               <Route path="/funcionalidades" element={<ProtectedRoute><Funcionalidades /></ProtectedRoute>} />
+               <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+               
+               <Route path="/agendamentos" element={<ProtectedRoute><ListaAgendamentos /></ProtectedRoute>} />
+               <Route path="/agendamentos/novo" element={<ProtectedRoute><NovoAgendamento /></ProtectedRoute>} />
+               <Route path="/agendamentos/horarios" element={<ProtectedRoute><HorariosAgendamento /></ProtectedRoute>} />
+               <Route path="/agendamentos/confirmacao" element={<ProtectedRoute><ConfirmacaoAgendamento /></ProtectedRoute>} />
+               
+               {/* Atendimentos - Protected Routes */}
+               <Route path="/atendimentos" element={<ProtectedRoute><ConsultasRealizadas /></ProtectedRoute>} />
+               <Route path="/avaliacao/1/:id" element={<ProtectedRoute><Avaliacao1 /></ProtectedRoute>} />
+               <Route path="/avaliacao/2/:id" element={<ProtectedRoute><Avaliacao2 /></ProtectedRoute>} />
+               
+               {/* Funcionalidades - Protected Routes */}
+               <Route path="/cartao-sus" element={<ProtectedRoute><CartaoSus /></ProtectedRoute>} />
+               <Route path="/unidades" element={<ProtectedRoute><Unidades /></ProtectedRoute>} />
+               <Route path="/servicos" element={<ProtectedRoute><div className="p-8 text-center">Serviços - Em desenvolvimento</div></ProtectedRoute>} />
+               <Route path="/ouvidoria" element={<ProtectedRoute><Ouvidoria /></ProtectedRoute>} />
+               <Route path="/faq" element={<ProtectedRoute><FAQ /></ProtectedRoute>} />
+               <Route path="/minha-saude" element={<ProtectedRoute><MinhaSaude /></ProtectedRoute>} />
+               <Route path="/medicamentos" element={<ProtectedRoute><Medicamentos /></ProtectedRoute>} />
+               <Route path="/vacinacao" element={<ProtectedRoute><Vacinacao /></ProtectedRoute>} />
+                <Route path="/farmacia" element={<ProtectedRoute><Farmacia /></ProtectedRoute>} />
+                <Route path="/sobre-farmacia" element={<ProtectedRoute><SobreFarmacia /></ProtectedRoute>} />
+                <Route path="/relacao-medicamentos" element={<ProtectedRoute><RelacaoMedicamentos /></ProtectedRoute>} />
+                <Route path="/farmacia-popular" element={<ProtectedRoute><FarmaciaPopular /></ProtectedRoute>} />
+                <Route path="/componentes-especializados" element={<ProtectedRoute><ComponentesEspecializados /></ProtectedRoute>} />
+                <Route path="/comissao-farmacologia" element={<ProtectedRoute><ComissaoFarmacologia /></ProtectedRoute>} />
+               <Route path="/fila-regulacao" element={<ProtectedRoute><div className="p-8 text-center">Fila Regulação - Em desenvolvimento</div></ProtectedRoute>} />
+               
+               {/* Perfil - Protected Routes */}
+               <Route path="/perfil/editar" element={<ProtectedRoute><div className="p-8 text-center">Editar Perfil - Em desenvolvimento</div></ProtectedRoute>} />
+               <Route path="/perfil/configuracoes" element={<ProtectedRoute><div className="p-8 text-center">Configurações - Em desenvolvimento</div></ProtectedRoute>} />
               
               {/* Auth */}
               <Route path="/login" element={<Login />} />

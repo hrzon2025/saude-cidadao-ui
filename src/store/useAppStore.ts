@@ -33,9 +33,9 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
-  // Initial state - com usuário mockado para desenvolvimento
-  usuario: mockUsuario,
-  isLoggedIn: true,
+  // Initial state - sem usuário logado por padrão
+  usuario: null,
+  isLoggedIn: false,
   activeTab: 'inicio',
   loadingState: 'idle',
   notification: null,
