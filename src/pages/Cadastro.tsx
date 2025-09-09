@@ -111,10 +111,13 @@ export default function Cadastro() {
   };
 
   const consultarUsuarioAPI = async (cpfLimpo: string, dataNascimentoFormatada: string) => {
-    const response = await fetch("https://homologacao.mbx.portalmas.com.br/mobilex.rule?sys=MOB&acao=consultarUsuario", {
+    console.log('Consultando usuário via Edge Function:', { cpfLimpo, dataNascimentoFormatada });
+    
+    const response = await fetch(`https://xbpfsdngjltlkgpqmbdi.supabase.co/functions/v1/consultar-usuario`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicGZzZG5namx0bGtncHFtYmRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MjAzMDksImV4cCI6MjA3Mjk5NjMwOX0.kZMHl-n2Xl71ajUIjYarlyHmp104wQ63gHCUF0M16N8`
       },
       body: JSON.stringify({
         cpf: cpfLimpo,
@@ -123,11 +126,17 @@ export default function Cadastro() {
       }),
     });
 
+    console.log('Resposta da Edge Function:', response.status);
+
     if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Erro na Edge Function:', errorData);
       throw new Error("Erro na consulta à API");
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log('Dados retornados:', data);
+    return data;
   };
 
   const cadastrarUsuario = async (dadosUsuario: any) => {
@@ -197,15 +206,24 @@ export default function Cadastro() {
       const dataNascimentoFormatada = formatarDataParaAPI(dataNascimento);
       const apiResponse = await consultarUsuarioAPI(cpfLimpo, dataNascimentoFormatada);
 
+      console.log('Resposta da API processada:', apiResponse);
+
       // 2. Verificar resposta da API
-      if (Array.isArray(apiResponse) && apiResponse.length > 0) {
-        // API retornou dados válidos - prosseguir com cadastro
+      // Se retornou erro ou mensagem de "procurar unidade", mostrar erro
+      if (apiResponse.error || (typeof apiResponse === 'string' && apiResponse.includes('Procurar'))) {
+        console.log('API retornou erro ou mensagem de procurar unidade');
+        setShowErrorDialog(true);
+      } 
+      // Se retornou array com dados válidos, prosseguir com cadastro
+      else if (Array.isArray(apiResponse) && apiResponse.length > 0) {
+        console.log('API retornou dados válidos, prosseguindo com cadastro');
         await cadastrarUsuario(apiResponse[0]);
         
         // Mostrar diálogo de sucesso
         setShowSuccessDialog(true);
       } else {
-        // API retornou erro ou "Procurar a unidade..."
+        console.log('API retornou resposta inesperada:', apiResponse);
+        // Para qualquer outro caso, mostrar erro
         setShowErrorDialog(true);
       }
     } catch (error) {
