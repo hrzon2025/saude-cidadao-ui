@@ -16,15 +16,15 @@ import { useNavigate } from "react-router-dom";
 const shortcuts = [
   { id: 'agendamentos-novo', label: 'Novo Agendamento', icon: Plus, path: '/agendamentos/novo', color: 'text-primary' },
   { id: 'agendamentos-lista', label: 'Meus Agendamentos', icon: Calendar, path: '/agendamentos', color: 'text-primary' },
-  { id: 'atendimentos', label: 'Consultas realizadas', icon: FileText, path: '/atendimentos', color: 'text-accent' },
-  { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-destructive' },
+  { id: 'atendimentos', label: 'Consultas realizadas', icon: FileText, path: '/atendimentos', color: 'text-primary' },
+  { id: 'minha-saude', label: 'Minha Saúde', icon: Heart, path: '/minha-saude', color: 'text-primary' },
   { id: 'vacinas', label: 'Vacinas', icon: Syringe, path: '/vacinacao', color: 'text-primary' },
-  { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-accent' },
-  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-success' },
+  { id: 'cartao-sus', label: 'Cartão SUS', icon: CreditCard, path: '/cartao-sus', color: 'text-primary' },
+  { id: 'unidades', label: 'Unidades', icon: Building, path: '/unidades', color: 'text-primary' },
   { id: 'farmacia', label: 'Farmácia', icon: ShoppingBag, path: '/farmacia', color: 'text-primary' },
-  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-accent' },
-  { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq', color: 'text-warning' },
-  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-warning' }
+  { id: 'medicamentos', label: 'Medicamentos', icon: Pill, path: '/medicamentos', color: 'text-primary' },
+  { id: 'faq', label: 'FAQ', icon: HelpCircle, path: '/faq', color: 'text-primary' },
+  { id: 'ouvidoria', label: 'Ouvidoria', icon: MessageSquare, path: '/ouvidoria', color: 'text-primary' }
 ];
 
 export default function Inicio() {
