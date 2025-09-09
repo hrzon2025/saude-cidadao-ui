@@ -46,7 +46,10 @@ export const useAppStore = create<AppState>()(
       isDarkMode: false,
       
       // Actions
-      setUsuario: (usuario) => set({ usuario, isLoggedIn: true }),
+      setUsuario: (usuario) => {
+        console.log('Store - Salvando usuário:', { nome: usuario.nome, email: usuario.email });
+        set({ usuario, isLoggedIn: true });
+      },
       
       logout: async () => {
         try {
