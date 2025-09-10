@@ -24,7 +24,7 @@ export default function ListaAgendamentos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busca, setBusca] = useState('');
-  const [anoSelecionado, setAnoSelecionado] = useState((new Date().getFullYear() - 1).toString());
+  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
 
   useEffect(() => {
     loadAgendamentos();
@@ -127,11 +127,11 @@ export default function ListaAgendamentos() {
 
   const agendamentosPendentes = agendamentos.length;
 
-  // Gerar lista de anos (5 anos anteriores, sem incluir o ano atual)
+  // Gerar lista de anos (ano atual + 4 anos anteriores)
   const anosDisponiveis = Array.from({ length: 5 }, (_, i) => {
-    const ano = new Date().getFullYear() - 1 - i; // Começar do ano anterior
+    const ano = new Date().getFullYear() - i; // Ano atual e anos anteriores
     return ano.toString();
-  }).sort((a, b) => parseInt(b) - parseInt(a)); // Ordenar do mais recente para o mais antigo
+  }); // Já está ordenado do mais recente para o mais antigo
 
   return (
     <div className="min-h-screen bg-background pb-20">
