@@ -33,7 +33,12 @@ export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?
     throw new Error(error.message || 'Erro ao consultar usuário');
   }
 
-  return data;
+  // A API retorna um array, pegamos o primeiro item
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    throw new Error('Nenhum dados de usuário encontrado');
+  }
+
+  return data[0];
 };
 
 export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> => {
@@ -47,7 +52,7 @@ export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> 
     throw new Error(error.message || 'Erro ao consultar tipos de consulta');
   }
 
-  return data;
+  return Array.isArray(data) ? data : [];
 };
 
 export const consultarProfissionais = async (tipoConsultaId: string, equipeId: string): Promise<Profissional[]> => {
@@ -63,5 +68,5 @@ export const consultarProfissionais = async (tipoConsultaId: string, equipeId: s
     throw new Error(error.message || 'Erro ao consultar profissionais');
   }
 
-  return data;
+  return Array.isArray(data) ? data : [];
 };
