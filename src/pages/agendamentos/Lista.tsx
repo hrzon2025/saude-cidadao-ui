@@ -247,35 +247,46 @@ export default function ListaAgendamentos() {
 
                     {podeCantelar && (
                       <div className="pt-2 border-t">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="w-full"
-                            >
-                              Visualizar Detalhes
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Detalhes do Agendamento</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                <div className="space-y-2 text-sm">
-                                  <div><strong>Tipo:</strong> {agendamento.tipoConsulta}</div>
-                                  <div><strong>Profissional:</strong> {agendamento.profissional}</div>
-                                  <div><strong>Unidade:</strong> {agendamento.unidade}</div>
-                                  <div><strong>Equipe:</strong> {agendamento.equipe}</div>
-                                  <div><strong>Data:</strong> {formatted.data}</div>
-                                  <div><strong>Status:</strong> {agendamento.status}</div>
-                                </div>
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Fechar</AlertDialogCancel>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <div className="flex gap-2">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="flex-1"
+                              >
+                                Visualizar Detalhes
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Detalhes do Agendamento</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <div className="space-y-2 text-sm">
+                                    <div><strong>Tipo:</strong> {agendamento.tipoConsulta}</div>
+                                    <div><strong>Profissional:</strong> {agendamento.profissional}</div>
+                                    <div><strong>Unidade:</strong> {agendamento.unidade}</div>
+                                    <div><strong>Equipe:</strong> {agendamento.equipe}</div>
+                                    <div><strong>Data:</strong> {formatted.data}</div>
+                                    <div><strong>Status:</strong> {agendamento.status}</div>
+                                  </div>
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Fechar</AlertDialogCancel>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => handleCancelar(String(agendamento.atendimentoId || ''))}
+                          >
+                            Cancelar Consulta
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </div>
