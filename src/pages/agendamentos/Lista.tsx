@@ -127,11 +127,11 @@ export default function ListaAgendamentos() {
 
   const agendamentosPendentes = agendamentos.length;
 
-  // Gerar lista de anos (atual até 3 anos no futuro)
-  const anosDisponiveis = Array.from({ length: 5 }, (_, i) => {
-    const ano = new Date().getFullYear() + i;
+  // Gerar lista de anos (5 anos anteriores até o ano atual)
+  const anosDisponiveis = Array.from({ length: 6 }, (_, i) => {
+    const ano = new Date().getFullYear() - i;
     return ano.toString();
-  });
+  }).sort((a, b) => parseInt(b) - parseInt(a)); // Ordenar do mais recente para o mais antigo
 
   return (
     <div className="min-h-screen bg-background pb-20">
