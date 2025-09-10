@@ -13,7 +13,9 @@ import {
   Plus,
   Check,
   X,
-  ChevronRight 
+  ChevronRight,
+  History,
+  Calendar 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -29,6 +31,7 @@ export default function MinhaSaude() {
   const [loading, setLoading] = useState(true);
   const [medicoes, setMedicoes] = useState<any>(null);
   const [alergias, setAlergias] = useState<any[]>([]);
+  const [historicoMedicoes, setHistoricoMedicoes] = useState<any[]>([]);
   const [editValues, setEditValues] = useState({
     pressao_arterial: "N/A",
     glicemia: "N/A", 
@@ -40,7 +43,7 @@ export default function MinhaSaude() {
 
   useEffect(() => {
     if (usuario?.id) {
-      Promise.all([fetchMedicoes(), fetchAlergias()]);
+      Promise.all([fetchMedicoes(), fetchAlergias(), fetchHistoricoMedicoes()]);
     }
   }, [usuario]);
 
@@ -90,6 +93,26 @@ export default function MinhaSaude() {
       console.error('Error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchHistoricoMedicoes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('medicoes')
+        .select('*')
+        .eq('usuario_id', usuario?.id)
+        .order('updated_at', { ascending: false })
+        .limit(5);
+
+      if (error) {
+        console.error('Error fetching historico medicoes:', error);
+        return;
+      }
+
+      setHistoricoMedicoes(data || []);
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -355,6 +378,87 @@ export default function MinhaSaude() {
                 );
               })}
             </div>
+          </div>
+        </Card>
+
+        {/* Histórico de Medições */}
+        <Card className="bg-card p-6 space-y-4 mt-4">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-full bg-muted">
+              <History className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">Histórico de Medições</h2>
+              <p className="text-sm text-muted-foreground">Últimas 5 medições registradas</p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {historicoMedicoes.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="p-3 rounded-full bg-muted w-fit mx-auto mb-3">
+                  <Calendar className="w-6 h-6 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground">Nenhuma medição registrada ainda</p>
+              </div>
+            ) : (
+              historicoMedicoes.map((medicao, index) => (
+                <div key={medicao.id} className="border border-border rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">
+                      Medição #{historicoMedicoes.length - index}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(medicao.updated_at).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {medicao.pressao_arterial && (
+                      <div className="flex items-center space-x-2">
+                        <Heart className="w-4 h-4 text-destructive" />
+                        <span className="text-muted-foreground">PA:</span>
+                        <span className="text-foreground">{medicao.pressao_arterial}</span>
+                      </div>
+                    )}
+                    {medicao.glicemia && (
+                      <div className="flex items-center space-x-2">
+                        <Droplet className="w-4 h-4 text-blue-500" />
+                        <span className="text-muted-foreground">Glicemia:</span>
+                        <span className="text-foreground">{medicao.glicemia}</span>
+                      </div>
+                    )}
+                    {medicao.oxigenacao_sangue && (
+                      <div className="flex items-center space-x-2">
+                        <Activity className="w-4 h-4 text-green-500" />
+                        <span className="text-muted-foreground">SpO2:</span>
+                        <span className="text-foreground">{medicao.oxigenacao_sangue}</span>
+                      </div>
+                    )}
+                    {medicao.peso && (
+                      <div className="flex items-center space-x-2">
+                        <Scale className="w-4 h-4 text-warning" />
+                        <span className="text-muted-foreground">Peso:</span>
+                        <span className="text-foreground">{medicao.peso} kg</span>
+                      </div>
+                    )}
+                    {medicao.altura && (
+                      <div className="flex items-center space-x-2">
+                        <Ruler className="w-4 h-4 text-accent" />
+                        <span className="text-muted-foreground">Altura:</span>
+                        <span className="text-foreground">{medicao.altura} cm</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </Card>
       </div>
