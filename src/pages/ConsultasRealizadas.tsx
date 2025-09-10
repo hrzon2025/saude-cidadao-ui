@@ -209,10 +209,10 @@ export default function ConsultasRealizadas() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">Ano:</label>
             <Select value={anoSelecionado} onValueChange={setAnoSelecionado}>
-              <SelectTrigger className="bg-white">
+              <SelectTrigger className="bg-background">
                 <SelectValue placeholder="Selecionar ano" />
               </SelectTrigger>
-              <SelectContent className="bg-white border shadow-md z-50">
+              <SelectContent className="bg-background border shadow-md z-50">
                 {anosDisponiveis.map((ano) => (
                   <SelectItem key={ano} value={ano}>
                     {ano}
