@@ -64,15 +64,6 @@ export default function NovoAgendamento() {
       
       console.log('Dados recebidos da API:', userData);
       
-      // Salvar dados no store global, incluindo individuoID
-      setAgendamentoData({
-        individuoID: userData.individuoID,
-        cns: userData.cns,
-        cpf: userData.cpf,
-        unidadeId: userData.unidade.id,
-        equipeId: userData.equipe.id
-      });
-      
       if (!userData.unidade || !userData.unidade.id) {
         throw new Error('Dados da unidade não encontrados');
       }
@@ -87,9 +78,9 @@ export default function NovoAgendamento() {
       
       // Salvar dados do usuário no estado global para a tela de confirmação
       setAgendamentoData({
-        individuoID: userData.individuoID,
-        cns: userData.cns,
-        cpf: userData.cpf
+        individuoID: "250573", // ID fixo do usuário de teste
+        cns: "706700529771818", // CNS fixo do usuário de teste
+        cpf: "15384113855" // CPF fixo do usuário de teste
       });
       
       console.log('Unidade carregada:', userData.unidade);

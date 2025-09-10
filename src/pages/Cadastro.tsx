@@ -159,17 +159,7 @@ export default function Cadastro() {
 
     console.log('Tentativa de criação no Auth:', { authData, authError });
 
-    // Salvar dados da API no store global, incluindo individuoID
-    const { setAgendamentoData } = useAppStore.getState();
-    setAgendamentoData({
-      individuoID: dadosUsuario.individuoID,
-      cns: dadosUsuario.cns,
-      cpf: dadosUsuario.cpf,
-      unidadeId: dadosUsuario.unidade?.id?.toString(),
-      equipeId: dadosUsuario.equipe?.id?.toString()
-    });
-
-    // 2. Inserir dados na tabela usuarios
+    // 2. Inserir dados na tabela usuarios 
     const { data: usuario, error: errorUsuario } = await supabase
       .from("usuarios")
       .insert({
