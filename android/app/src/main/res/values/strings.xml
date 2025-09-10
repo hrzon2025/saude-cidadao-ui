@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Saúde Cidadão</string>
+    <string name="title_activity_main">Saúde Cidadão</string>
+    <string name="package_name">com.saudecidadao.app</string>
+    <string name="custom_url_scheme">com.saudecidadao.app</string>
+</resources>
