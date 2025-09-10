@@ -1,55 +1,120 @@
 import { useState, useEffect } from "react";
-import { Calendar, Filter } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CardAtendimento } from "@/components/cards/card-atendimento";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { consultarAtendimentos, avaliarAtendimento } from "@/lib/stubs/services";
+import { consultarAgendamentosStatus } from "@/lib/services/agendamento";
 import { useAppStore } from "@/store/useAppStore";
 import { Atendimento } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 
 export default function ConsultasRealizadas() {
   const navigate = useNavigate();
-  const { showNotification } = useAppStore();
+  const { showNotification, agendamento } = useAppStore();
   const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filtroData, setFiltroData] = useState('');
-  const [filtroStatus, setFiltroStatus] = useState('todos');
+  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
 
   useEffect(() => {
     loadAtendimentos();
-  }, [filtroStatus]);
+  }, [anoSelecionado]);
 
   const loadAtendimentos = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // Buscar atendimentos baseado no status selecionado
-      let data: Atendimento[] = [];
-      if (filtroStatus === 'todos') {
-        const concluidos = await consultarAtendimentos('Concluído');
-        const cancelados = await consultarAtendimentos('Cancelado');
-        data = [...concluidos, ...cancelados];
-      } else if (filtroStatus === 'concluido') {
-        data = await consultarAtendimentos('Concluído');
-      } else if (filtroStatus === 'cancelado') {
-        data = await consultarAtendimentos('Cancelado');
-      }
+      // Gerar datas do ano selecionado
+      const dataInicio = `${anoSelecionado}0101`;
+      const dataFinal = `${anoSelecionado}1231`;
       
-      setAtendimentos(data);
+      if (!agendamento.individuoID) {
+        // Para teste, usar um ID mockado se não houver no store
+        const mockIndividuoID = "250573";
+        console.warn('IndividuoID não encontrado no store, usando ID de teste:', mockIndividuoID);
+        
+        const data = await consultarAgendamentosStatus(
+          [1, 9, 99, 98],
+          dataInicio,
+          dataFinal,
+          mockIndividuoID
+        );
+        
+        processarDados(data);
+      } else {
+        const data = await consultarAgendamentosStatus(
+          [1, 9, 99, 98],
+          dataInicio,
+          dataFinal,
+          agendamento.individuoID
+        );
+        
+        processarDados(data);
+      }
     } catch (err) {
-      setError('Erro ao carregar consultas realizadas');
+      setError('Não foi possível carregar seus atendimentos. Tente novamente.');
       console.error('Erro ao carregar atendimentos:', err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const processarDados = (data: any[]) => {
+    // Filtrar apenas agendamentos que não são "Agendado" e transformar para o formato esperado
+    const atendimentosTransformados = data
+      .filter(item => item.status !== 'Agendado')
+      .map(item => ({
+        id: item.atendimentoId?.toString() || '',
+        data: formatAPIDateToDisplay(item.data || ''),
+        hora: extractTimeFromAPIDate(item.data || ''),
+        tipo: item.tipoConsulta || '',
+        profissional: item.profissional || '',
+        unidade: item.unidade || '',
+        status: mapAPIStatusToAtendimentoStatus(item.status || ''),
+        podeAvaliar: mapAPIStatusToAtendimentoStatus(item.status || '') === 'Concluído'
+      }));
+    
+    setAtendimentos(atendimentosTransformados);
+  };
+
+  // Função para transformar data da API (YYYYMMDD HH:MM) para formato de exibição
+  const formatAPIDateToDisplay = (apiDate: string): string => {
+    if (!apiDate || apiDate.length < 8) return apiDate;
+    
+    const year = apiDate.substring(0, 4);
+    const month = apiDate.substring(4, 6);
+    const day = apiDate.substring(6, 8);
+    
+    return `${year}-${month}-${day}`;
+  };
+
+  // Função para extrair hora da data da API
+  const extractTimeFromAPIDate = (apiDate: string): string => {
+    if (!apiDate || apiDate.length < 13) return '';
+    
+    const time = apiDate.substring(9, 14); // " HH:MM"
+    return time.trim();
+  };
+
+  // Função para mapear status da API para status do Atendimento
+  const mapAPIStatusToAtendimentoStatus = (apiStatus: string): 'Agendado' | 'Concluído' | 'Cancelado' => {
+    if (apiStatus === 'Desmarcado') return 'Cancelado';
+    if (apiStatus === 'Realizado') return 'Concluído';
+    return 'Cancelado'; // fallback
+  };
+
+  // Gerar anos disponíveis (atual e anteriores)
+  const gerarAnosDisponiveis = () => {
+    const anoAtual = new Date().getFullYear();
+    const anos = [];
+    for (let i = 0; i < 5; i++) {
+      anos.push((anoAtual - i).toString());
+    }
+    return anos;
   };
 
   const handleAvaliar = async (atendimentoId: string) => {
@@ -57,16 +122,7 @@ export default function ConsultasRealizadas() {
     navigate(`/avaliacao/1/${atendimentoId}`);
   };
 
-  // Filtrar atendimentos por data se houver filtro
-  const atendimentosFiltrados = filtroData 
-    ? atendimentos.filter(atendimento => {
-        const dataAtendimento = new Date(atendimento.data);
-        const dataFiltro = new Date(filtroData);
-        return dataAtendimento.toDateString() === dataFiltro.toDateString();
-      })
-    : atendimentos;
-
-  const totalConsultas = atendimentosFiltrados.length;
+  const totalConsultas = atendimentos.length;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -82,9 +138,9 @@ export default function ConsultasRealizadas() {
         <div className="bg-primary/5 rounded-lg p-4 border border-primary/10">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-primary">Consultas Realizadas</h2>
+              <h2 className="text-lg font-semibold text-primary">Atendimentos Passados</h2>
               <p className="text-sm text-muted-foreground">
-                {totalConsultas} consulta{totalConsultas !== 1 ? 's' : ''} realizada{totalConsultas !== 1 ? 's' : ''}
+                {totalConsultas} atendimento{totalConsultas !== 1 ? 's' : ''} encontrado{totalConsultas !== 1 ? 's' : ''}
               </p>
             </div>
             <div className="p-2 bg-primary/10 rounded-full">
@@ -93,49 +149,19 @@ export default function ConsultasRealizadas() {
           </div>
         </div>
 
-        {/* Filtros */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Filtros:</span>
-          </div>
-          
-          {/* Filtro por status */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Status:</label>
-            <Select value={filtroStatus} onValueChange={setFiltroStatus}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecionar status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="concluido">Concluído</SelectItem>
-                <SelectItem value="cancelado">Cancelado</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          {/* Filtro por data */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Data:</label>
-            <div className="flex gap-2">
-              <Input
-                type="date"
-                value={filtroData}
-                onChange={(e) => setFiltroData(e.target.value)}
-                className="flex-1"
-              />
-              {filtroData && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setFiltroData('')}
-                >
-                  Limpar
-                </Button>
-              )}
-            </div>
-          </div>
+        {/* Filtro por ano */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-muted-foreground">Filtrar por ano:</label>
+          <Select value={anoSelecionado} onValueChange={setAnoSelecionado}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecionar ano" />
+            </SelectTrigger>
+            <SelectContent>
+              {gerarAnosDisponiveis().map(ano => (
+                <SelectItem key={ano} value={ano}>{ano}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Lista de consultas */}
@@ -150,23 +176,15 @@ export default function ConsultasRealizadas() {
             message={error}
             onRetry={loadAtendimentos}
           />
-        ) : atendimentosFiltrados.length === 0 ? (
+        ) : atendimentos.length === 0 ? (
           <EmptyState
             icon={Calendar}
-            title={filtroData ? "Nenhuma consulta na data selecionada" : "Nenhuma consulta realizada"}
-            description={
-              filtroData 
-                ? "Não encontramos consultas realizadas na data selecionada. Tente outra data."
-                : "Você ainda não possui consultas realizadas no sistema."
-            }
-            action={filtroData ? {
-              label: 'Limpar filtro',
-              onClick: () => setFiltroData('')
-            } : undefined}
+            title="Nenhum atendimento encontrado para o ano selecionado"
+            description="Você não possui atendimentos neste período."
           />
         ) : (
           <div className="space-y-3">
-            {atendimentosFiltrados.map((atendimento) => (
+            {atendimentos.map((atendimento) => (
               <CardAtendimento
                 key={atendimento.id}
                 atendimento={atendimento}
