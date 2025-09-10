@@ -11,7 +11,7 @@ import { consultarUsuario, consultarTipos, consultarProfissionais, type Consulta
 import { useNavigate } from "react-router-dom";
 export default function NovoAgendamento() {
   const navigate = useNavigate();
-  const { showNotification, setAgendamentoData, usuario } = useAppStore();
+  const { showNotification, setAgendamentoData } = useAppStore();
   
   // Estados dos dados da API
   const [unidadeInfo, setUnidadeInfo] = useState<ConsultarUsuarioResponse['unidade'] | null>(null);
@@ -20,6 +20,7 @@ export default function NovoAgendamento() {
   const [profissionais, setProfissionais] = useState<ProfissionalAPI[]>([]);
   
   // Estados de seleção
+  const [unidadeSelecionada, setUnidadeSelecionada] = useState<string>('');
   const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
   const [profissionalSelecionado, setProfissionalSelecionado] = useState<string>('');
   
@@ -32,32 +33,36 @@ export default function NovoAgendamento() {
     loadInitialData();
   }, []);
 
+  // Quando a unidade é selecionada, carrega os tipos de consulta
   useEffect(() => {
-    if (equipeId && tipoSelecionado) {
-      loadProfissionais();
-    } else {
+    if (unidadeSelecionada && equipeId) {
+      loadTiposConsulta();
+      // Reset dos selects dependentes
+      setTipoSelecionado('');
+      setProfissionalSelecionado('');
       setProfissionais([]);
+    }
+  }, [unidadeSelecionada]);
+
+  // Quando o tipo é selecionado, carrega os profissionais
+  useEffect(() => {
+    if (tipoSelecionado && equipeId) {
+      loadProfissionais();
+      // Reset do profissional
       setProfissionalSelecionado('');
     }
-  }, [tipoSelecionado, equipeId]);
-
-  // Log para debug do estado dos tipos de consulta
-  useEffect(() => {
-    console.log('Estado tiposConsulta atualizado:', tiposConsulta, 'length:', tiposConsulta.length);
-  }, [tiposConsulta]);
+  }, [tipoSelecionado]);
   const loadInitialData = async () => {
     try {
       setError(null);
       setLoadingInitial(true);
       
-      console.log('Iniciando carregamento dos dados...');
+      console.log('Carregando dados iniciais do usuário...');
       
-      // Chama a API para consultar usuário (usando dados fixos por enquanto)
+      // Chama a API para consultar usuário
       const userData = await consultarUsuario("15384113855", "19710812", "");
       
       console.log('Dados recebidos da API:', userData);
-      console.log('userData.unidade:', userData.unidade);
-      console.log('userData.equipe:', userData.equipe);
       
       if (!userData.unidade || !userData.unidade.id) {
         throw new Error('Dados da unidade não encontrados');
@@ -67,23 +72,12 @@ export default function NovoAgendamento() {
         throw new Error('Dados da equipe não encontrados');
       }
       
-      // Salva a unidade automaticamente
+      // Salva os dados básicos
       setUnidadeInfo(userData.unidade);
-      setEquipeId(userData.equipe.id);
+      setEquipeId(userData.equipe.id.toString());
       
-      console.log('Salvando no store:', {
-        unidadeId: userData.unidade.id,
-        equipeId: userData.equipe.id
-      });
-      
-      // Salva no store global
-      setAgendamentoData({
-        unidadeId: userData.unidade.id,
-        equipeId: userData.equipe.id
-      });
-      
-      // Carrega tipos de consulta automaticamente
-      await loadTiposConsulta(userData.equipe.id);
+      console.log('Unidade carregada:', userData.unidade);
+      console.log('Equipe ID salvo:', userData.equipe.id);
       
     } catch (err) {
       console.error('Erro detalhado ao carregar dados:', err);
@@ -93,16 +87,15 @@ export default function NovoAgendamento() {
     }
   };
 
-  const loadTiposConsulta = async (equipeId: string) => {
+  const loadTiposConsulta = async () => {
     try {
       console.log('Carregando tipos de consulta para equipeId:', equipeId);
       setLoadingTipos(true);
       const tiposData = await consultarTipos(equipeId);
       console.log('Tipos de consulta recebidos:', tiposData);
       setTiposConsulta(tiposData);
-      console.log('Estado tiposConsulta atualizado, length:', tiposData?.length || 0);
     } catch (err) {
-      console.error('Erro detalhado ao carregar tipos:', err);
+      console.error('Erro ao carregar tipos:', err);
       showNotification('Erro ao carregar tipos de consulta', 'error');
     } finally {
       setLoadingTipos(false);
@@ -112,42 +105,54 @@ export default function NovoAgendamento() {
   const loadProfissionais = async () => {
     if (!tipoSelecionado || !equipeId) return;
     try {
+      console.log('Carregando profissionais para:', { tipoSelecionado, equipeId });
       setLoadingProfissionais(true);
       const profissionaisData = await consultarProfissionais(tipoSelecionado, equipeId);
+      console.log('Profissionais recebidos:', profissionaisData);
       setProfissionais(profissionaisData);
     } catch (err) {
-      showNotification('Erro ao carregar profissionais', 'error');
       console.error('Erro ao carregar profissionais:', err);
+      showNotification('Erro ao carregar profissionais', 'error');
     } finally {
       setLoadingProfissionais(false);
     }
   };
+  const handleUnidadeChange = (valor: string) => {
+    console.log('Unidade selecionada:', valor);
+    setUnidadeSelecionada(valor);
+    setAgendamentoData({ 
+      unidadeId: valor,
+      equipeId: equipeId 
+    });
+  };
+
   const handleTipoChange = (valor: string) => {
+    console.log('Tipo selecionado:', valor);
     setTipoSelecionado(valor);
-    setProfissionalSelecionado(''); // Reset profissional
     setAgendamentoData({ tipoConsultaId: valor });
   };
 
   const handleProfissionalChange = (valor: string) => {
+    console.log('Profissional selecionado:', valor);
     setProfissionalSelecionado(valor);
     setAgendamentoData({ profissionalId: valor });
   };
 
   const handleContinuar = () => {
-    if (!unidadeInfo || !profissionalSelecionado || !tipoSelecionado) {
+    if (!unidadeSelecionada || !profissionalSelecionado || !tipoSelecionado) {
       showNotification('Por favor, complete todos os campos', 'error');
       return;
     }
     
     const params = new URLSearchParams({
-      unidade: unidadeInfo.id,
+      unidade: unidadeSelecionada,
       profissional: profissionalSelecionado,
       tipo: tipoSelecionado
     });
     navigate(`/agendamentos/horarios?${params.toString()}`);
   };
 
-  const podeAtualizar = unidadeInfo && profissionalSelecionado && tipoSelecionado;
+  const podeAtualizar = unidadeSelecionada && profissionalSelecionado && tipoSelecionado;
   const profissionalInfo = profissionais.find(p => p.id === profissionalSelecionado);
   const tipoInfo = tiposConsulta.find(t => t.id === tipoSelecionado);
   return <div className="min-h-screen bg-background pb-20">
@@ -184,13 +189,26 @@ export default function NovoAgendamento() {
               {loadingInitial ? (
                 <SkeletonCard />
               ) : unidadeInfo ? (
-                <div className="bg-muted/50 rounded p-3">
-                  <div className="font-medium">{unidadeInfo.razaoSocial}</div>
-                  <div className="text-sm text-muted-foreground">Unidade vinculada automaticamente</div>
-                </div>
+                <Select value={unidadeSelecionada} onValueChange={handleUnidadeChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Escolha uma unidade" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={unidadeInfo.id.toString()}>
+                      <div className="font-medium">{unidadeInfo.razaoSocial}</div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               ) : (
                 <div className="text-sm text-destructive">
                   Erro ao carregar unidade de saúde
+                </div>
+              )}
+
+              {unidadeSelecionada && unidadeInfo && (
+                <div className="bg-muted/50 rounded p-3 text-sm">
+                  <p><strong>Unidade:</strong> {unidadeInfo.razaoSocial}</p>
+                  <p><strong>ID:</strong> {unidadeInfo.id}</p>
                 </div>
               )}
             </div>
@@ -204,14 +222,14 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Tipo de Consulta</h3>
               </div>
               
-              {!unidadeInfo ? (
+              {!unidadeSelecionada ? (
                 <p className="text-sm text-muted-foreground">
-                  Aguardando carregamento da unidade
+                  Primeiro selecione uma unidade de saúde
                 </p>
               ) : loadingTipos ? (
                 <SkeletonCard />
               ) : (
-                <Select value={tipoSelecionado} onValueChange={handleTipoChange} disabled={!equipeId}>
+                <Select value={tipoSelecionado} onValueChange={handleTipoChange} disabled={!unidadeSelecionada}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha o tipo de consulta" />
                   </SelectTrigger>
@@ -222,7 +240,7 @@ export default function NovoAgendamento() {
                       </SelectItem>
                     ) : (
                       tiposConsulta.map(tipo => (
-                        <SelectItem key={tipo.id} value={tipo.id}>
+                        <SelectItem key={tipo.id} value={tipo.id.toString()}>
                           <div className="font-medium">{tipo.descricao}</div>
                         </SelectItem>
                       ))
@@ -233,7 +251,8 @@ export default function NovoAgendamento() {
 
               {tipoInfo && (
                 <div className="bg-muted/50 rounded p-3 text-sm">
-                  <p><strong>Tipo selecionado:</strong> {tipoInfo.descricao}</p>
+                  <p><strong>Tipo:</strong> {tipoInfo.descricao}</p>
+                  <p><strong>ID:</strong> {tipoInfo.id}</p>
                 </div>
               )}
             </div>
@@ -259,11 +278,17 @@ export default function NovoAgendamento() {
                     <SelectValue placeholder="Escolha um profissional" />
                   </SelectTrigger>
                   <SelectContent>
-                    {profissionais.map(profissional => (
-                      <SelectItem key={profissional.id} value={profissional.id}>
-                        <div className="font-medium">{profissional.descricao}</div>
+                    {profissionais.length === 0 ? (
+                      <SelectItem value="no-data" disabled>
+                        <div className="text-sm text-muted-foreground">Nenhum profissional disponível</div>
                       </SelectItem>
-                    ))}
+                    ) : (
+                      profissionais.map(profissional => (
+                        <SelectItem key={profissional.id} value={profissional.id.toString()}>
+                          <div className="font-medium">{profissional.descricao}</div>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               )}
@@ -271,6 +296,7 @@ export default function NovoAgendamento() {
               {profissionalInfo && (
                 <div className="bg-muted/50 rounded p-3 text-sm">
                   <p><strong>Profissional:</strong> {profissionalInfo.descricao}</p>
+                  <p><strong>ID:</strong> {profissionalInfo.id}</p>
                 </div>
               )}
             </div>

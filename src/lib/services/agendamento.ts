@@ -65,7 +65,7 @@ export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> 
   
   const { data, error } = await supabase.functions.invoke('consultar-tipo', {
     body: {
-      equipeId
+      equipeId: parseInt(equipeId) // Converter para number
     }
   });
 
@@ -76,23 +76,32 @@ export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> 
     throw new Error(error.message || 'Erro ao consultar tipos de consulta');
   }
 
-  const tipos = Array.isArray(data) ? data : [];
+  // A API retorna { "tiposConsulta": [...] }
+  const tipos = data?.tiposConsulta || [];
   console.log('Tipos processados:', tipos);
-  return tipos;
+  return Array.isArray(tipos) ? tipos : [];
 };
 
 export const consultarProfissionais = async (tipoConsultaId: string, equipeId: string): Promise<Profissional[]> => {
+  console.log('Chamando edge function consultar-profissional:', { tipoConsultaId, equipeId });
+  
   const { data, error } = await supabase.functions.invoke('consultar-profissional', {
     body: {
-      tipoConsultaId,
-      equipeId,
+      tipoConsultaId: parseInt(tipoConsultaId),
+      equipeId: parseInt(equipeId),
       especialidade: 1
     }
   });
 
+  console.log('Resposta da edge function consultar-profissional:', { data, error });
+
   if (error) {
+    console.error('Erro na edge function consultar-profissional:', error);
     throw new Error(error.message || 'Erro ao consultar profissionais');
   }
 
-  return Array.isArray(data) ? data : [];
+  // A API retorna { "profissionais": [...] }
+  const profissionais = data?.profissionais || [];
+  console.log('Profissionais processados:', profissionais);
+  return Array.isArray(profissionais) ? profissionais : [];
 };
