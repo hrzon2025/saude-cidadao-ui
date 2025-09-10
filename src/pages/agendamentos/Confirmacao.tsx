@@ -68,37 +68,62 @@ export default function ConfirmacaoAgendamento() {
   };
 
   const handleConfirmar = async () => {
+    console.log('=== INICIANDO CONFIRMAÇÃO ===');
+    console.log('Estado do agendamento:', agendamento);
+    
     try {
       setConfirmando(true);
       
+      // Verificar todos os dados necessários
+      if (!unidadeId || !profissionalId || !tipoConsultaId || !equipeId || !dataSelecionada || !horaSelecionada || !individuoID || !cns || !cpf) {
+        console.error('Dados incompletos:', {
+          unidadeId, profissionalId, tipoConsultaId, equipeId, 
+          dataSelecionada, horaSelecionada, individuoID, cns, cpf
+        });
+        showNotification('Dados incompletos para o agendamento', 'error');
+        return;
+      }
+      
       // Formatar data para YYYYMMDD
       const dataFormatada = dataSelecionada.replace(/-/g, '');
+      console.log('Data formatada:', dataFormatada);
       
       const dadosAgendamento = {
-        unidadeId: unidadeId!,
-        profissionalId: profissionalId!,
-        tipoConsultaId: tipoConsultaId!,
-        equipeId: equipeId!,
+        unidadeId: unidadeId,
+        profissionalId: profissionalId,
+        tipoConsultaId: tipoConsultaId,
+        equipeId: equipeId,
         data: dataFormatada,
-        hora: horaSelecionada!,
-        individuoID: individuoID!,
-        cns: cns!,
-        cpf: cpf!
+        hora: horaSelecionada,
+        individuoID: individuoID,
+        cns: cns,
+        cpf: cpf
       };
       
+      console.log('Dados enviados para API:', dadosAgendamento);
+      
       const resultado = await agendarConsulta(dadosAgendamento);
+      console.log('Resultado da API:', resultado);
       
       if (resultado.atendimentoId) {
+        console.log('Agendamento criado com sucesso:', resultado.atendimentoId);
         setShowSuccessDialog(true);
-      } else if (resultado.mensagem?.includes('Já existe um atendimento')) {
-        showNotification('Já existe um agendamento em aberto para este paciente.', 'error');
+      } else if (resultado.mensagem) {
+        console.log('API retornou mensagem:', resultado.mensagem);
+        if (resultado.mensagem.includes('Já existe um atendimento')) {
+          showNotification('Já existe um agendamento em aberto para este paciente.', 'error');
+        } else {
+          showNotification(`Erro: ${resultado.mensagem}`, 'error');
+        }
       } else {
+        console.log('Resposta inesperada da API:', resultado);
         showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
       }
     } catch (err) {
-      showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
       console.error('Erro ao confirmar agendamento:', err);
+      showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
     } finally {
+      console.log('=== FINALIZANDO CONFIRMAÇÃO ===');
       setConfirmando(false);
     }
   };
