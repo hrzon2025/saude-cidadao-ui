@@ -169,7 +169,6 @@ export interface AgendamentoStatusResponse {
   data?: string;
   status?: string;
   observacoes?: string;
-  motivo?: string;
 }
 
 export const consultarAgendamentosStatus = async (

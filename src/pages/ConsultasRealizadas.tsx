@@ -1,122 +1,77 @@
 import { useState, useEffect } from "react";
-import { Calendar, Filter, Clock, MapPin, User, AlertCircle } from "lucide-react";
+import { Calendar, Filter } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { StatusBadge } from "@/components/ui/status-badge";
+import { CardAtendimento } from "@/components/cards/card-atendimento";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { consultarAgendamentosStatus, AgendamentoStatusResponse } from "@/lib/services/agendamento";
+import { consultarAtendimentos, avaliarAtendimento } from "@/lib/stubs/services";
 import { useAppStore } from "@/store/useAppStore";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { Atendimento } from "@/lib/types";
 import { useNavigate } from "react-router-dom";
 
 export default function ConsultasRealizadas() {
   const navigate = useNavigate();
-  const { showNotification, agendamento } = useAppStore();
-  const [atendimentos, setAtendimentos] = useState<AgendamentoStatusResponse[]>([]);
+  const { showNotification } = useAppStore();
+  const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
+  const [filtroData, setFiltroData] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('todos');
 
   useEffect(() => {
     loadAtendimentos();
-  }, [anoSelecionado]);
+  }, [filtroStatus]);
 
   const loadAtendimentos = async () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Verificar se temos o individuoID no estado global
-      const individuoID = agendamento?.individuoID || "250573"; // Fallback para o ID de teste
       
-      if (!individuoID) {
-        setError('ID do usuário não encontrado. Faça login novamente.');
-        return;
+      // Buscar atendimentos baseado no status selecionado
+      let data: Atendimento[] = [];
+      if (filtroStatus === 'todos') {
+        const concluidos = await consultarAtendimentos('Concluído');
+        const cancelados = await consultarAtendimentos('Cancelado');
+        data = [...concluidos, ...cancelados];
+      } else if (filtroStatus === 'concluido') {
+        data = await consultarAtendimentos('Concluído');
+      } else if (filtroStatus === 'cancelado') {
+        data = await consultarAtendimentos('Cancelado');
       }
-
-      // Gerar datas de início e fim do ano selecionado
-      const dataInicio = `${anoSelecionado}0101`; // 01/01/ANO
-      const dataFinal = `${anoSelecionado}1231`; // 31/12/ANO
       
-      const data = await consultarAgendamentosStatus(
-        [1, 9, 99, 98], // situacaoId conforme especificado
-        dataInicio,
-        dataFinal,
-        individuoID,
-        1 // página
-      );
-      
-      // Filtrar apenas agendamentos com status diferente de "Agendado"
-      const atendimentosPassados = data.filter(atendimento => 
-        atendimento.status !== 'Agendado'
-      );
-      
-      setAtendimentos(atendimentosPassados);
+      setAtendimentos(data);
     } catch (err) {
+      setError('Erro ao carregar consultas realizadas');
       console.error('Erro ao carregar atendimentos:', err);
-      setError('Não foi possível carregar seus atendimentos. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
-  const formatarData = (data?: string) => {
-    if (!data) return { data: 'N/A', hora: 'N/A', diaSemana: '' };
-    
-    try {
-      // A API retorna data no formato YYYYMMDD ou similar
-      let dataFormatada = data;
-      
-      // Se a data vier no formato YYYYMMDD, converter para YYYY-MM-DD
-      if (data.length === 8 && !data.includes('-')) {
-        dataFormatada = `${data.substring(0,4)}-${data.substring(4,6)}-${data.substring(6,8)}`;
-      }
-      
-      const dataConsulta = new Date(dataFormatada);
-      
-      if (isNaN(dataConsulta.getTime())) {
-        return { data, hora: '', diaSemana: '' };
-      }
-      
-      return {
-        data: format(dataConsulta, "dd/MM/yyyy", { locale: ptBR }),
-        hora: format(dataConsulta, "HH:mm", { locale: ptBR }),
-        diaSemana: format(dataConsulta, "EEEE", { locale: ptBR })
-      };
-    } catch {
-      return { data, hora: '', diaSemana: '' };
-    }
+  const handleAvaliar = async (atendimentoId: string) => {
+    // Navegar para tela de avaliação
+    navigate(`/avaliacao/1/${atendimentoId}`);
   };
 
-  const getStatusVariant = (status?: string) => {
-    switch (status) {
-      case 'Concluído':
-        return 'success';
-      case 'Cancelado':
-        return 'error';
-      default:
-        return 'neutral';
-    }
-  };
+  // Filtrar atendimentos por data se houver filtro
+  const atendimentosFiltrados = filtroData 
+    ? atendimentos.filter(atendimento => {
+        const dataAtendimento = new Date(atendimento.data);
+        const dataFiltro = new Date(filtroData);
+        return dataAtendimento.toDateString() === dataFiltro.toDateString();
+      })
+    : atendimentos;
 
-  // Gerar lista de anos (ano atual + 4 anos anteriores)
-  const anosDisponiveis = Array.from({ length: 5 }, (_, i) => {
-    const ano = new Date().getFullYear() - i; // Ano atual e anos anteriores
-    return ano.toString();
-  });
-
-  const totalAtendimentos = atendimentos.length;
+  const totalConsultas = atendimentosFiltrados.length;
 
   return (
     <div className="min-h-screen bg-background pb-20">
       <AppHeader 
-        title="Histórico de Atendimentos" 
+        title="Histórico" 
         showBack 
         onBack={() => navigate('/inicio')}
         className="bg-primary text-primary-foreground"
@@ -127,9 +82,9 @@ export default function ConsultasRealizadas() {
         <div className="bg-primary/5 rounded-lg p-4 border border-primary/10">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-primary">Atendimentos Realizados</h2>
+              <h2 className="text-lg font-semibold text-primary">Consultas Realizadas</h2>
               <p className="text-sm text-muted-foreground">
-                {totalAtendimentos} atendimento{totalAtendimentos !== 1 ? 's' : ''} encontrado{totalAtendimentos !== 1 ? 's' : ''}
+                {totalConsultas} consulta{totalConsultas !== 1 ? 's' : ''} realizada{totalConsultas !== 1 ? 's' : ''}
               </p>
             </div>
             <div className="p-2 bg-primary/10 rounded-full">
@@ -142,25 +97,48 @@ export default function ConsultasRealizadas() {
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Filtro por ano:</span>
+            <span className="text-sm font-medium">Filtros:</span>
           </div>
           
-          {/* Filtro por ano */}
-          <Select value={anoSelecionado} onValueChange={setAnoSelecionado}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o ano" />
-            </SelectTrigger>
-            <SelectContent>
-              {anosDisponiveis.map((ano) => (
-                <SelectItem key={ano} value={ano}>
-                  {ano}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Filtro por status */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Status:</label>
+            <Select value={filtroStatus} onValueChange={setFiltroStatus}>
+              <SelectTrigger>
+                <SelectValue placeholder="Selecionar status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todos">Todos</SelectItem>
+                <SelectItem value="concluido">Concluído</SelectItem>
+                <SelectItem value="cancelado">Cancelado</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          {/* Filtro por data */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Data:</label>
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                value={filtroData}
+                onChange={(e) => setFiltroData(e.target.value)}
+                className="flex-1"
+              />
+              {filtroData && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setFiltroData('')}
+                >
+                  Limpar
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Lista de atendimentos */}
+        {/* Lista de consultas */}
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map(i => (
@@ -172,115 +150,29 @@ export default function ConsultasRealizadas() {
             message={error}
             onRetry={loadAtendimentos}
           />
-        ) : atendimentos.length === 0 ? (
+        ) : atendimentosFiltrados.length === 0 ? (
           <EmptyState
             icon={Calendar}
-            title="Nenhum atendimento encontrado"
-            description={`Você não possui atendimentos para o ano de ${anoSelecionado}.`}
+            title={filtroData ? "Nenhuma consulta na data selecionada" : "Nenhuma consulta realizada"}
+            description={
+              filtroData 
+                ? "Não encontramos consultas realizadas na data selecionada. Tente outra data."
+                : "Você ainda não possui consultas realizadas no sistema."
+            }
+            action={filtroData ? {
+              label: 'Limpar filtro',
+              onClick: () => setFiltroData('')
+            } : undefined}
           />
         ) : (
           <div className="space-y-3">
-            {atendimentos.map((atendimento, index) => {
-              const formatted = formatarData(atendimento.data);
-              
-              return (
-                <Card key={atendimento.id || index} className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground">
-                          {atendimento.tipoConsulta || 'Atendimento'}
-                        </h3>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <User className="h-4 w-4 mr-1" />
-                          {atendimento.profissional || 'Profissional não informado'}
-                        </div>
-                      </div>
-                      <StatusBadge variant={getStatusVariant(atendimento.status)}>
-                        {atendimento.status}
-                      </StatusBadge>
-                    </div>
-
-                    <div className="space-y-2 text-sm text-muted-foreground">
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span>
-                          {formatted.diaSemana ? `${formatted.diaSemana}, ` : ''}{formatted.data}
-                          {formatted.hora ? ` às ${formatted.hora}` : ''}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-2" />
-                        <span>{atendimento.unidade || 'Unidade não informada'}</span>
-                      </div>
-                      {atendimento.equipe && (
-                        <div className="flex items-center">
-                          <User className="h-4 w-4 mr-2" />
-                          <span>Equipe: {atendimento.equipe}</span>
-                        </div>
-                      )}
-                      {atendimento.motivo && (
-                        <div className="flex items-center">
-                          <AlertCircle className="h-4 w-4 mr-2" />
-                          <span>Motivo: {atendimento.motivo}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {(atendimento.observacoes || atendimento.motivo) && (
-                      <div className="bg-muted/50 rounded p-2">
-                        <div className="text-xs text-muted-foreground space-y-1">
-                          {atendimento.observacoes && (
-                            <p><strong>Observações:</strong> {atendimento.observacoes}</p>
-                          )}
-                          {atendimento.motivo && (
-                            <p><strong>Motivo:</strong> {atendimento.motivo}</p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="pt-2 border-t">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full"
-                          >
-                            Visualizar Detalhes
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Detalhes do Atendimento</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              <div className="space-y-2 text-sm">
-                                <div><strong>Tipo:</strong> {atendimento.tipoConsulta}</div>
-                                <div><strong>Profissional:</strong> {atendimento.profissional}</div>
-                                <div><strong>Unidade:</strong> {atendimento.unidade}</div>
-                                <div><strong>Equipe:</strong> {atendimento.equipe}</div>
-                                <div><strong>Data:</strong> {formatted.data}</div>
-                                <div><strong>Status:</strong> {atendimento.status}</div>
-                                {atendimento.motivo && (
-                                  <div><strong>Motivo:</strong> {atendimento.motivo}</div>
-                                )}
-                                {atendimento.observacoes && (
-                                  <div><strong>Observações:</strong> {atendimento.observacoes}</div>
-                                )}
-                              </div>
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Fechar</AlertDialogCancel>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
+            {atendimentosFiltrados.map((atendimento) => (
+              <CardAtendimento
+                key={atendimento.id}
+                atendimento={atendimento}
+                onAvaliar={handleAvaliar}
+              />
+            ))}
           </div>
         )}
       </div>
