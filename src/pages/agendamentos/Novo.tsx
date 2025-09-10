@@ -7,64 +7,86 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { useAppStore } from "@/store/useAppStore";
-import { obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
-import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { consultarUsuario, consultarTipos, consultarProfissionais, type ConsultarUsuarioResponse, type TipoConsulta as TipoConsultaAPI, type Profissional as ProfissionalAPI } from "@/lib/services/agendamento";
+import { useNavigate } from "react-router-dom";
 export default function NovoAgendamento() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const {
-    showNotification
-  } = useAppStore();
-  const [unidades, setUnidades] = useState<Unidade[]>([]);
-  const [profissionais, setProfissionais] = useState<Profissional[]>([]);
-  const [tiposConsulta, setTiposConsulta] = useState<TipoConsulta[]>([]);
-  const [unidadeSelecionada, setUnidadeSelecionada] = useState(searchParams.get('unidade') || '');
-  const [profissionalSelecionado, setProfissionalSelecionado] = useState(searchParams.get('profissional') || '');
-  const [tipoSelecionado, setTipoSelecionado] = useState(searchParams.get('tipo') || '');
-  const [loadingUnidades, setLoadingUnidades] = useState(true);
+  const { showNotification, setAgendamentoData, usuario } = useAppStore();
+  
+  // Estados dos dados da API
+  const [unidadeInfo, setUnidadeInfo] = useState<ConsultarUsuarioResponse['unidade'] | null>(null);
+  const [equipeId, setEquipeId] = useState<string>('');
+  const [tiposConsulta, setTiposConsulta] = useState<TipoConsultaAPI[]>([]);
+  const [profissionais, setProfissionais] = useState<ProfissionalAPI[]>([]);
+  
+  // Estados de seleção
+  const [tipoSelecionado, setTipoSelecionado] = useState<string>('');
+  const [profissionalSelecionado, setProfissionalSelecionado] = useState<string>('');
+  
+  // Estados de loading
+  const [loadingInitial, setLoadingInitial] = useState(true);
+  const [loadingTipos, setLoadingTipos] = useState(false);
   const [loadingProfissionais, setLoadingProfissionais] = useState(false);
-  const [loadingTipos, setLoadingTipos] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     loadInitialData();
   }, []);
+
   useEffect(() => {
-    if (unidadeSelecionada) {
+    if (equipeId && tipoSelecionado) {
       loadProfissionais();
-      // Reset profissional when unidade changes
-      if (searchParams.get('unidade') !== unidadeSelecionada) {
-        setProfissionalSelecionado('');
-      }
     } else {
       setProfissionais([]);
       setProfissionalSelecionado('');
     }
-  }, [unidadeSelecionada]);
+  }, [tipoSelecionado, equipeId]);
   const loadInitialData = async () => {
     try {
       setError(null);
-      const [unidadesData, tiposData] = await Promise.all([obterUnidades(), obterTiposConsulta()]);
-      setUnidades(unidadesData);
-      setTiposConsulta(tiposData);
-
-      // Se tem unidade na URL, carrega profissionais
-      if (searchParams.get('unidade')) {
-        await loadProfissionais();
-      }
+      setLoadingInitial(true);
+      
+      // Chama a API para consultar usuário (usando dados fixos por enquanto)
+      const userData = await consultarUsuario("15384113855", "19710812", "");
+      
+      // Salva a unidade automaticamente
+      setUnidadeInfo(userData.unidade);
+      setEquipeId(userData.equipe.id);
+      
+      // Salva no store global
+      setAgendamentoData({
+        unidadeId: userData.unidade.id,
+        equipeId: userData.equipe.id
+      });
+      
+      // Carrega tipos de consulta automaticamente
+      await loadTiposConsulta(userData.equipe.id);
+      
     } catch (err) {
       setError('Erro ao carregar dados iniciais');
       console.error('Erro ao carregar dados:', err);
     } finally {
-      setLoadingUnidades(false);
+      setLoadingInitial(false);
+    }
+  };
+
+  const loadTiposConsulta = async (equipeId: string) => {
+    try {
+      setLoadingTipos(true);
+      const tiposData = await consultarTipos(equipeId);
+      setTiposConsulta(tiposData);
+    } catch (err) {
+      showNotification('Erro ao carregar tipos de consulta', 'error');
+      console.error('Erro ao carregar tipos:', err);
+    } finally {
       setLoadingTipos(false);
     }
   };
+
   const loadProfissionais = async () => {
-    if (!unidadeSelecionada) return;
+    if (!tipoSelecionado || !equipeId) return;
     try {
       setLoadingProfissionais(true);
-      const profissionaisData = await obterProfissionaisPorUnidade(unidadeSelecionada);
+      const profissionaisData = await consultarProfissionais(tipoSelecionado, equipeId);
       setProfissionais(profissionaisData);
     } catch (err) {
       showNotification('Erro ao carregar profissionais', 'error');
@@ -73,20 +95,32 @@ export default function NovoAgendamento() {
       setLoadingProfissionais(false);
     }
   };
+  const handleTipoChange = (valor: string) => {
+    setTipoSelecionado(valor);
+    setProfissionalSelecionado(''); // Reset profissional
+    setAgendamentoData({ tipoConsultaId: valor });
+  };
+
+  const handleProfissionalChange = (valor: string) => {
+    setProfissionalSelecionado(valor);
+    setAgendamentoData({ profissionalId: valor });
+  };
+
   const handleContinuar = () => {
-    if (!unidadeSelecionada || !profissionalSelecionado || !tipoSelecionado) {
-      showNotification('Por favor, selecione todos os campos', 'error');
+    if (!unidadeInfo || !profissionalSelecionado || !tipoSelecionado) {
+      showNotification('Por favor, complete todos os campos', 'error');
       return;
     }
+    
     const params = new URLSearchParams({
-      unidade: unidadeSelecionada,
+      unidade: unidadeInfo.id,
       profissional: profissionalSelecionado,
       tipo: tipoSelecionado
     });
     navigate(`/agendamentos/horarios?${params.toString()}`);
   };
-  const podeAtualizar = unidadeSelecionada && profissionalSelecionado && tipoSelecionado;
-  const unidadeInfo = unidades.find(u => u.id === unidadeSelecionada);
+
+  const podeAtualizar = unidadeInfo && profissionalSelecionado && tipoSelecionado;
   const profissionalInfo = profissionais.find(p => p.id === profissionalSelecionado);
   const tipoInfo = tiposConsulta.find(t => t.id === tipoSelecionado);
   return <div className="min-h-screen bg-background pb-20">
@@ -120,57 +154,18 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Unidade de Saúde</h3>
               </div>
               
-              {loadingUnidades ? <SkeletonCard /> : <Select value={unidadeSelecionada} onValueChange={setUnidadeSelecionada}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Escolha uma unidade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {unidades.map(unidade => <SelectItem key={unidade.id} value={unidade.id}>
-                        <div>
-                          <div className="font-medium">{unidade.nome}</div>
-                          <div className="text-xs text-muted-foreground">{unidade.endereco}</div>
-                        </div>
-                      </SelectItem>)}
-                  </SelectContent>
-                </Select>}
-
-              {unidadeInfo && <div className="bg-muted/50 rounded p-3 text-sm">
-                  <p><strong>Endereço:</strong> {unidadeInfo.endereco}</p>
-                  <p><strong>Telefone:</strong> {unidadeInfo.telefone}</p>
-                </div>}
-            </div>
-          </Card>
-
-          {/* Profissional */}
-          <Card className="p-4">
-            <div className="space-y-3">
-              <div className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">Profissional</h3>
-              </div>
-              
-              {!unidadeSelecionada ? <p className="text-sm text-muted-foreground">
-                  Primeiro selecione uma unidade de saúde
-                </p> : loadingProfissionais ? <SkeletonCard /> : <Select value={profissionalSelecionado} onValueChange={setProfissionalSelecionado} disabled={!unidadeSelecionada}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Escolha um profissional" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {profissionais.map(profissional => <SelectItem key={profissional.id} value={profissional.id}>
-                        <div>
-                          <div className="font-medium">{profissional.nome}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {profissional.especialidade} • {profissional.crm}
-                          </div>
-                        </div>
-                      </SelectItem>)}
-                  </SelectContent>
-                </Select>}
-
-              {profissionalInfo && <div className="bg-muted/50 rounded p-3 text-sm">
-                  <p><strong>Especialidade:</strong> {profissionalInfo.especialidade}</p>
-                  <p><strong>CRM:</strong> {profissionalInfo.crm}</p>
-                </div>}
+              {loadingInitial ? (
+                <SkeletonCard />
+              ) : unidadeInfo ? (
+                <div className="bg-muted/50 rounded p-3">
+                  <div className="font-medium">{unidadeInfo.razaoSocial}</div>
+                  <div className="text-sm text-muted-foreground">Unidade vinculada automaticamente</div>
+                </div>
+              ) : (
+                <div className="text-sm text-destructive">
+                  Erro ao carregar unidade de saúde
+                </div>
+              )}
             </div>
           </Card>
 
@@ -182,27 +177,72 @@ export default function NovoAgendamento() {
                 <h3 className="font-semibold">Tipo de Consulta</h3>
               </div>
               
-              {loadingTipos ? <SkeletonCard /> : <Select value={tipoSelecionado} onValueChange={setTipoSelecionado}>
+              {!unidadeInfo ? (
+                <p className="text-sm text-muted-foreground">
+                  Aguardando carregamento da unidade
+                </p>
+              ) : loadingTipos ? (
+                <SkeletonCard />
+              ) : (
+                <Select value={tipoSelecionado} onValueChange={handleTipoChange} disabled={!equipeId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha o tipo de consulta" />
                   </SelectTrigger>
                   <SelectContent>
-                    {tiposConsulta.map(tipo => <SelectItem key={tipo.id} value={tipo.id}>
-                        <div>
-                          <div className="font-medium">{tipo.nome}</div>
-                          <div className="text-xs text-muted-foreground">
-                            Duração: {tipo.duracao} minutos
-                          </div>
-                        </div>
-                      </SelectItem>)}
+                    {tiposConsulta.map(tipo => (
+                      <SelectItem key={tipo.id} value={tipo.id}>
+                        <div className="font-medium">{tipo.descricao}</div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
-                </Select>}
+                </Select>
+              )}
 
-              {tipoInfo && <div className="bg-muted/50 rounded p-3 text-sm">
-                  <p><strong>Duração:</strong> {tipoInfo.duracao} minutos</p>
-                </div>}
+              {tipoInfo && (
+                <div className="bg-muted/50 rounded p-3 text-sm">
+                  <p><strong>Tipo selecionado:</strong> {tipoInfo.descricao}</p>
+                </div>
+              )}
             </div>
           </Card>
+
+          {/* Profissional */}
+          <Card className="p-4">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <User className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold">Profissional</h3>
+              </div>
+              
+              {!tipoSelecionado ? (
+                <p className="text-sm text-muted-foreground">
+                  Primeiro selecione um tipo de consulta
+                </p>
+              ) : loadingProfissionais ? (
+                <SkeletonCard />
+              ) : (
+                <Select value={profissionalSelecionado} onValueChange={handleProfissionalChange} disabled={!tipoSelecionado}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Escolha um profissional" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {profissionais.map(profissional => (
+                      <SelectItem key={profissional.id} value={profissional.id}>
+                        <div className="font-medium">{profissional.descricao}</div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {profissionalInfo && (
+                <div className="bg-muted/50 rounded p-3 text-sm">
+                  <p><strong>Profissional:</strong> {profissionalInfo.descricao}</p>
+                </div>
+              )}
+            </div>
+          </Card>
+
         </div>
 
         {/* CTAs */}

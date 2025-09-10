@@ -24,6 +24,14 @@ interface AppState {
   // Theme
   isDarkMode: boolean;
   
+  // Agendamento state
+  agendamento: {
+    unidadeId?: string;
+    equipeId?: string;
+    tipoConsultaId?: string;
+    profissionalId?: string;
+  };
+  
   // Actions
   setUsuario: (usuario: Usuario) => void;
   logout: () => Promise<void>; // Tornar async para incluir Supabase logout
@@ -32,6 +40,8 @@ interface AppState {
   showNotification: (message: string, type: NotificationType) => void;
   hideNotification: () => void;
   toggleDarkMode: () => void;
+  setAgendamentoData: (data: Partial<AppState['agendamento']>) => void;
+  clearAgendamento: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -44,6 +54,7 @@ export const useAppStore = create<AppState>()(
       loadingState: 'idle',
       notification: null,
       isDarkMode: false,
+      agendamento: {},
       
       // Actions
       setUsuario: (usuario) => set({ usuario, isLoggedIn: true }),
@@ -84,7 +95,13 @@ export const useAppStore = create<AppState>()(
         } else {
           document.documentElement.classList.remove('dark');
         }
-      }
+      },
+      
+      setAgendamentoData: (data) => set((state) => ({
+        agendamento: { ...state.agendamento, ...data }
+      })),
+      
+      clearAgendamento: () => set({ agendamento: {} })
     }),
     {
       name: 'saude-cidadao-storage', // nome único para o localStorage
