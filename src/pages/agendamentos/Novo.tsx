@@ -45,12 +45,31 @@ export default function NovoAgendamento() {
       setError(null);
       setLoadingInitial(true);
       
+      console.log('Iniciando carregamento dos dados...');
+      
       // Chama a API para consultar usuário (usando dados fixos por enquanto)
       const userData = await consultarUsuario("15384113855", "19710812", "");
+      
+      console.log('Dados recebidos da API:', userData);
+      console.log('userData.unidade:', userData.unidade);
+      console.log('userData.equipe:', userData.equipe);
+      
+      if (!userData.unidade || !userData.unidade.id) {
+        throw new Error('Dados da unidade não encontrados');
+      }
+      
+      if (!userData.equipe || !userData.equipe.id) {
+        throw new Error('Dados da equipe não encontrados');
+      }
       
       // Salva a unidade automaticamente
       setUnidadeInfo(userData.unidade);
       setEquipeId(userData.equipe.id);
+      
+      console.log('Salvando no store:', {
+        unidadeId: userData.unidade.id,
+        equipeId: userData.equipe.id
+      });
       
       // Salva no store global
       setAgendamentoData({
@@ -62,8 +81,8 @@ export default function NovoAgendamento() {
       await loadTiposConsulta(userData.equipe.id);
       
     } catch (err) {
-      setError('Erro ao carregar dados iniciais');
-      console.error('Erro ao carregar dados:', err);
+      console.error('Erro detalhado ao carregar dados:', err);
+      setError('Erro ao carregar dados iniciais: ' + (err as Error).message);
     } finally {
       setLoadingInitial(false);
     }
