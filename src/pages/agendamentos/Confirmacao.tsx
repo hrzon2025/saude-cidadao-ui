@@ -3,7 +3,7 @@ import { ChevronLeft, Check, Calendar, MapPin, User, Stethoscope, Clock, X } fro
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
 import { agendarConsulta, TipoConsulta as TipoConsultaAPI, Profissional as ProfissionalAPI } from "@/lib/services/agendamento";
 import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
@@ -306,6 +306,7 @@ export default function ConfirmacaoAgendamento() {
         }
       }}>
         <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
+          <DialogTitle className="sr-only">Agendamento Confirmado</DialogTitle>
           <div className="p-8 text-center space-y-6">
             {/* Success Icon */}
             <div className="mx-auto w-20 h-20 bg-success/20 rounded-full flex items-center justify-center">
@@ -385,6 +386,7 @@ export default function ConfirmacaoAgendamento() {
         }
       }}>
         <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
+          <DialogTitle className="sr-only">Erro no Agendamento</DialogTitle>
           <div className="p-8 text-center space-y-6">
             {/* Error Icon */}
             <div className="mx-auto w-20 h-20 bg-destructive/20 rounded-full flex items-center justify-center">
