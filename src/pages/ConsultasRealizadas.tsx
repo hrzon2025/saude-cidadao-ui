@@ -34,9 +34,17 @@ export default function ConsultasRealizadas() {
   const obterIndividuoID = async () => {
     try {
       // Usar dados do usuário logado ou dados mock para teste
-      const cpf = usuario?.cpf || agendamento?.cpf || "15384113855";
-      const dataNascimento = usuario?.dataNascimento || "19710812";
+      let cpf = usuario?.cpf || agendamento?.cpf || "15384113855";
+      let dataNascimento = usuario?.dataNascimento || "19710812";
       const cns = usuario?.cns || agendamento?.cns || "";
+
+      // Remover formatação do CPF (pontos e traços)
+      cpf = cpf.replace(/[.\-]/g, '');
+      
+      // Converter data para formato YYYYMMDD se estiver em outro formato
+      if (dataNascimento.includes('-')) {
+        dataNascimento = dataNascimento.replace(/-/g, '');
+      }
 
       console.log('Consultando usuário com:', { cpf, dataNascimento, cns });
 

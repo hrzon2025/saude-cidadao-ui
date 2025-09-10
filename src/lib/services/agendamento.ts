@@ -62,6 +62,12 @@ export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?
     throw new Error(error.message || 'Erro ao consultar usuário');
   }
 
+  // Verificar se a API retornou uma mensagem de erro
+  if (data && typeof data === 'object' && data.mensagem) {
+    console.error('API retornou mensagem:', data.mensagem);
+    throw new Error(`Erro da API: ${data.mensagem}`);
+  }
+
   // A API retorna um array, pegamos o primeiro item
   if (!data || !Array.isArray(data) || data.length === 0) {
     console.error('Dados inválidos recebidos:', data);
