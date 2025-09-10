@@ -86,6 +86,8 @@ export default function ConsultasRealizadas() {
       const individuoID = agendamento.individuoID || "250573";
       if (!agendamento.individuoID) {
         console.warn('IndividuoID não encontrado no store, usando ID de teste:', individuoID);
+      } else {
+        console.log('Usando individuoID do store:', individuoID);
       }
       
       const data = await consultarAgendamentosStatus(

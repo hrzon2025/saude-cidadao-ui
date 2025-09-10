@@ -1,6 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ConsultarUsuarioResponse {
+  individuoID: string;
+  cns: string;
+  cpf: string;
+  nome: string;
   unidade: {
     id: string;
     razaoSocial: string;
@@ -75,7 +79,24 @@ export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?
     throw new Error('Dados da equipe não encontrados na resposta da API');
   }
 
-  return userData;
+  if (!userData.individuoID) {
+    console.error('userData.individuoID não existe:', userData);
+    throw new Error('ID do indivíduo não encontrado na resposta da API');
+  }
+
+  return {
+    individuoID: userData.individuoID,
+    cns: userData.cns,
+    cpf: userData.cpf,
+    nome: userData.nome,
+    unidade: {
+      id: userData.unidade.id.toString(),
+      razaoSocial: userData.unidade.razaoSocial
+    },
+    equipe: {
+      id: userData.equipe.id.toString()
+    }
+  };
 };
 
 export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> => {
