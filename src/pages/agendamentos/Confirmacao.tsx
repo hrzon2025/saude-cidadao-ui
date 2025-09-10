@@ -5,8 +5,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
+import { agendarConsulta, consultarTipos, consultarProfissionais, ProfissionalConfirmacao, TipoConsultaConfirmacao } from "@/lib/services/agendamento";
 import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
-import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
+import { Unidade } from "@/lib/types";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +23,10 @@ export default function ConfirmacaoAgendamento() {
     tipoConsultaId, 
     profissionalId, 
     dataSelecionada, 
-    horaSelecionada 
+    horaSelecionada,
+    individuoID,
+    cns,
+    cpf
   } = agendamento;
   
   const [confirmando, setConfirmando] = useState(false);
@@ -31,31 +35,31 @@ export default function ConfirmacaoAgendamento() {
   
   // Dados para exibir
   const [unidade, setUnidade] = useState<Unidade | null>(null);
-  const [profissional, setProfissional] = useState<Profissional | null>(null);
-  const [tipoConsulta, setTipoConsulta] = useState<TipoConsulta | null>(null);
+  const [profissional, setProfissional] = useState<ProfissionalConfirmacao | null>(null);
+  const [tipoConsulta, setTipoConsulta] = useState<TipoConsultaConfirmacao | null>(null);
 
   useEffect(() => {
     // Validar parâmetros obrigatórios do estado global
-    if (!unidadeId || !profissionalId || !tipoConsultaId || !dataSelecionada || !horaSelecionada) {
+    if (!unidadeId || !profissionalId || !tipoConsultaId || !dataSelecionada || !horaSelecionada || !individuoID || !cns || !cpf) {
       showNotification('Dados incompletos. Redirecionando...', 'error');
       navigate('/agendamentos/novo');
       return;
     }
     
     loadDadosConfirmacao();
-  }, [unidadeId, profissionalId, tipoConsultaId, dataSelecionada, horaSelecionada]);
+  }, [unidadeId, profissionalId, tipoConsultaId, dataSelecionada, horaSelecionada, individuoID, cns, cpf]);
 
   const loadDadosConfirmacao = async () => {
     try {
       const [unidades, profissionais, tipos] = await Promise.all([
         obterUnidades(),
-        obterProfissionaisPorUnidade(unidadeId),
-        obterTiposConsulta()
+        consultarProfissionais(tipoConsultaId!, equipeId!),
+        consultarTipos(equipeId!)
       ]);
       
       setUnidade(unidades.find(u => u.id === unidadeId) || null);
-      setProfissional(profissionais.find(p => p.id === profissionalId) || null);
-      setTipoConsulta(tipos.find(t => t.id === tipoConsultaId) || null);
+      setProfissional(profissionais.find(p => p.id.toString() === profissionalId) || null);
+      setTipoConsulta(tipos.find(t => t.id.toString() === tipoConsultaId) || null);
       setDadosCarregados(true);
     } catch (err) {
       showNotification('Erro ao carregar dados', 'error');
@@ -67,24 +71,33 @@ export default function ConfirmacaoAgendamento() {
     try {
       setConfirmando(true);
       
-      const novoAgendamento = {
-        unidadeId,
-        profissionalId,
-        tipoId: tipoConsultaId,
-        data: dataSelecionada,
-        hora: horaSelecionada
+      // Formatar data para YYYYMMDD
+      const dataFormatada = dataSelecionada.replace(/-/g, '');
+      
+      const dadosAgendamento = {
+        unidadeId: unidadeId!,
+        profissionalId: profissionalId!,
+        tipoConsultaId: tipoConsultaId!,
+        equipeId: equipeId!,
+        data: dataFormatada,
+        hora: horaSelecionada!,
+        individuoID: individuoID!,
+        cns: cns!,
+        cpf: cpf!
       };
       
-      const resultado = await criarAgendamento(novoAgendamento);
+      const resultado = await agendarConsulta(dadosAgendamento);
       
-      if (resultado.success) {
+      if (resultado.atendimentoId) {
         setShowSuccessDialog(true);
+      } else if (resultado.mensagem?.includes('Já existe um atendimento')) {
+        showNotification('Já existe um agendamento em aberto para este paciente.', 'error');
       } else {
-        showNotification(resultado.error || 'Erro ao realizar agendamento', 'error');
+        showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
       }
     } catch (err) {
-      showNotification('Erro ao realizar agendamento', 'error');
-      console.error('Erro ao confirmar:', err);
+      showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
+      console.error('Erro ao confirmar agendamento:', err);
     } finally {
       setConfirmando(false);
     }
@@ -323,11 +336,11 @@ export default function ConfirmacaoAgendamento() {
 
             {/* Action Button */}
             <Button 
-              onClick={() => navigate('/agendamentos')}
+              onClick={() => navigate('/agendamentos/lista')}
               className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold"
             >
               <Calendar className="w-5 h-5 mr-2" />
-              Ver Agendamentos
+              Meus Agendamentos
             </Button>
           </div>
         </DialogContent>

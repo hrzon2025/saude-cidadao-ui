@@ -32,6 +32,9 @@ interface AppState {
     profissionalId?: string;
     dataSelecionada?: string;
     horaSelecionada?: string;
+    individuoID?: string;
+    cns?: string;
+    cpf?: string;
   };
   
   // Actions

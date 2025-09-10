@@ -20,6 +20,24 @@ export interface Profissional {
   descricao: string;
 }
 
+// Interfaces específicas para a tela de confirmação (usando dados do stub/lib)
+export interface ProfissionalConfirmacao {
+  id: string;
+  nome: string;
+  especialidade: string;
+  crm: string;
+  unidadeId: string;
+}
+
+export interface TipoConsultaConfirmacao {
+  id: string;
+  nome: string;
+  duracao: number;
+  descricao?: string;
+  icone?: string;
+  especialidadeId?: string;
+}
+
 export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?: string): Promise<ConsultarUsuarioResponse> => {
   console.log('Chamando edge function consultar-usuario com:', { cpf, dataNascimento, cns });
   
@@ -135,4 +153,36 @@ export const consultarDataHorarios = async (equipeId: string, profissionalId: st
   }
 
   return responseData || {};
+};
+
+export interface AgendarConsultaResponse {
+  atendimentoId?: string;
+  mensagem?: string;
+}
+
+export const agendarConsulta = async (dados: {
+  unidadeId: string;
+  profissionalId: string;
+  tipoConsultaId: string;
+  equipeId: string;
+  data: string;
+  hora: string;
+  individuoID: string;
+  cns: string;
+  cpf: string;
+}): Promise<AgendarConsultaResponse> => {
+  console.log('Chamando edge function agendar-consulta:', dados);
+  
+  const { data: result, error } = await supabase.functions.invoke('agendar-consulta', {
+    body: dados
+  });
+
+  console.log('Resposta da edge function agendar-consulta:', { data: result, error });
+
+  if (error) {
+    console.error('Erro na edge function agendar-consulta:', error);
+    throw new Error(error.message || 'Erro ao agendar consulta');
+  }
+
+  return result || {};
 };

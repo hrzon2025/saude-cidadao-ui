@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.consultar-data-horarios]
 verify_jwt = false
+
+[functions.agendar-consulta]
+verify_jwt = false
