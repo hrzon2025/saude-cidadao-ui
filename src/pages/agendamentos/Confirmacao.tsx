@@ -5,9 +5,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useAppStore } from "@/store/useAppStore";
-import { agendarConsulta, consultarTipos, consultarProfissionais, ProfissionalConfirmacao, TipoConsultaConfirmacao } from "@/lib/services/agendamento";
+import { agendarConsulta, TipoConsulta as TipoConsultaAPI, Profissional as ProfissionalAPI } from "@/lib/services/agendamento";
 import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTiposConsulta } from "@/lib/stubs/agendamentos";
-import { Unidade } from "@/lib/types";
+import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +35,8 @@ export default function ConfirmacaoAgendamento() {
   
   // Dados para exibir
   const [unidade, setUnidade] = useState<Unidade | null>(null);
-  const [profissional, setProfissional] = useState<ProfissionalConfirmacao | null>(null);
-  const [tipoConsulta, setTipoConsulta] = useState<TipoConsultaConfirmacao | null>(null);
+  const [profissional, setProfissional] = useState<Profissional | null>(null);
+  const [tipoConsulta, setTipoConsulta] = useState<TipoConsulta | null>(null);
 
   useEffect(() => {
     // Validar parâmetros obrigatórios do estado global
@@ -53,13 +53,13 @@ export default function ConfirmacaoAgendamento() {
     try {
       const [unidades, profissionais, tipos] = await Promise.all([
         obterUnidades(),
-        consultarProfissionais(tipoConsultaId!, equipeId!),
-        consultarTipos(equipeId!)
+        obterProfissionaisPorUnidade(unidadeId!),
+        obterTiposConsulta()
       ]);
       
       setUnidade(unidades.find(u => u.id === unidadeId) || null);
-      setProfissional(profissionais.find(p => p.id.toString() === profissionalId) || null);
-      setTipoConsulta(tipos.find(t => t.id.toString() === tipoConsultaId) || null);
+      setProfissional(profissionais.find(p => p.id === profissionalId) || null);
+      setTipoConsulta(tipos.find(t => t.id === tipoConsultaId) || null);
       setDadosCarregados(true);
     } catch (err) {
       showNotification('Erro ao carregar dados', 'error');
