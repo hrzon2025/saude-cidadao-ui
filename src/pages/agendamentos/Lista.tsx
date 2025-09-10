@@ -8,7 +8,6 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/store/useAppStore";
@@ -24,11 +23,10 @@ export default function ListaAgendamentos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busca, setBusca] = useState('');
-  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
 
   useEffect(() => {
     loadAgendamentos();
-  }, [anoSelecionado]);
+  }, []);
 
   const loadAgendamentos = async () => {
     try {
@@ -43,9 +41,10 @@ export default function ListaAgendamentos() {
         return;
       }
 
-      // Gerar datas de início e fim do ano selecionado
-      const dataInicio = `${anoSelecionado}0101`; // 01/01/ANO
-      const dataFinal = `${anoSelecionado}1231`; // 31/12/ANO
+      // Buscar agendamentos de um período amplo (últimos 2 anos até próximo ano)
+      const anoAtual = new Date().getFullYear();
+      const dataInicio = `${anoAtual - 2}0101`; // 2 anos atrás
+      const dataFinal = `${anoAtual + 1}1231`; // Próximo ano
       
       const data = await consultarAgendamentosStatus(
         [1, 9, 99, 98], // situacaoId conforme especificado
@@ -127,12 +126,6 @@ export default function ListaAgendamentos() {
 
   const agendamentosPendentes = agendamentos.length;
 
-  // Gerar lista de anos (ano atual + 4 anos anteriores)
-  const anosDisponiveis = Array.from({ length: 5 }, (_, i) => {
-    const ano = new Date().getFullYear() - i; // Ano atual e anos anteriores
-    return ano.toString();
-  }); // Já está ordenado do mais recente para o mais antigo
-
   return (
     <div className="min-h-screen bg-background pb-20">
       <AppHeader 
@@ -160,31 +153,15 @@ export default function ListaAgendamentos() {
 
         {/* Filtros */}
         <div className="space-y-3">
-          <div className="grid grid-cols-1 gap-3">
-            {/* Filtro por ano */}
-            <Select value={anoSelecionado} onValueChange={setAnoSelecionado}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o ano" />
-              </SelectTrigger>
-              <SelectContent>
-                {anosDisponiveis.map((ano) => (
-                  <SelectItem key={ano} value={ano}>
-                    {ano}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Busca */}
-            <div className="relative">
-              <Input
-                placeholder="Buscar por tipo, profissional ou unidade..."
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                className="pr-10"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            </div>
+          {/* Busca */}
+          <div className="relative">
+            <Input
+              placeholder="Buscar por tipo, profissional ou unidade..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="pr-10"
+            />
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
 
@@ -207,7 +184,7 @@ export default function ListaAgendamentos() {
               description={
                 busca 
                   ? "Tente ajustar a busca para encontrar seus agendamentos"
-                  : `Você não possui agendamentos agendados para o ano de ${anoSelecionado}.`
+                  : "Você não possui agendamentos agendados."
               }
             action={{
               label: 'Agendar consulta',
