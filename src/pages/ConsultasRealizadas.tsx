@@ -212,7 +212,7 @@ export default function ConsultasRealizadas() {
               <SelectTrigger>
                 <SelectValue placeholder="Selecionar ano" />
               </SelectTrigger>
-              <SelectContent className="bg-background border shadow-md z-50">
+              <SelectContent className="bg-white border shadow-md z-50">
                 {anosDisponiveis.map((ano) => (
                   <SelectItem key={ano} value={ano}>
                     {ano}
