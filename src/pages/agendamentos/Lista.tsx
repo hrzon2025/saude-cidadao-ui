@@ -24,7 +24,7 @@ export default function ListaAgendamentos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busca, setBusca] = useState('');
-  const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
+  const [anoSelecionado, setAnoSelecionado] = useState((new Date().getFullYear() - 1).toString());
 
   useEffect(() => {
     loadAgendamentos();
@@ -127,9 +127,9 @@ export default function ListaAgendamentos() {
 
   const agendamentosPendentes = agendamentos.length;
 
-  // Gerar lista de anos (5 anos anteriores até o ano atual)
-  const anosDisponiveis = Array.from({ length: 6 }, (_, i) => {
-    const ano = new Date().getFullYear() - i;
+  // Gerar lista de anos (5 anos anteriores, sem incluir o ano atual)
+  const anosDisponiveis = Array.from({ length: 5 }, (_, i) => {
+    const ano = new Date().getFullYear() - 1 - i; // Começar do ano anterior
     return ano.toString();
   }).sort((a, b) => parseInt(b) - parseInt(a)); // Ordenar do mais recente para o mais antigo
 
