@@ -160,6 +160,48 @@ export interface AgendarConsultaResponse {
   mensagem?: string;
 }
 
+export interface AgendamentoStatusResponse {
+  id?: string;
+  unidade?: string;
+  equipe?: string;
+  tipoConsulta?: string;
+  profissional?: string;
+  data?: string;
+  status?: string;
+  observacoes?: string;
+}
+
+export const consultarAgendamentosStatus = async (
+  situacaoId: number[],
+  dataInicio: string,
+  dataFinal: string,
+  individuoID: string,
+  pagina: number = 1
+): Promise<AgendamentoStatusResponse[]> => {
+  console.log('Chamando edge function consultar-agendamentos-status:', { 
+    situacaoId, dataInicio, dataFinal, individuoID, pagina 
+  });
+  
+  const { data, error } = await supabase.functions.invoke('consultar-agendamentos-status', {
+    body: {
+      situacaoId,
+      dataInicio,
+      dataFinal,
+      individuoID,
+      pagina
+    }
+  });
+
+  console.log('Resposta da edge function consultar-agendamentos-status:', { data, error });
+
+  if (error) {
+    console.error('Erro na edge function consultar-agendamentos-status:', error);
+    throw new Error(error.message || 'Erro ao consultar agendamentos');
+  }
+
+  return Array.isArray(data) ? data : [];
+};
+
 export const agendarConsulta = async (dados: {
   unidadeId: string;
   profissionalId: string;
