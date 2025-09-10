@@ -61,17 +61,24 @@ export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?
 };
 
 export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> => {
+  console.log('Chamando edge function consultar-tipo com equipeId:', equipeId);
+  
   const { data, error } = await supabase.functions.invoke('consultar-tipo', {
     body: {
       equipeId
     }
   });
 
+  console.log('Resposta da edge function consultar-tipo:', { data, error });
+
   if (error) {
+    console.error('Erro na edge function consultar-tipo:', error);
     throw new Error(error.message || 'Erro ao consultar tipos de consulta');
   }
 
-  return Array.isArray(data) ? data : [];
+  const tipos = Array.isArray(data) ? data : [];
+  console.log('Tipos processados:', tipos);
+  return tipos;
 };
 
 export const consultarProfissionais = async (tipoConsultaId: string, equipeId: string): Promise<Profissional[]> => {

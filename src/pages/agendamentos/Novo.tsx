@@ -40,6 +40,11 @@ export default function NovoAgendamento() {
       setProfissionalSelecionado('');
     }
   }, [tipoSelecionado, equipeId]);
+
+  // Log para debug do estado dos tipos de consulta
+  useEffect(() => {
+    console.log('Estado tiposConsulta atualizado:', tiposConsulta, 'length:', tiposConsulta.length);
+  }, [tiposConsulta]);
   const loadInitialData = async () => {
     try {
       setError(null);
@@ -90,12 +95,15 @@ export default function NovoAgendamento() {
 
   const loadTiposConsulta = async (equipeId: string) => {
     try {
+      console.log('Carregando tipos de consulta para equipeId:', equipeId);
       setLoadingTipos(true);
       const tiposData = await consultarTipos(equipeId);
+      console.log('Tipos de consulta recebidos:', tiposData);
       setTiposConsulta(tiposData);
+      console.log('Estado tiposConsulta atualizado, length:', tiposData?.length || 0);
     } catch (err) {
+      console.error('Erro detalhado ao carregar tipos:', err);
       showNotification('Erro ao carregar tipos de consulta', 'error');
-      console.error('Erro ao carregar tipos:', err);
     } finally {
       setLoadingTipos(false);
     }
@@ -208,11 +216,17 @@ export default function NovoAgendamento() {
                     <SelectValue placeholder="Escolha o tipo de consulta" />
                   </SelectTrigger>
                   <SelectContent>
-                    {tiposConsulta.map(tipo => (
-                      <SelectItem key={tipo.id} value={tipo.id}>
-                        <div className="font-medium">{tipo.descricao}</div>
+                    {tiposConsulta.length === 0 ? (
+                      <SelectItem value="no-data" disabled>
+                        <div className="text-sm text-muted-foreground">Nenhum tipo disponível</div>
                       </SelectItem>
-                    ))}
+                    ) : (
+                      tiposConsulta.map(tipo => (
+                        <SelectItem key={tipo.id} value={tipo.id}>
+                          <div className="font-medium">{tipo.descricao}</div>
+                        </SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               )}
