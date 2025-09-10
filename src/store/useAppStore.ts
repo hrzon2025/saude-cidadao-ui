@@ -30,6 +30,8 @@ interface AppState {
     equipeId?: string;
     tipoConsultaId?: string;
     profissionalId?: string;
+    dataSelecionada?: string;
+    horaSelecionada?: string;
   };
   
   // Actions

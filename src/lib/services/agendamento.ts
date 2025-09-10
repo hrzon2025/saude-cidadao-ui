@@ -105,3 +105,34 @@ export const consultarProfissionais = async (tipoConsultaId: string, equipeId: s
   console.log('Profissionais processados:', profissionais);
   return Array.isArray(profissionais) ? profissionais : [];
 };
+
+export interface DataHorariosResponse {
+  mensagem?: string;
+  equipeId?: number;
+  profissionais?: Array<{
+    profissionalId: number;
+    data: string;
+    hora: string[];
+  }>;
+}
+
+export const consultarDataHorarios = async (equipeId: string, profissionalId: string, data: string): Promise<DataHorariosResponse> => {
+  console.log('Chamando edge function consultar-data-horarios:', { equipeId, profissionalId, data });
+  
+  const { data: responseData, error } = await supabase.functions.invoke('consultar-data-horarios', {
+    body: {
+      equipeId: parseInt(equipeId),
+      profissionalId: parseInt(profissionalId),
+      data: data
+    }
+  });
+
+  console.log('Resposta da edge function consultar-data-horarios:', { data: responseData, error });
+
+  if (error) {
+    console.error('Erro na edge function consultar-data-horarios:', error);
+    throw new Error(error.message || 'Erro ao consultar data e horários');
+  }
+
+  return responseData || {};
+};

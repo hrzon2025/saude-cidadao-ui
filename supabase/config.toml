@@ -2,3 +2,12 @@ project_id = "xbpfsdngjltlkgpqmbdi"
 
 [functions.consultar-usuario]
 verify_jwt = false
+
+[functions.consultar-tipo]
+verify_jwt = false
+
+[functions.consultar-profissional]
+verify_jwt = false
+
+[functions.consultar-data-horarios]
+verify_jwt = false
