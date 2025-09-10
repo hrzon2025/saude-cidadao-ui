@@ -76,6 +76,13 @@ export default function NovoAgendamento() {
       setUnidadeInfo(userData.unidade);
       setEquipeId(userData.equipe.id.toString());
       
+      // Salvar dados do usuário no estado global para a tela de confirmação
+      setAgendamentoData({
+        individuoID: "250573", // ID fixo do usuário de teste
+        cns: "706700529771818", // CNS fixo do usuário de teste
+        cpf: "15384113855" // CPF fixo do usuário de teste
+      });
+      
       console.log('Unidade carregada:', userData.unidade);
       console.log('Equipe ID salvo:', userData.equipe.id);
       
@@ -144,12 +151,15 @@ export default function NovoAgendamento() {
       return;
     }
     
-    const params = new URLSearchParams({
-      unidade: unidadeSelecionada,
-      profissional: profissionalSelecionado,
-      tipo: tipoSelecionado
+    // Salvar todos os dados necessários no estado global
+    setAgendamentoData({
+      unidadeId: unidadeSelecionada,
+      equipeId: equipeId,
+      tipoConsultaId: tipoSelecionado,
+      profissionalId: profissionalSelecionado
     });
-    navigate(`/agendamentos/horarios?${params.toString()}`);
+    
+    navigate('/agendamentos/horarios');
   };
 
   const podeAtualizar = unidadeSelecionada && profissionalSelecionado && tipoSelecionado;
