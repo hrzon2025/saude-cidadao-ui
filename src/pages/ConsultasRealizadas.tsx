@@ -19,68 +19,6 @@ export default function ConsultasRealizadas() {
   const [error, setError] = useState<string | null>(null);
   const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear().toString());
 
-  useEffect(() => {
-    loadAtendimentos();
-  }, [anoSelecionado]);
-
-  const loadAtendimentos = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // Gerar datas do ano selecionado
-      const dataInicio = `${anoSelecionado}0101`;
-      const dataFinal = `${anoSelecionado}1231`;
-      
-      if (!agendamento.individuoID) {
-        // Para teste, usar um ID mockado se não houver no store
-        const mockIndividuoID = "250573";
-        console.warn('IndividuoID não encontrado no store, usando ID de teste:', mockIndividuoID);
-        
-        const data = await consultarAgendamentosStatus(
-          [1, 9, 99, 98],
-          dataInicio,
-          dataFinal,
-          mockIndividuoID
-        );
-        
-        processarDados(data);
-      } else {
-        const data = await consultarAgendamentosStatus(
-          [1, 9, 99, 98],
-          dataInicio,
-          dataFinal,
-          agendamento.individuoID
-        );
-        
-        processarDados(data);
-      }
-    } catch (err) {
-      setError('Não foi possível carregar seus atendimentos. Tente novamente.');
-      console.error('Erro ao carregar atendimentos:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const processarDados = (data: any[]) => {
-    // Filtrar apenas agendamentos que não são "Agendado" e transformar para o formato esperado
-    const atendimentosTransformados = data
-      .filter(item => item.status !== 'Agendado')
-      .map(item => ({
-        id: item.atendimentoId?.toString() || '',
-        data: formatAPIDateToDisplay(item.data || ''),
-        hora: extractTimeFromAPIDate(item.data || ''),
-        tipo: item.tipoConsulta || '',
-        profissional: item.profissional || '',
-        unidade: item.unidade || '',
-        status: mapAPIStatusToAtendimentoStatus(item.status || ''),
-        podeAvaliar: mapAPIStatusToAtendimentoStatus(item.status || '') === 'Concluído'
-      }));
-    
-    setAtendimentos(atendimentosTransformados);
-  };
-
   // Função para transformar data da API (YYYYMMDD HH:MM) para formato de exibição
   const formatAPIDateToDisplay = (apiDate: string): string => {
     if (!apiDate || apiDate.length < 8) return apiDate;
@@ -116,6 +54,59 @@ export default function ConsultasRealizadas() {
     }
     return anos;
   };
+
+  const processarDados = (data: any[]) => {
+    // Filtrar apenas agendamentos que não são "Agendado" e transformar para o formato esperado
+    const atendimentosTransformados = data
+      .filter(item => item.status !== 'Agendado')
+      .map(item => ({
+        id: item.atendimentoId?.toString() || '',
+        data: formatAPIDateToDisplay(item.data || ''),
+        hora: extractTimeFromAPIDate(item.data || ''),
+        tipo: item.tipoConsulta || '',
+        profissional: item.profissional || '',
+        unidade: item.unidade || '',
+        status: mapAPIStatusToAtendimentoStatus(item.status || ''),
+        podeAvaliar: mapAPIStatusToAtendimentoStatus(item.status || '') === 'Concluído'
+      }));
+    
+    setAtendimentos(atendimentosTransformados);
+  };
+
+  const loadAtendimentos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Gerar datas do ano selecionado
+      const dataInicio = `${anoSelecionado}0101`;
+      const dataFinal = `${anoSelecionado}1231`;
+      
+      // Usar individuoID do store ou ID de teste
+      const individuoID = agendamento.individuoID || "250573";
+      if (!agendamento.individuoID) {
+        console.warn('IndividuoID não encontrado no store, usando ID de teste:', individuoID);
+      }
+      
+      const data = await consultarAgendamentosStatus(
+        [1, 9, 99, 98],
+        dataInicio,
+        dataFinal,
+        individuoID
+      );
+      
+      processarDados(data);
+    } catch (err) {
+      setError('Não foi possível carregar seus atendimentos. Tente novamente.');
+      console.error('Erro ao carregar atendimentos:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAtendimentos();
+  }, [anoSelecionado]);
 
   const handleAvaliar = async (atendimentoId: string) => {
     // Navegar para tela de avaliação
@@ -156,7 +147,7 @@ export default function ConsultasRealizadas() {
             <SelectTrigger>
               <SelectValue placeholder="Selecionar ano" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background border shadow-md z-50">
               {gerarAnosDisponiveis().map(ano => (
                 <SelectItem key={ano} value={ano}>{ano}</SelectItem>
               ))}
