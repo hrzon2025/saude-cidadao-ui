@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, Check, Calendar, MapPin, User, Stethoscope, Clock } from "lucide-react";
+import { ChevronLeft, Check, Calendar, MapPin, User, Stethoscope, Clock, X } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,8 @@ export default function ConfirmacaoAgendamento() {
   const [confirmando, setConfirmando] = useState(false);
   const [dadosCarregados, setDadosCarregados] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   
   // Dados para exibir
   const [unidade, setUnidade] = useState<Unidade | null>(null);
@@ -111,17 +113,21 @@ export default function ConfirmacaoAgendamento() {
       } else if (resultado.mensagem) {
         console.log('API retornou mensagem:', resultado.mensagem);
         if (resultado.mensagem.includes('Já existe um atendimento')) {
-          showNotification('Já existe um agendamento em aberto para este paciente.', 'error');
+          setErrorMessage('Já existe um atendimento em aberto para este paciente.');
+          setShowErrorDialog(true);
         } else {
-          showNotification(`Erro: ${resultado.mensagem}`, 'error');
+          setErrorMessage(resultado.mensagem);
+          setShowErrorDialog(true);
         }
       } else {
         console.log('Resposta inesperada da API:', resultado);
-        showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
+        setErrorMessage('Ocorreu um erro ao tentar agendar. Tente novamente.');
+        setShowErrorDialog(true);
       }
     } catch (err) {
       console.error('Erro ao confirmar agendamento:', err);
-      showNotification('Ocorreu um erro ao tentar agendar. Tente novamente.', 'error');
+      setErrorMessage('Ocorreu um erro ao tentar agendar. Tente novamente.');
+      setShowErrorDialog(true);
     } finally {
       console.log('=== FINALIZANDO CONFIRMAÇÃO ===');
       setConfirmando(false);
@@ -366,6 +372,48 @@ export default function ConfirmacaoAgendamento() {
             >
               <Calendar className="w-5 h-5 mr-2" />
               Meus Agendamentos
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Error Dialog */}
+      <Dialog open={showErrorDialog} onOpenChange={(open) => {
+        if (!open) {
+          setShowErrorDialog(false);
+          setErrorMessage('');
+        }
+      }}>
+        <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
+          <div className="p-8 text-center space-y-6">
+            {/* Error Icon */}
+            <div className="mx-auto w-20 h-20 bg-destructive/20 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 bg-destructive rounded-full flex items-center justify-center">
+                <X className="w-8 h-8 text-destructive-foreground" strokeWidth={3} />
+              </div>
+            </div>
+
+            {/* Title */}
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-destructive">
+                Agendamento
+                <br />
+                Não Realizado
+              </h2>
+              <p className="text-muted-foreground">
+                {errorMessage}
+              </p>
+            </div>
+
+            {/* Action Button */}
+            <Button 
+              onClick={() => {
+                setShowErrorDialog(false);
+                setErrorMessage('');
+              }}
+              className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground py-3 rounded-2xl text-lg font-semibold"
+            >
+              Entendi
             </Button>
           </div>
         </DialogContent>
