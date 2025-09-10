@@ -9,18 +9,21 @@ import { criarAgendamento, obterUnidades, obterProfissionaisPorUnidade, obterTip
 import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmacaoAgendamento() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { showNotification } = useAppStore();
+  const { showNotification, agendamento } = useAppStore();
   
-  const unidadeId = searchParams.get('unidade') || '';
-  const profissionalId = searchParams.get('profissional') || '';
-  const tipoId = searchParams.get('tipo') || '';
-  const data = searchParams.get('data') || '';
-  const hora = searchParams.get('hora') || '';
+  // Pegar dados do estado global
+  const { 
+    unidadeId, 
+    equipeId, 
+    tipoConsultaId, 
+    profissionalId, 
+    dataSelecionada, 
+    horaSelecionada 
+  } = agendamento;
   
   const [confirmando, setConfirmando] = useState(false);
   const [dadosCarregados, setDadosCarregados] = useState(false);
@@ -32,15 +35,15 @@ export default function ConfirmacaoAgendamento() {
   const [tipoConsulta, setTipoConsulta] = useState<TipoConsulta | null>(null);
 
   useEffect(() => {
-    // Validar parâmetros obrigatórios
-    if (!unidadeId || !profissionalId || !tipoId || !data || !hora) {
+    // Validar parâmetros obrigatórios do estado global
+    if (!unidadeId || !profissionalId || !tipoConsultaId || !dataSelecionada || !horaSelecionada) {
       showNotification('Dados incompletos. Redirecionando...', 'error');
       navigate('/agendamentos/novo');
       return;
     }
     
     loadDadosConfirmacao();
-  }, []);
+  }, [unidadeId, profissionalId, tipoConsultaId, dataSelecionada, horaSelecionada]);
 
   const loadDadosConfirmacao = async () => {
     try {
@@ -52,7 +55,7 @@ export default function ConfirmacaoAgendamento() {
       
       setUnidade(unidades.find(u => u.id === unidadeId) || null);
       setProfissional(profissionais.find(p => p.id === profissionalId) || null);
-      setTipoConsulta(tipos.find(t => t.id === tipoId) || null);
+      setTipoConsulta(tipos.find(t => t.id === tipoConsultaId) || null);
       setDadosCarregados(true);
     } catch (err) {
       showNotification('Erro ao carregar dados', 'error');
@@ -67,9 +70,9 @@ export default function ConfirmacaoAgendamento() {
       const novoAgendamento = {
         unidadeId,
         profissionalId,
-        tipoId,
-        data,
-        hora
+        tipoId: tipoConsultaId,
+        data: dataSelecionada,
+        hora: horaSelecionada
       };
       
       const resultado = await criarAgendamento(novoAgendamento);
@@ -88,25 +91,19 @@ export default function ConfirmacaoAgendamento() {
   };
 
   const handleVoltar = () => {
-    const params = new URLSearchParams({
-      unidade: unidadeId,
-      profissional: profissionalId,
-      tipo: tipoId
-    });
-    
-    navigate(`/agendamentos/horarios?${params.toString()}`);
+    navigate('/agendamentos/horarios');
   };
 
   const formatarData = () => {
     try {
-      const dataConsulta = new Date(`${data}T${hora}`);
+      const dataConsulta = new Date(`${dataSelecionada}T${horaSelecionada}`);
       return {
         data: format(dataConsulta, "dd/MM/yyyy", { locale: ptBR }),
         hora: format(dataConsulta, "HH:mm", { locale: ptBR }),
         diaSemana: format(dataConsulta, "EEEE", { locale: ptBR })
       };
     } catch {
-      return { data, hora, diaSemana: '' };
+      return { data: dataSelecionada, hora: horaSelecionada, diaSemana: '' };
     }
   };
 
