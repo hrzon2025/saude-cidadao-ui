@@ -412,7 +412,7 @@ export default function ConfirmacaoAgendamento() {
               onClick={() => {
                 setShowErrorDialog(false);
                 setErrorMessage('');
-                navigate('/agendamentos/lista');
+                navigate('/agendamentos');
               }}
               className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground py-3 rounded-2xl text-lg font-semibold"
             >
