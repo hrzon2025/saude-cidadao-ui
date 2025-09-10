@@ -1,12 +1,18 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ConsultarUsuarioResponse {
+  individuoID: string;
+  cns: string;
+  cpf: string;
+  nome: string;
   unidade: {
-    id: string;
+    id: number;
     razaoSocial: string;
+    apelido: string;
   };
   equipe: {
-    id: string;
+    id: number;
+    descricao: string;
   };
 }
 
@@ -161,14 +167,21 @@ export interface AgendarConsultaResponse {
 }
 
 export interface AgendamentoStatusResponse {
-  id?: string;
-  unidade?: string;
-  equipe?: string;
-  tipoConsulta?: string;
-  profissional?: string;
-  data?: string;
-  status?: string;
-  observacoes?: string;
+  atendimentoId: number;
+  unidade: string;
+  equipe: string;
+  tipoConsulta: string;
+  profissional: string;
+  data: string;
+  status: string;
+  cns: string;
+  email?: string;
+  telefone?: string;
+  individuoID: string;
+  cpf: string;
+  nome: string;
+  origem: string;
+  motivo?: string;
 }
 
 export const consultarAgendamentosStatus = async (

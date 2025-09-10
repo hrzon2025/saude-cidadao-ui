@@ -198,7 +198,7 @@ export default function ListaAgendamentos() {
               const podeCantelar = agendamento.status === 'Agendado';
               
               return (
-                <Card key={agendamento.id || index} className="p-4">
+                <Card key={agendamento.atendimentoId || index} className="p-4">
                   <div className="space-y-3">
                     <div className="flex items-start justify-between">
                       <div className="space-y-1">
@@ -237,10 +237,10 @@ export default function ListaAgendamentos() {
                       )}
                     </div>
 
-                    {agendamento.observacoes && (
+                    {agendamento.motivo && (
                       <div className="bg-muted/50 rounded p-2">
                         <p className="text-xs text-muted-foreground">
-                          <strong>Observações:</strong> {agendamento.observacoes}
+                          <strong>Motivo:</strong> {agendamento.motivo}
                         </p>
                       </div>
                     )}
