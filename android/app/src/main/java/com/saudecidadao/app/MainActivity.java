@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
-import android.util.Log;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowCompat;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
-    private static final String TAG = "MainActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,40 +71,15 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "Botão de voltar pressionado");
-        
-        if (bridge != null && bridge.getWebView() != null) {
-            WebView webView = bridge.getWebView();
-            
-            // Verifica se há histórico no WebView
+        // Deixa o Capacitor gerenciar a navegação
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            WebView webView = getBridge().getWebView();
             if (webView.canGoBack()) {
-                Log.d(TAG, "Há histórico - navegando para página anterior");
                 webView.goBack();
-                return;
+            } else {
+                super.onBackPressed();
             }
-            
-            // Se não há histórico, exibe confirmação para sair
-            Log.d(TAG, "Sem histórico - exibindo confirmação para sair");
-            String confirmJs = 
-                "if (confirm('Deseja sair do aplicativo?')) { " +
-                "  'exit'; " +
-                "} else { " +
-                "  'cancel'; " +
-                "}";
-            
-            webView.evaluateJavascript(confirmJs, result -> {
-                String cleanResult = result.replaceAll("^\"|\"$", "");
-                Log.d(TAG, "Resultado da confirmação: " + cleanResult);
-                
-                if ("exit".equals(cleanResult)) {
-                    Log.d(TAG, "Usuário confirmou saída - fechando app");
-                    super.onBackPressed();
-                } else {
-                    Log.d(TAG, "Usuário cancelou saída - mantendo app aberto");
-                }
-            });
         } else {
-            Log.d(TAG, "WebView não disponível - usando comportamento padrão");
             super.onBackPressed();
         }
     }
