@@ -135,23 +135,20 @@ const CartaoSus = () => {
         // Salvar arquivo usando Capacitor Filesystem
         const fileName = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.pdf`;
         
-        await Filesystem.writeFile({
+        const writeResult = await Filesystem.writeFile({
           path: fileName,
           data: pdfBase64.split(',')[1], // Remove o prefixo data:application/pdf;base64,
-          directory: Directory.Documents,
+          directory: Directory.Cache,
           recursive: true,
         });
         
         // Compartilhar para acionar "Abrir com..."
-        const { uri } = await Filesystem.getUri({
-          directory: Directory.Documents,
-          path: fileName
-        });
+        const fileUrl = writeResult.uri; // file:// URL compatível com Share.files
         await CapacitorShare.share({
           title: 'Cartão SUS - PDF',
           text: `PDF do Cartão SUS de ${usuario.nome}`,
-          files: [uri],
-          dialogTitle: 'Abrir PDF com...'
+          files: [fileUrl],
+          dialogTitle: 'Abrir com...'
         });
         
         toast({
@@ -203,7 +200,7 @@ const CartaoSus = () => {
         const imageData = canvas.toDataURL('image/png');
         const fileName = `cartao-sus-${Date.now()}.png`;
         
-        await Filesystem.writeFile({
+        const writeResult = await Filesystem.writeFile({
           path: fileName,
           data: imageData.split(',')[1], // Remove o prefixo data:image/png;base64,
           directory: Directory.Cache,
@@ -211,14 +208,11 @@ const CartaoSus = () => {
         });
         
         // Compartilhar usando Capacitor Share
-        const { uri } = await Filesystem.getUri({
-          directory: Directory.Cache,
-          path: fileName
-        });
+        const fileUrl = writeResult.uri; // file:// URL compatível com Share.files
         await CapacitorShare.share({
           title: 'Meu Cartão SUS',
           text: `Cartão SUS de ${usuario.nome}`,
-          files: [uri],
+          files: [fileUrl],
           dialogTitle: 'Compartilhar Cartão SUS'
         });
         
