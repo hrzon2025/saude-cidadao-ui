@@ -1,21 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Download, Share, Info, CreditCard } from "lucide-react";
+import { ArrowLeft, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AppHeader } from "@/components/ui/app-header";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from "@/store/useAppStore";
 import QRCode from "qrcode";
-import html2canvas from "html2canvas";
-import { Share as CapacitorShare } from "@capacitor/share";
-import { Capacitor } from "@capacitor/core";
 const CartaoSus = () => {
   const navigate = useNavigate();
-  const {
-    toast
-  } = useToast();
   const { usuario } = useAppStore();
   const [qrCodeUrl, setQrCodeUrl] = useState<string>("");
   const cartaoRef = useRef<HTMLDivElement>(null);
@@ -101,120 +93,6 @@ const CartaoSus = () => {
       console.error("Erro ao gerar QR Code:", err);
     });
   }, [usuario]);
-  const handleBaixarPdf = async () => {
-    if (!cartaoRef.current) return;
-    
-    try {
-      const canvas = await html2canvas(cartaoRef.current, {
-        scale: 2,
-        backgroundColor: null,
-        useCORS: true,
-      });
-      
-      // Converter canvas para blob
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          
-          toast({
-            title: "Cartão baixado",
-            description: "O cartão SUS foi salvo como imagem com sucesso."
-          });
-        }
-      }, 'image/png');
-    } catch (error) {
-      console.error('Erro ao gerar imagem:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível gerar a imagem do cartão.",
-        variant: "destructive"
-      });
-    }
-  };
-  const handleCompartilhar = async () => {
-    if (!cartaoRef.current) return;
-    
-    try {
-      const canvas = await html2canvas(cartaoRef.current, {
-        scale: 2,
-        backgroundColor: null,
-        useCORS: true,
-      });
-      
-      // Verificar se está rodando em dispositivo móvel
-      if (Capacitor.isNativePlatform()) {
-        // Converter canvas para base64
-        const imageData = canvas.toDataURL('image/png');
-        
-        await CapacitorShare.share({
-          title: 'Meu Cartão SUS',
-          text: `Cartão SUS de ${usuario.nome}`,
-          url: imageData,
-          dialogTitle: 'Compartilhar Cartão SUS'
-        });
-        
-        toast({
-          title: "Compartilhado",
-          description: "Cartão SUS compartilhado com sucesso."
-        });
-      } else {
-        // Fallback para web - usar Web Share API se disponível
-        if (navigator.share) {
-          canvas.toBlob(async (blob) => {
-            if (blob) {
-              const file = new File([blob], `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`, {
-                type: 'image/png'
-              });
-              
-              await navigator.share({
-                title: 'Meu Cartão SUS',
-                text: `Cartão SUS de ${usuario.nome}`,
-                files: [file]
-              });
-              
-              toast({
-                title: "Compartilhado",
-                description: "Cartão SUS compartilhado com sucesso."
-              });
-            }
-          }, 'image/png');
-        } else {
-          // Fallback - baixar a imagem
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-              
-              toast({
-                title: "Download iniciado",
-                description: "Como o compartilhamento não está disponível, a imagem foi baixada."
-              });
-            }
-          }, 'image/png');
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao compartilhar:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível compartilhar o cartão.",
-        variant: "destructive"
-      });
-    }
-  };
   return <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
       <AppHeader 
@@ -271,18 +149,6 @@ const CartaoSus = () => {
               
             </Card>}
 
-          {/* Ações */}
-          <div className="space-y-3">
-            <Button onClick={handleBaixarPdf} className="w-full h-12">
-              <Download className="w-4 h-4 mr-2" />
-              Baixar PDF
-            </Button>
-
-            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
-              <Share className="w-4 h-4 mr-2" />
-              Compartilhar
-            </Button>
-          </div>
 
           {/* Informações adicionais */}
           <div className="mt-6 p-4 bg-card rounded-lg border">
