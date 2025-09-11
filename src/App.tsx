@@ -7,6 +7,7 @@ import { BottomTabs } from "@/components/ui/bottom-tabs";
 import { useAppStore } from "@/store/useAppStore";
 import { useEffect } from "react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { AuthProvider } from "@/components/AuthProvider";
 
 // Pages
 import Inicio from "./pages/Inicio";
@@ -76,7 +77,8 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
           <ScrollToTop />
           <Layout>
             <Routes>
@@ -132,7 +134,8 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
-        </BrowserRouter>
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

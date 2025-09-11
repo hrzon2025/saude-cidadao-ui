@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +8,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from "@/store/useAppStore";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, user, loading: authLoading } = useAuth();
+  const { isLoggedIn } = useAppStore();
   
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -19,6 +22,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user && isLoggedIn && !authLoading) {
+      navigate("/inicio", { replace: true });
+    }
+  }, [user, isLoggedIn, authLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,61 +42,69 @@ export default function Login() {
     try {
       setLoading(true);
       
-      // Verificar se o usuário existe na nossa tabela usuarios e validar senha
-      const { data: usuarioData, error: usuarioError } = await supabase
-        .from('usuarios')
-        .select('*')
-        .eq('email', email)
-        .eq('senha', senha)
-        .single();
-
-      if (usuarioError || !usuarioData) {
-        console.error('Usuário não encontrado ou senha incorreta:', usuarioError);
+      // Primeiro, tentar fazer login com Supabase Auth
+      const { error: authError } = await signIn(email, senha);
+      
+      if (authError) {
+        console.error('Erro no login Supabase Auth:', authError);
         
-        // Verificar se o usuário existe (para dar mensagem específica)
-        const { data: usuarioExiste } = await supabase
+        // Se falhou no Auth, tentar login customizado (fallback)
+        const { data: usuarioData, error: usuarioError } = await supabase
           .from('usuarios')
-          .select('email')
+          .select('*')
           .eq('email', email)
+          .eq('senha', senha)
           .single();
+
+        if (usuarioError || !usuarioData) {
+          console.error('Usuário não encontrado ou senha incorreta:', usuarioError);
+          
+          // Verificar se o usuário existe (para dar mensagem específica)
+          const { data: usuarioExiste } = await supabase
+            .from('usuarios')
+            .select('email')
+            .eq('email', email)
+            .single();
+          
+          if (!usuarioExiste) {
+            setErrorMessage("Usuário não encontrado. Por favor, crie uma conta para continuar.");
+          } else {
+            setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
+          }
+          setShowErrorDialog(true);
+          return;
+        }
+
+        // Login customizado bem-sucedido - salvar dados do usuário logado
+        console.log('Login customizado bem-sucedido:', { usuario: usuarioData });
         
-        if (!usuarioExiste) {
-          setErrorMessage("Usuário não encontrado. Por favor, crie uma conta para continuar.");
-        } else {
-          setErrorMessage("Credenciais inválidas. Verifique os dados e tente novamente.");
-        }
-        setShowErrorDialog(true);
-        return;
+        // Buscar endereço do usuário
+        const { data: enderecoData } = await supabase
+          .from('enderecos')
+          .select('*')
+          .eq('usuario_id', usuarioData.id)
+          .maybeSingle();
+        
+        // Salvar dados do usuário no store
+        const { setUsuario } = useAppStore.getState();
+        setUsuario({
+          id: usuarioData.id,
+          nome: `${usuarioData.nome} ${usuarioData.sobrenome}`,
+          cpf: usuarioData.cpf,
+          dataNascimento: usuarioData.data_nascimento,
+          email: usuarioData.email,
+          telefone: usuarioData.celular,
+          endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
+          avatarUrl: usuarioData.avatar_url || "",
+          cns: usuarioData.cns || "",
+          preferencias: {
+            notificacoes: true,
+            biometria: false
+          }
+        });
       }
-
-      // Buscar endereço do usuário
-      const { data: enderecoData } = await supabase
-        .from('enderecos')
-        .select('*')
-        .eq('usuario_id', usuarioData.id)
-        .maybeSingle();
-
-      // Login bem-sucedido - salvar dados do usuário logado
-      console.log('Login bem-sucedido:', { usuario: usuarioData });
       
-      // Salvar dados do usuário no store
-      const { setUsuario } = useAppStore.getState();
-      setUsuario({
-        id: usuarioData.id,
-        nome: `${usuarioData.nome} ${usuarioData.sobrenome}`,
-        cpf: usuarioData.cpf,
-        dataNascimento: usuarioData.data_nascimento,
-        email: usuarioData.email,
-        telefone: usuarioData.celular,
-        endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
-        avatarUrl: usuarioData.avatar_url || "",
-        cns: usuarioData.cns || "",
-        preferencias: {
-          notificacoes: true,
-          biometria: false
-        }
-      });
-      
+      // Login bem-sucedido - redirecionar
       navigate("/inicio");
       
     } catch (error) {
@@ -175,9 +193,9 @@ export default function Login() {
               <Button 
                 type="submit" 
                 className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-xl"
-                disabled={loading}
+                disabled={loading || authLoading}
               >
-                {loading ? "Entrando..." : "Entrar"}
+                {loading || authLoading ? "Entrando..." : "Entrar"}
               </Button>
             </form>
           </div>
