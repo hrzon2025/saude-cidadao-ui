@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/store/useAppStore";
-import { consultarAgendamentosStatus, AgendamentoStatusResponse } from "@/lib/services/agendamento";
+import { consultarAgendamentosStatus, AgendamentoStatusResponse, cancelarConsulta } from "@/lib/services/agendamento";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -92,8 +92,18 @@ export default function ListaAgendamentos() {
   }, [busca]);
 
   const handleCancelar = async (agendamentoId: string) => {
-    // Implementação de cancelamento será adicionada em versão futura
-    showNotification('Funcionalidade de cancelamento será implementada em breve', 'info');
+    try {
+      setLoading(true);
+      await cancelarConsulta(agendamentoId, "Cancelando");
+      showNotification('Consulta cancelada com sucesso', 'success');
+      // Recarregar a lista de agendamentos
+      await loadAgendamentos();
+    } catch (error) {
+      console.error('Erro ao cancelar consulta:', error);
+      showNotification('Erro ao cancelar consulta. Tente novamente.', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatarData = (data?: string) => {
@@ -278,14 +288,34 @@ export default function ListaAgendamentos() {
                             </AlertDialogContent>
                           </AlertDialog>
                           
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            className="flex-1"
-                            onClick={() => handleCancelar(String(agendamento.atendimentoId || ''))}
-                          >
-                            Cancelar Consulta
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="flex-1"
+                              >
+                                Cancelar Consulta
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Cancelar Consulta</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Não, manter</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => handleCancelar(String(agendamento.atendimentoId || ''))}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Sim, cancelar
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </div>
                     )}

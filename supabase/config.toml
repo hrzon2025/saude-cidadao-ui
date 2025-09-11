@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.consultar-agendamentos-status]
 verify_jwt = false
+
+[functions.cancelar-consulta]
+verify_jwt = false

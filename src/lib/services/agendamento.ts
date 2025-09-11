@@ -247,3 +247,28 @@ export const agendarConsulta = async (dados: {
 
   return result || {};
 };
+
+export interface CancelarConsultaResponse {
+  success: boolean;
+  message: string;
+}
+
+export const cancelarConsulta = async (atendimentoId: string, observacao?: string): Promise<CancelarConsultaResponse> => {
+  console.log('Chamando edge function cancelar-consulta:', { atendimentoId, observacao });
+  
+  const { data: result, error } = await supabase.functions.invoke('cancelar-consulta', {
+    body: {
+      atendimentoId,
+      observacao: observacao || "Cancelando"
+    }
+  });
+
+  console.log('Resposta da edge function cancelar-consulta:', { data: result, error });
+
+  if (error) {
+    console.error('Erro na edge function cancelar-consulta:', error);
+    throw new Error(error.message || 'Erro ao cancelar consulta');
+  }
+
+  return result || { success: false, message: 'Erro desconhecido' };
+};
