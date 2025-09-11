@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useAppStore } from "@/store/useAppStore";
-import { User, Edit3, Bell, Shield, Moon, LogOut, Phone, Mail, MapPin, Calendar, CreditCard, Settings } from "lucide-react";
+import { User, Edit3, Bell, Moon, LogOut, Phone, Mail, MapPin, Calendar, CreditCard, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 export default function Perfil() {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ export default function Perfil() {
     showNotification
   } = useAppStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState(usuario?.preferencias?.notificacoes ?? true);
-  const [biometriaEnabled, setBiometriaEnabled] = useState(usuario?.preferencias?.biometria ?? false);
   if (!usuario) {
     return <div className="min-h-screen bg-gradient-subtle pb-20">
         <AppHeader title="Perfil" />
@@ -178,19 +177,6 @@ export default function Perfil() {
                 </div>
               </div>
               <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <Shield className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium">Login com Biometria</p>
-                  <p className="text-xs text-muted-foreground">
-                    Usar impressão digital
-                  </p>
-                </div>
-              </div>
-              <Switch checked={biometriaEnabled} onCheckedChange={setBiometriaEnabled} />
             </div>
             
             <div className="flex items-center justify-between">
