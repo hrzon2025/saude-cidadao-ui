@@ -21,7 +21,9 @@ export default function Medicamentos() {
           allowFullScreen
           style={{
             marginTop: '-60px',
-            height: 'calc(100% + 60px)'
+            height: 'calc(100% + 60px)',
+            pointerEvents: 'auto',
+            touchAction: 'auto'
           }}
         />
       </div>
