@@ -10,22 +10,14 @@ export default function Medicamentos() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [iframeUrl, setIframeUrl] = useState("https://sus-suzano.web.app/#/");
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      // Try to communicate with iframe or redirect to search
-      const iframe = document.querySelector('iframe') as HTMLIFrameElement;
-      if (iframe) {
-        try {
-          // Try to post message to iframe for search functionality
-          iframe.contentWindow?.postMessage({
-            type: 'SEARCH_MEDICATION',
-            term: searchTerm.trim()
-          }, '*');
-        } catch (error) {
-          console.log('Cannot communicate with iframe, search term:', searchTerm);
-        }
-      }
+      // Update iframe URL with search parameter
+      const baseUrl = "https://sus-suzano.web.app/#/";
+      const searchUrl = `${baseUrl}?search=${encodeURIComponent(searchTerm.trim())}`;
+      setIframeUrl(searchUrl);
       setIsSearchOpen(false);
       setSearchTerm("");
     }
@@ -54,6 +46,7 @@ export default function Medicamentos() {
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="w-full"
+            autoFocus
           />
           <div className="flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setIsSearchOpen(false)}>
@@ -79,7 +72,7 @@ export default function Medicamentos() {
       
       <div className="h-[calc(100vh-8rem)]">
         <iframe
-          src="https://sus-suzano.web.app/#/"
+          src={iframeUrl}
           className="w-full h-full border-none"
           title="Sistema de Medicamentos"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
