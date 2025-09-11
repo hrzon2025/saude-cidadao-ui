@@ -19,6 +19,10 @@ export default function Medicamentos() {
           title="Sistema de Medicamentos"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          style={{
+            marginTop: '-60px',
+            height: 'calc(100% + 60px)'
+          }}
         />
       </div>
     </div>
