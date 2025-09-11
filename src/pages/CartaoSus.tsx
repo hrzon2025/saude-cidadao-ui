@@ -138,6 +138,22 @@ const CartaoSus = () => {
       });
     }
   };
+  const handleDownloadFallback = (blob: Blob, nomeUsuario: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cartao-sus-${nomeUsuario.replace(/\s+/g, '-')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Download iniciado",
+      description: "Como o compartilhamento não está disponível, a imagem foi baixada."
+    });
+  };
+
   const handleCompartilhar = async () => {
     if (!cartaoRef.current) return;
     
@@ -173,35 +189,66 @@ const CartaoSus = () => {
                 type: 'image/png'
               });
               
-              await navigator.share({
-                title: 'Meu Cartão SUS',
-                text: `Cartão SUS de ${usuario.nome}`,
-                files: [file]
-              });
+              // Verificar se o browser suporta compartilhamento de arquivos
+              const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
               
-              toast({
-                title: "Compartilhado",
-                description: "Cartão SUS compartilhado com sucesso."
-              });
+              if (canShareFiles) {
+                try {
+                  await navigator.share({
+                    title: 'Meu Cartão SUS',
+                    text: `Cartão SUS de ${usuario.nome}`,
+                    files: [file]
+                  });
+                  
+                  toast({
+                    title: "Compartilhado",
+                    description: "Cartão SUS compartilhado com sucesso."
+                  });
+                } catch (shareError) {
+                  console.log('Erro no compartilhamento com arquivos, tentando sem arquivos:', shareError);
+                  // Tentar compartilhar sem arquivos
+                  try {
+                    await navigator.share({
+                      title: 'Meu Cartão SUS',
+                      text: `Cartão SUS de ${usuario.nome}`,
+                      url: window.location.href
+                    });
+                    
+                    toast({
+                      title: "Compartilhado",
+                      description: "Link compartilhado com sucesso."
+                    });
+                  } catch (fallbackError) {
+                    console.log('Erro no compartilhamento sem arquivos:', fallbackError);
+                    // Baixar como fallback final
+                    handleDownloadFallback(blob, usuario.nome);
+                  }
+                }
+              } else {
+                // Tentar compartilhar sem arquivos
+                try {
+                  await navigator.share({
+                    title: 'Meu Cartão SUS',
+                    text: `Cartão SUS de ${usuario.nome}`,
+                    url: window.location.href
+                  });
+                  
+                  toast({
+                    title: "Compartilhado",
+                    description: "Link compartilhado com sucesso."
+                  });
+                } catch (shareError) {
+                  console.log('Erro no compartilhamento:', shareError);
+                  handleDownloadFallback(blob, usuario.nome);
+                }
+              }
             }
           }, 'image/png');
         } else {
           // Fallback - baixar a imagem
           canvas.toBlob((blob) => {
             if (blob) {
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              URL.revokeObjectURL(url);
-              
-              toast({
-                title: "Download iniciado",
-                description: "Como o compartilhamento não está disponível, a imagem foi baixada."
-              });
+              handleDownloadFallback(blob, usuario.nome);
             }
           }, 'image/png');
         }
