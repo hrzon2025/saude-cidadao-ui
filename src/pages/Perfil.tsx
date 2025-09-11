@@ -180,7 +180,18 @@ export default function Perfil() {
               <Switch checked={notificationsEnabled} onCheckedChange={setNotificationsEnabled} />
             </div>
             
-            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <Shield className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Login com Biometria</p>
+                  <p className="text-xs text-muted-foreground">
+                    Usar impressão digital
+                  </p>
+                </div>
+              </div>
+              <Switch checked={biometriaEnabled} onCheckedChange={setBiometriaEnabled} />
+            </div>
             
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
