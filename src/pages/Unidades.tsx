@@ -6,20 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { AppHeader } from "@/components/ui/app-header";
 import { useNavigate } from "react-router-dom";
-import { mockUnidades } from "@/lib/stubs/data";
+import unidadesSuzano from "@/data/unidades-suzano.json";
 const Unidades = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
   const [filterMode, setFilterMode] = useState<"nearby" | "all">("all");
-  const filteredUnidades = mockUnidades.filter(unidade => unidade.nome.toLowerCase().includes(searchQuery.toLowerCase()) || unidade.endereco.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredUnidades = unidadesSuzano.filter(unidade => unidade.nome.toLowerCase().includes(searchQuery.toLowerCase()) || unidade.endereco.toLowerCase().includes(searchQuery.toLowerCase()));
   const handleVerNoMaps = (unidade: any) => {
-    // Simular abertura do Google Maps
-    const {
-      lat,
-      lng
-    } = unidade.geo;
-    const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    // Abrir Google Maps com endereço completo
+    const endereco = `${unidade.endereco}, ${unidade.bairro}, ${unidade.cidade}, ${unidade.estado}, ${unidade.cep}`;
+    const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`;
     window.open(url, '_blank');
   };
   return <div className="min-h-screen bg-background flex flex-col">
@@ -61,7 +58,7 @@ const Unidades = () => {
 
         {/* Lista de unidades */}
         <div className="space-y-4">
-          {filteredUnidades.map(unidade => <Card key={unidade.id} className="overflow-hidden">
+          {filteredUnidades.map((unidade, index) => <Card key={index} className="overflow-hidden">
               <CardContent className="p-0">
                 {/* Mapa placeholder */}
                 <div className="h-32 bg-muted flex items-center justify-center">
@@ -78,10 +75,18 @@ const Unidades = () => {
                     </span>
                   </div>
                   
-                  {/* Endereço */}
-                  <p className="text-sm text-muted-foreground">
-                    {unidade.endereco}
-                  </p>
+                  {/* Endereço completo */}
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">
+                      {unidade.endereco}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {unidade.bairro}, {unidade.cidade}/{unidade.estado}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      CEP: {unidade.cep}
+                    </p>
+                  </div>
                   
                   {/* Distância (simulada) */}
                   <div className="flex items-center text-sm text-muted-foreground">

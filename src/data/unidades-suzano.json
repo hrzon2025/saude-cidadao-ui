@@ -1,0 +1,98 @@
+[
+  {
+    "nome": "USF - DOUTOR EDUARDO NAKAMURA",
+    "endereco": "R. Mário Bochetti, 680",
+    "bairro": "Cidade Miguel Badra",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08690-265"
+  },
+  {
+    "nome": "USF - JARDIM DO LAGO",
+    "endereco": "R. Deolinda Cardoso Salles, 142",
+    "bairro": "Recanto Ouro Fino",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08635-605"
+  },
+  {
+    "nome": "USF - JARDIM EUROPA",
+    "endereco": "Estr. Takashi Kobata, 1608",
+    "bairro": "Jardim Europa",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08696-040"
+  },
+  {
+    "nome": "USF - JARDIM SAO JOSE",
+    "endereco": "R. Turquia, 501",
+    "bairro": "Jardim São José",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08695-175"
+  },
+  {
+    "nome": "USF - JARDIM SUZANOPOLIS",
+    "endereco": "R. Leonor Edmee de Castro, 205",
+    "bairro": "Jardim Suzanopolis",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08670-320"
+  },
+  {
+    "nome": "USF - RECANTO SAO JOSE",
+    "endereco": "R. José da Encarnação, 18",
+    "bairro": "Recanto São José",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08630-643"
+  },
+  {
+    "nome": "USF - JARDIM IKEDA",
+    "endereco": "R. Bromélia, 11",
+    "bairro": "Jardim Ikeda",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08625-130"
+  },
+  {
+    "nome": "USF - JARDIM MAITE",
+    "endereco": "R. Pedro Felipe Reis do Nascimento, 225",
+    "bairro": "Jardim Maite",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08616-590"
+  },
+  {
+    "nome": "USF - VILA FATIMA",
+    "endereco": "R. Nicácio da Silva Bastos, 75",
+    "bairro": "Parque Buenos Aires",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08640-690"
+  },
+  {
+    "nome": "USF - JARDIM REVISTA",
+    "endereco": "R. Santo Antônio, 31",
+    "bairro": "Vila Laura",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08694-385"
+  },
+  {
+    "nome": "USF - VILA AMORIM",
+    "endereco": "R. Prof. Jeremia",
+    "bairro": "Vila Urupes",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08615-050"
+  },
+  {
+    "nome": "USF - JARDIM BRASIL",
+    "endereco": "R. Antônio Inácio, 540",
+    "bairro": "Jardim Brasil",
+    "cidade": "Suzano",
+    "estado": "SP",
+    "cep": "08633-412"
+  }
+]
