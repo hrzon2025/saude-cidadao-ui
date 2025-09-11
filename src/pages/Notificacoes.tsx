@@ -16,8 +16,54 @@ interface Notificacao {
   hora: string;
 }
 
-// Mock data - inicialmente sem notificações
-const notificacoesMock: Notificacao[] = [];
+// Mock data - apenas lembretes de consultas agendadas
+const notificacoesMock: Notificacao[] = [
+  {
+    id: '1',
+    titulo: 'Consulta agendada para amanhã',
+    descricao: 'Lembrete: você tem uma consulta médica agendada para amanhã às 14:00 na UBS Centro.',
+    tipo: 'agendamento',
+    lida: false,
+    data: '2025-09-10',
+    hora: '09:00'
+  },
+  {
+    id: '2',
+    titulo: 'Resultado de exame disponível',
+    descricao: 'O resultado do seu exame de sangue já está disponível. Acesse em "Minha Saúde" para visualizar.',
+    tipo: 'saude',
+    lida: false,
+    data: '2025-09-09',
+    hora: '15:30'
+  },
+  {
+    id: '3',
+    titulo: 'Lembrete: consulta hoje às 15:00',
+    descricao: 'Não se esqueça da sua consulta com Dr. João Silva hoje às 15:00 na UBS Sul.',
+    tipo: 'agendamento',
+    lida: true,
+    data: '2025-09-09',
+    hora: '13:45'
+  },
+  {
+    id: '4',
+    titulo: 'Sistema atualizado',
+    descricao: 'O aplicativo foi atualizado com novas funcionalidades. Confira as novidades!',
+    tipo: 'sistema',
+    lida: true,
+    data: '2025-09-08',
+    hora: '10:00'
+  },
+  {
+    id: '5',
+    titulo: 'Consulta reagendada',
+    descricao: 'Sua consulta foi reagendada para sexta-feira às 10:00. Verifique os detalhes em "Meus Agendamentos".',
+    tipo: 'agendamento',
+    lida: false,
+    data: '2025-09-07',
+    hora: '16:30'
+  }
+];
 
 const getIconByType = (tipo: string) => {
   switch (tipo) {
