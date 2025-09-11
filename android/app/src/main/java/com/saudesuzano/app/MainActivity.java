@@ -1,4 +1,4 @@
-package com.saudecidadao.app;
+package com.saudesuzano.app;
 
 import android.graphics.Color;
 import android.os.Build;

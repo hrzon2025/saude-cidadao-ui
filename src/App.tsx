@@ -61,7 +61,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => {
-  const { isDarkMode } = useAppStore();
+  const { isDarkMode, isLoggedIn } = useAppStore();
 
   // Apply theme on app start
   useEffect(() => {
@@ -82,8 +82,8 @@ const App = () => {
           <ScrollToTop />
           <Layout>
             <Routes>
-              {/* Redirect root to login */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
+              {/* Redirect root based on login status */}
+              <Route path="/" element={<Navigate to={isLoggedIn ? "/inicio" : "/login"} replace />} />
               
                {/* Main Tabs - Protected Routes */}
                <Route path="/inicio" element={<ProtectedRoute><Inicio /></ProtectedRoute>} />
