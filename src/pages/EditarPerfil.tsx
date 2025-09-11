@@ -74,7 +74,7 @@ export default function EditarPerfil() {
         .from('enderecos')
         .select('*')
         .eq('usuario_id', usuario.id)
-        .single();
+        .maybeSingle();
 
       if (data && !error) {
         setFormData(prev => ({

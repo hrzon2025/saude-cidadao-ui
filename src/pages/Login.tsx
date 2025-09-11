@@ -64,7 +64,7 @@ export default function Login() {
         .from('enderecos')
         .select('*')
         .eq('usuario_id', usuarioData.id)
-        .single();
+        .maybeSingle();
 
       // Login bem-sucedido - salvar dados do usuário logado
       console.log('Login bem-sucedido:', { usuario: usuarioData });
