@@ -139,16 +139,18 @@ const CartaoSus = () => {
           path: fileName,
           data: pdfBase64.split(',')[1], // Remove o prefixo data:application/pdf;base64,
           directory: Directory.Documents,
+          recursive: true,
         });
         
         // Compartilhar para acionar "Abrir com..."
+        const { uri } = await Filesystem.getUri({
+          directory: Directory.Documents,
+          path: fileName
+        });
         await CapacitorShare.share({
           title: 'Cartão SUS - PDF',
           text: `PDF do Cartão SUS de ${usuario.nome}`,
-          url: (await Filesystem.getUri({
-            directory: Directory.Documents,
-            path: fileName
-          })).uri,
+          files: [uri],
           dialogTitle: 'Abrir PDF com...'
         });
         
@@ -205,16 +207,18 @@ const CartaoSus = () => {
           path: fileName,
           data: imageData.split(',')[1], // Remove o prefixo data:image/png;base64,
           directory: Directory.Cache,
+          recursive: true,
         });
         
         // Compartilhar usando Capacitor Share
+        const { uri } = await Filesystem.getUri({
+          directory: Directory.Cache,
+          path: fileName
+        });
         await CapacitorShare.share({
           title: 'Meu Cartão SUS',
           text: `Cartão SUS de ${usuario.nome}`,
-          url: (await Filesystem.getUri({
-            directory: Directory.Cache,
-            path: fileName
-          })).uri,
+          files: [uri],
           dialogTitle: 'Compartilhar Cartão SUS'
         });
         
