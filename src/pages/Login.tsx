@@ -131,7 +131,7 @@ export default function Login() {
               <img 
                 src="/lovable-uploads/c3ff4b81-712a-4d93-a4b4-e7d92962d5fa.png" 
                 alt="Saúde Suzano" 
-                className="mx-auto mb-6 h-32 w-auto"
+                className="mx-auto mb-6 h-24 w-auto"
               />
               <h1 className="text-2xl font-bold text-foreground mb-2">
                 Entre na sua conta
