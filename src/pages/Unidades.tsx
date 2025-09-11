@@ -3,15 +3,12 @@ import { ArrowLeft, Search, MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { AppHeader } from "@/components/ui/app-header";
 import { useNavigate } from "react-router-dom";
 import unidadesSuzano from "@/data/unidades-suzano.json";
 const Unidades = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
-  const [filterMode, setFilterMode] = useState<"nearby" | "all">("all");
   const filteredUnidades = unidadesSuzano.filter(unidade => unidade.nome.toLowerCase().includes(searchQuery.toLowerCase()) || unidade.endereco.toLowerCase().includes(searchQuery.toLowerCase()));
   const handleVerNoMaps = (unidade: any) => {
     // Abrir Google Maps com endereço completo
@@ -35,21 +32,6 @@ const Unidades = () => {
           <Input type="text" placeholder="Busque por uma unidade ou endereço..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10 h-12 rounded-full" />
         </div>
 
-        {/* Toggle localização atual */}
-        <div className="flex items-center space-x-3 p-3 bg-muted/30 rounded-full">
-          <Switch checked={useCurrentLocation} onCheckedChange={setUseCurrentLocation} className="data-[state=checked]:bg-primary" />
-          <span className="text-sm text-foreground">Usar localização atual</span>
-        </div>
-
-        {/* Botões de filtro */}
-        <div className="flex gap-3">
-          <Button variant={filterMode === "nearby" ? "default" : "outline"} onClick={() => setFilterMode("nearby")} className="flex-1 h-10 rounded-full">
-            Perto de mim
-          </Button>
-          <Button variant={filterMode === "all" ? "default" : "outline"} onClick={() => setFilterMode("all")} className="flex-1 h-10 rounded-full">
-            Todas Unidades
-          </Button>
-        </div>
 
         {/* Título da lista */}
         <h2 className="text-xl font-bold text-foreground mt-6">
