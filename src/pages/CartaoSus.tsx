@@ -11,6 +11,8 @@ import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import { Share as CapacitorShare } from "@capacitor/share";
 import { Capacitor } from "@capacitor/core";
+import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
+import jsPDF from "jspdf";
 const CartaoSus = () => {
   const navigate = useNavigate();
   const {
@@ -111,29 +113,74 @@ const CartaoSus = () => {
         useCORS: true,
       });
       
-      // Converter canvas para blob
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-          
-          toast({
-            title: "Cartão baixado",
-            description: "O cartão SUS foi salvo como imagem com sucesso."
-          });
-        }
-      }, 'image/png');
+      // Verificar se está rodando em dispositivo móvel
+      if (Capacitor.isNativePlatform()) {
+        // Criar PDF usando jsPDF
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+        
+        // Adicionar a imagem do cartão ao PDF
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = 180; // Largura em mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Manter proporção
+        
+        pdf.addImage(imgData, 'PNG', 15, 20, imgWidth, imgHeight);
+        
+        // Converter PDF para base64
+        const pdfBase64 = pdf.output('datauristring');
+        
+        // Salvar arquivo usando Capacitor Filesystem
+        const fileName = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.pdf`;
+        
+        await Filesystem.writeFile({
+          path: fileName,
+          data: pdfBase64.split(',')[1], // Remove o prefixo data:application/pdf;base64,
+          directory: Directory.Documents,
+        });
+        
+        // Compartilhar para acionar "Abrir com..."
+        await CapacitorShare.share({
+          title: 'Cartão SUS - PDF',
+          text: `PDF do Cartão SUS de ${usuario.nome}`,
+          url: (await Filesystem.getUri({
+            directory: Directory.Documents,
+            path: fileName
+          })).uri,
+          dialogTitle: 'Abrir PDF com...'
+        });
+        
+        toast({
+          title: "PDF gerado",
+          description: "PDF do cartão SUS criado e pronto para ser aberto."
+        });
+      } else {
+        // Fallback para web - baixar como imagem
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            toast({
+              title: "Cartão baixado",
+              description: "O cartão SUS foi salvo como imagem com sucesso."
+            });
+          }
+        }, 'image/png');
+      }
     } catch (error) {
-      console.error('Erro ao gerar imagem:', error);
+      console.error('Erro ao gerar PDF:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível gerar a imagem do cartão.",
+        description: "Não foi possível gerar o PDF do cartão.",
         variant: "destructive"
       });
     }
@@ -150,13 +197,24 @@ const CartaoSus = () => {
       
       // Verificar se está rodando em dispositivo móvel
       if (Capacitor.isNativePlatform()) {
-        // Converter canvas para base64
+        // Salvar imagem temporariamente usando Filesystem
         const imageData = canvas.toDataURL('image/png');
+        const fileName = `cartao-sus-${Date.now()}.png`;
         
+        await Filesystem.writeFile({
+          path: fileName,
+          data: imageData.split(',')[1], // Remove o prefixo data:image/png;base64,
+          directory: Directory.Cache,
+        });
+        
+        // Compartilhar usando Capacitor Share
         await CapacitorShare.share({
           title: 'Meu Cartão SUS',
           text: `Cartão SUS de ${usuario.nome}`,
-          url: imageData,
+          url: (await Filesystem.getUri({
+            directory: Directory.Cache,
+            path: fileName
+          })).uri,
           dialogTitle: 'Compartilhar Cartão SUS'
         });
         
@@ -166,23 +224,25 @@ const CartaoSus = () => {
         });
       } else {
         // Fallback para web - usar Web Share API se disponível
-        if (navigator.share) {
+        if (navigator.share && navigator.canShare) {
           canvas.toBlob(async (blob) => {
             if (blob) {
               const file = new File([blob], `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`, {
                 type: 'image/png'
               });
               
-              await navigator.share({
-                title: 'Meu Cartão SUS',
-                text: `Cartão SUS de ${usuario.nome}`,
-                files: [file]
-              });
-              
-              toast({
-                title: "Compartilhado",
-                description: "Cartão SUS compartilhado com sucesso."
-              });
+              if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                  title: 'Meu Cartão SUS',
+                  text: `Cartão SUS de ${usuario.nome}`,
+                  files: [file]
+                });
+                
+                toast({
+                  title: "Compartilhado",
+                  description: "Cartão SUS compartilhado com sucesso."
+                });
+              }
             }
           }, 'image/png');
         } else {
@@ -227,7 +287,7 @@ const CartaoSus = () => {
       <div className="flex-1 p-6 px-[2px]">
         <div className="max-w-sm mx-auto px-[12px] py-px">
           {/* Card do Cartão SUS */}
-          <Card ref={cartaoRef} className="bg-gradient-sus text-white mb-6">
+          <Card id="container-cartao-sus" ref={cartaoRef} className="bg-gradient-sus text-white mb-6">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -273,12 +333,12 @@ const CartaoSus = () => {
 
           {/* Ações */}
           <div className="space-y-3">
-            <Button onClick={handleBaixarPdf} className="w-full h-12">
+            <Button id="botao-baixar-pdf" onClick={handleBaixarPdf} className="w-full h-12">
               <Download className="w-4 h-4 mr-2" />
               Baixar PDF
             </Button>
 
-            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
+            <Button id="botao-compartilhar-imagem" onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
               <Share className="w-4 h-4 mr-2" />
               Compartilhar
             </Button>
