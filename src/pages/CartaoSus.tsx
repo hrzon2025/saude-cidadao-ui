@@ -11,8 +11,6 @@ import QRCode from "qrcode";
 import html2canvas from "html2canvas";
 import { Share as CapacitorShare } from "@capacitor/share";
 import { Capacitor } from "@capacitor/core";
-import { Filesystem, Directory, Encoding } from "@capacitor/filesystem";
-import jsPDF from "jspdf";
 const CartaoSus = () => {
   const navigate = useNavigate();
   const {
@@ -109,117 +107,56 @@ const CartaoSus = () => {
     try {
       const canvas = await html2canvas(cartaoRef.current, {
         scale: 2,
-        backgroundColor: '#ffffff',
+        backgroundColor: null,
         useCORS: true,
       });
       
-      // Criar PDF usando jsPDF
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF();
-      
-      // Calcular dimensões para caber no PDF
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      if (Capacitor.isNativePlatform()) {
-        // Salvar PDF usando Capacitor Filesystem
-        const pdfBase64 = pdf.output('datauristring').split(',')[1];
-        const fileName = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.pdf`;
-        
-        const result = await Filesystem.writeFile({
-          path: fileName,
-          data: pdfBase64,
-          directory: Directory.Cache,
-        });
-        
-        // Abrir PDF com aplicativo nativo (ação "Abrir com")
-        await CapacitorShare.share({
-          title: 'Cartão SUS PDF',
-          text: `Cartão SUS de ${usuario.nome}`,
-          url: result.uri,
-          dialogTitle: 'Abrir PDF com...'
-        });
-        
-        toast({
-          title: "PDF gerado",
-          description: "Cartão SUS salvo como PDF com sucesso."
-        });
-      } else {
-        // Fallback para web - baixar diretamente
-        pdf.save(`cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.pdf`);
-        
-        toast({
-          title: "PDF baixado",
-          description: "O cartão SUS foi salvo como PDF com sucesso."
-        });
-      }
+      // Converter canvas para blob
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          
+          toast({
+            title: "Cartão baixado",
+            description: "O cartão SUS foi salvo como imagem com sucesso."
+          });
+        }
+      }, 'image/png');
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
+      console.error('Erro ao gerar imagem:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível gerar o PDF do cartão.",
+        description: "Não foi possível gerar a imagem do cartão.",
         variant: "destructive"
       });
     }
   };
-  const handleDownloadFallback = (blob: Blob, nomeUsuario: string) => {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `cartao-sus-${nomeUsuario.replace(/\s+/g, '-')}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Download iniciado",
-      description: "Como o compartilhamento não está disponível, a imagem foi baixada."
-    });
-  };
-
   const handleCompartilhar = async () => {
     if (!cartaoRef.current) return;
     
     try {
       const canvas = await html2canvas(cartaoRef.current, {
         scale: 2,
-        backgroundColor: '#ffffff',
+        backgroundColor: null,
         useCORS: true,
       });
       
+      // Verificar se está rodando em dispositivo móvel
       if (Capacitor.isNativePlatform()) {
-        // Converter canvas para base64 para dispositivos móveis
+        // Converter canvas para base64
         const imageData = canvas.toDataURL('image/png');
-        const fileName = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
         
-        // Salvar temporariamente usando Filesystem
-        const base64Data = imageData.split(',')[1];
-        const result = await Filesystem.writeFile({
-          path: fileName,
-          data: base64Data,
-          directory: Directory.Cache,
-        });
-        
-        // Compartilhar usando Share nativo do Capacitor
         await CapacitorShare.share({
           title: 'Meu Cartão SUS',
           text: `Cartão SUS de ${usuario.nome}`,
-          url: result.uri,
+          url: imageData,
           dialogTitle: 'Compartilhar Cartão SUS'
         });
         
@@ -236,34 +173,35 @@ const CartaoSus = () => {
                 type: 'image/png'
               });
               
-              const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
+              await navigator.share({
+                title: 'Meu Cartão SUS',
+                text: `Cartão SUS de ${usuario.nome}`,
+                files: [file]
+              });
               
-              if (canShareFiles) {
-                try {
-                  await navigator.share({
-                    title: 'Meu Cartão SUS',
-                    text: `Cartão SUS de ${usuario.nome}`,
-                    files: [file]
-                  });
-                  
-                  toast({
-                    title: "Compartilhado",
-                    description: "Cartão SUS compartilhado com sucesso."
-                  });
-                } catch (shareError) {
-                  console.log('Erro no compartilhamento:', shareError);
-                  handleDownloadFallback(blob, usuario.nome);
-                }
-              } else {
-                handleDownloadFallback(blob, usuario.nome);
-              }
+              toast({
+                title: "Compartilhado",
+                description: "Cartão SUS compartilhado com sucesso."
+              });
             }
           }, 'image/png');
         } else {
-          // Fallback final - baixar a imagem
+          // Fallback - baixar a imagem
           canvas.toBlob((blob) => {
             if (blob) {
-              handleDownloadFallback(blob, usuario.nome);
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `cartao-sus-${usuario.nome.replace(/\s+/g, '-')}.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              
+              toast({
+                title: "Download iniciado",
+                description: "Como o compartilhamento não está disponível, a imagem foi baixada."
+              });
             }
           }, 'image/png');
         }
@@ -289,7 +227,7 @@ const CartaoSus = () => {
       <div className="flex-1 p-6 px-[2px]">
         <div className="max-w-sm mx-auto px-[12px] py-px">
           {/* Card do Cartão SUS */}
-          <Card id="container-cartao-sus" ref={cartaoRef} className="bg-gradient-sus text-white mb-6">
+          <Card ref={cartaoRef} className="bg-gradient-sus text-white mb-6">
             <CardContent className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -335,12 +273,12 @@ const CartaoSus = () => {
 
           {/* Ações */}
           <div className="space-y-3">
-            <Button id="botao-baixar-pdf" onClick={handleBaixarPdf} className="w-full h-12">
+            <Button onClick={handleBaixarPdf} className="w-full h-12">
               <Download className="w-4 h-4 mr-2" />
               Baixar PDF
             </Button>
 
-            <Button id="botao-compartilhar-imagem" onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
+            <Button onClick={handleCompartilhar} variant="secondary" className="w-full h-12">
               <Share className="w-4 h-4 mr-2" />
               Compartilhar
             </Button>
