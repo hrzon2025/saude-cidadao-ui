@@ -181,8 +181,8 @@ const CartaoSus = () => {
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível gerar o PDF do cartão.",
+        title: "Erro ao baixar PDF",
+        description: "Não foi possível gerar o PDF do cartão. Verifique se você tem espaço disponível no dispositivo e tente novamente.",
         variant: "destructive"
       });
     }
@@ -273,8 +273,8 @@ const CartaoSus = () => {
     } catch (error) {
       console.error('Erro ao compartilhar:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível compartilhar o cartão.",
+        title: "Erro ao compartilhar",
+        description: "Não foi possível compartilhar o cartão. Verifique se você tem permissão para salvar arquivos e tente novamente.",
         variant: "destructive"
       });
     }
