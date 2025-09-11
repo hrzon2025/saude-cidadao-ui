@@ -133,6 +133,33 @@ export type Database = {
         }
         Relationships: []
       }
+      ouvidoria: {
+        Row: {
+          assunto: string
+          created_at: string
+          id: string
+          mensagem: string
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          assunto: string
+          created_at?: string
+          id?: string
+          mensagem: string
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          assunto?: string
+          created_at?: string
+          id?: string
+          mensagem?: string
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
       usuarios: {
         Row: {
           celular: string | null
