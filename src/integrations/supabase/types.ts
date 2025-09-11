@@ -162,6 +162,7 @@ export type Database = {
       }
       usuarios: {
         Row: {
+          avatar_url: string | null
           celular: string | null
           cns: string | null
           cpf: string
@@ -176,6 +177,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_url?: string | null
           celular?: string | null
           cns?: string | null
           cpf: string
@@ -190,6 +192,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_url?: string | null
           celular?: string | null
           cns?: string | null
           cpf?: string

@@ -79,7 +79,7 @@ export default function Login() {
         email: usuarioData.email,
         telefone: usuarioData.celular,
         endereco: enderecoData ? `${enderecoData.logradouro}, ${enderecoData.numero} - ${enderecoData.bairro}, ${enderecoData.cidade}/${enderecoData.uf}` : "",
-        avatarUrl: "",
+        avatarUrl: usuarioData.avatar_url || "",
         cns: usuarioData.cns || "",
         preferencias: {
           notificacoes: true,

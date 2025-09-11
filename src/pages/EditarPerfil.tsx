@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/useAppStore";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadPhotoToStorage } from "@/lib/services/photo-upload";
 
 export default function EditarPerfil() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function EditarPerfil() {
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [foto, setFoto] = useState<File | null>(null);
   const [fotoUrl, setFotoUrl] = useState<string>(usuario?.avatarUrl || "");
   
@@ -98,12 +100,63 @@ export default function EditarPerfil() {
     }));
   };
 
-  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setFoto(file);
-      const url = URL.createObjectURL(file);
-      setFotoUrl(url);
+    if (file && usuario?.id) {
+      try {
+        setUploadingPhoto(true);
+        setFoto(file);
+        
+        // Upload to Supabase Storage
+        const uploadResult = await uploadPhotoToStorage(file, usuario.id);
+        
+        if (uploadResult.success && uploadResult.url) {
+          setFotoUrl(uploadResult.url);
+          
+          // Update database immediately
+          const { error } = await supabase
+            .from('usuarios')
+            .update({ avatar_url: uploadResult.url })
+            .eq('id', usuario.id);
+
+          if (error) {
+            console.error('Erro ao salvar URL da foto no banco:', error);
+            toast({
+              title: "Foto carregada",
+              description: "A foto foi carregada, mas será salva quando você salvar o perfil.",
+            });
+          } else {
+            // Update global state
+            const novoUsuario = {
+              ...usuario,
+              avatarUrl: uploadResult.url
+            };
+            setUsuario(novoUsuario);
+            
+            toast({
+              title: "Foto atualizada!",
+              description: "Sua foto de perfil foi atualizada com sucesso.",
+            });
+          }
+        } else {
+          toast({
+            title: "Erro no upload",
+            description: uploadResult.error || "Não foi possível fazer upload da foto.",
+            variant: "destructive"
+          });
+          setFoto(null);
+        }
+      } catch (error) {
+        console.error('Erro ao fazer upload da foto:', error);
+        toast({
+          title: "Erro no upload",
+          description: "Não foi possível fazer upload da foto. Tente novamente.",
+          variant: "destructive"
+        });
+        setFoto(null);
+      } finally {
+        setUploadingPhoto(false);
+      }
     }
   };
 
@@ -214,6 +267,18 @@ export default function EditarPerfil() {
         }
       }
 
+      // Update avatar_url in database only if there's a new photo URL
+      if (fotoUrl && fotoUrl !== usuario.avatarUrl) {
+        const { error: avatarError } = await supabase
+          .from('usuarios')
+          .update({ avatar_url: fotoUrl })
+          .eq('id', usuario.id);
+
+        if (avatarError) {
+          console.error('Erro ao salvar avatar:', avatarError);
+        }
+      }
+
       // Atualizar store local
       const novoUsuario = {
         ...usuario,
@@ -293,20 +358,25 @@ export default function EditarPerfil() {
               </Avatar>
               
               <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
-                <Camera className="h-6 w-6 text-white" />
+                {uploadingPhoto ? (
+                  <div className="h-6 w-6 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                ) : (
+                  <Camera className="h-6 w-6 text-white" />
+                )}
                 <input
                   type="file"
                   accept="image/*"
                   capture="environment"
                   onChange={handleFotoChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  disabled={uploadingPhoto}
+                  className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
                   aria-label="Alterar foto de perfil"
                 />
               </div>
             </div>
             
             <p className="text-sm text-muted-foreground text-center">
-              Toque na foto para alterar
+              {uploadingPhoto ? "Fazendo upload..." : "Toque na foto para alterar"}
             </p>
           </div>
         </Card>

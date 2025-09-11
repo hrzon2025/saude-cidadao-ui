@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useAppStore } from "@/store/useAppStore";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadPhotoToStorage } from "@/lib/services/photo-upload";
 interface EnderecoData {
   logradouro: string;
   bairro: string;
@@ -31,6 +32,7 @@ export default function Cadastro() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fotoPerfil, setFotoPerfil] = useState<File | null>(null);
   const [fotoPerfilUrl, setFotoPerfilUrl] = useState<string>("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   // Dados pessoais
   const [cpf, setCpf] = useState("");
@@ -60,6 +62,7 @@ export default function Cadastro() {
     const file = e.target.files?.[0];
     if (file) {
       setFotoPerfil(file);
+      // Create preview URL
       const url = URL.createObjectURL(file);
       setFotoPerfilUrl(url);
     }
@@ -159,6 +162,26 @@ export default function Cadastro() {
 
     console.log('Tentativa de criação no Auth:', { authData, authError });
 
+    // Handle photo upload if there's a photo
+    let avatarUrl = null;
+    if (fotoPerfil) {
+      setUploadingPhoto(true);
+      try {
+        const uploadResult = await uploadPhotoToStorage(fotoPerfil, userId);
+        if (uploadResult.success) {
+          avatarUrl = uploadResult.url;
+        } else {
+          console.warn('Foto não foi carregada:', uploadResult.error);
+          showNotification('Foto não foi carregada, mas o cadastro continuará', 'warning');
+        }
+      } catch (error) {
+        console.warn('Erro no upload da foto:', error);
+        showNotification('Foto não foi carregada, mas o cadastro continuará', 'warning');
+      } finally {
+        setUploadingPhoto(false);
+      }
+    }
+
     // 2. Inserir dados na tabela usuarios 
     const { data: usuario, error: errorUsuario } = await supabase
       .from("usuarios")
@@ -173,6 +196,7 @@ export default function Cadastro() {
         genero: genero,
         celular: celular,
         cns: cns.trim() || null, // Incluir CNS se informado
+        avatar_url: avatarUrl, // Add avatar URL
       })
       .select()
       .single();
@@ -281,11 +305,25 @@ export default function Cadastro() {
             <div className="flex justify-center mb-6 py-0">
               <div className="relative">
                 <div className="w-24 h-24 rounded-full border-2 border-dashed border-muted-foreground flex items-center justify-center bg-muted/50 overflow-hidden">
-                  {fotoPerfilUrl ? <img src={fotoPerfilUrl} alt="Foto de perfil" className="w-full h-full object-cover" /> : <Camera className="h-8 w-8 text-muted-foreground" />}
+                  {fotoPerfilUrl ? (
+                    <img src={fotoPerfilUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
+                  ) : uploadingPhoto ? (
+                    <div className="h-8 w-8 border-2 border-muted-foreground border-t-transparent animate-spin rounded-full" />
+                  ) : (
+                    <Camera className="h-8 w-8 text-muted-foreground" />
+                  )}
                 </div>
-                <input type="file" accept="image/*" capture="environment" onChange={handleFotoPerfilChange} className="absolute inset-0 opacity-0 cursor-pointer" aria-label="Adicionar foto de perfil" />
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  capture="environment" 
+                  onChange={handleFotoPerfilChange} 
+                  disabled={uploadingPhoto}
+                  className="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed" 
+                  aria-label="Adicionar foto de perfil" 
+                />
                 <button type="button" className="text-primary text-sm mt-2 block text-center w-full pointer-events-none">
-                  {fotoPerfilUrl ? "Alterar" : "Adicionar"}
+                  {uploadingPhoto ? "Carregando..." : fotoPerfilUrl ? "Alterar" : "Adicionar"}
                 </button>
               </div>
             </div>
