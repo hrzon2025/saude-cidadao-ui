@@ -315,7 +315,7 @@ export default function ConfirmacaoAgendamento() {
             </p>
 
             {/* Action Button */}
-            <Button onClick={() => navigate('/agendamentos/lista')} className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold">
+            <Button onClick={() => navigate('/agendamentos')} className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold">
               <Calendar className="w-5 h-5 mr-2" />
               Meus Agendamentos
             </Button>
