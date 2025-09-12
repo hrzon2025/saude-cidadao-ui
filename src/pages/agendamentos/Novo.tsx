@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
+import { LoadingSpinner, LoadingCard } from "@/components/ui/loading-spinner";
 import { useAppStore } from "@/store/useAppStore";
 import { consultarUsuario, consultarTipos, consultarProfissionais, type ConsultarUsuarioResponse, type TipoConsulta as TipoConsultaAPI, type Profissional as ProfissionalAPI } from "@/lib/services/agendamento";
 import { useNavigate } from "react-router-dom";
@@ -197,7 +198,7 @@ export default function NovoAgendamento() {
               </div>
               
               {loadingInitial ? (
-                <SkeletonCard />
+                <LoadingCard text="Carregando sua unidade..." />
               ) : unidadeInfo ? (
                 <Select value={unidadeSelecionada} onValueChange={handleUnidadeChange}>
                   <SelectTrigger>
@@ -236,9 +237,11 @@ export default function NovoAgendamento() {
                 <p className="text-sm text-muted-foreground">
                   Primeiro selecione uma unidade de saúde
                 </p>
-              ) : loadingTipos ? (
-                <SkeletonCard />
-              ) : (
+               ) : loadingTipos ? (
+                <div className="flex items-center justify-center p-4">
+                  <LoadingSpinner text="Carregando tipos de consulta..." />
+                </div>
+               ) : (
                 <Select value={tipoSelecionado} onValueChange={handleTipoChange} disabled={!unidadeSelecionada}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha o tipo de consulta" />
@@ -280,9 +283,11 @@ export default function NovoAgendamento() {
                 <p className="text-sm text-muted-foreground">
                   Primeiro selecione um tipo de consulta
                 </p>
-              ) : loadingProfissionais ? (
-                <SkeletonCard />
-              ) : (
+               ) : loadingProfissionais ? (
+                <div className="flex items-center justify-center p-4">
+                  <LoadingSpinner text="Carregando profissionais..." />
+                </div>
+               ) : (
                 <Select value={profissionalSelecionado} onValueChange={handleProfissionalChange} disabled={!tipoSelecionado}>
                   <SelectTrigger>
                     <SelectValue placeholder="Escolha um profissional" />

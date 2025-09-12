@@ -47,13 +47,20 @@ export interface TipoConsultaConfirmacao {
 export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?: string): Promise<ConsultarUsuarioResponse> => {
   console.log('Chamando edge function consultar-usuario com:', { cpf, dataNascimento, cns });
   
-  const { data, error } = await supabase.functions.invoke('consultar-usuario', {
+  // Adiciona timeout de 10 segundos para evitar espera excessiva
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 10000)
+  );
+
+  const requestPromise = supabase.functions.invoke('consultar-usuario', {
     body: {
       cpf,
       dataNascimento,
       cns: cns || ""
     }
   });
+
+  const { data, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function:', { data, error });
 
@@ -93,11 +100,18 @@ export const consultarUsuario = async (cpf: string, dataNascimento: string, cns?
 export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> => {
   console.log('Chamando edge function consultar-tipo com equipeId:', equipeId);
   
-  const { data, error } = await supabase.functions.invoke('consultar-tipo', {
+  // Adiciona timeout de 8 segundos
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 8000)
+  );
+
+  const requestPromise = supabase.functions.invoke('consultar-tipo', {
     body: {
       equipeId: parseInt(equipeId) // Converter para number
     }
   });
+
+  const { data, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function consultar-tipo:', { data, error });
 
@@ -115,13 +129,20 @@ export const consultarTipos = async (equipeId: string): Promise<TipoConsulta[]> 
 export const consultarProfissionais = async (tipoConsultaId: string, equipeId: string): Promise<Profissional[]> => {
   console.log('Chamando edge function consultar-profissional:', { tipoConsultaId, equipeId });
   
-  const { data, error } = await supabase.functions.invoke('consultar-profissional', {
+  // Adiciona timeout de 8 segundos
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 8000)
+  );
+
+  const requestPromise = supabase.functions.invoke('consultar-profissional', {
     body: {
       tipoConsultaId: parseInt(tipoConsultaId),
       equipeId: parseInt(equipeId),
       especialidade: 1
     }
   });
+
+  const { data, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function consultar-profissional:', { data, error });
 
@@ -149,13 +170,20 @@ export interface DataHorariosResponse {
 export const consultarDataHorarios = async (equipeId: string, profissionalId: string, data: string): Promise<DataHorariosResponse> => {
   console.log('Chamando edge function consultar-data-horarios:', { equipeId, profissionalId, data });
   
-  const { data: responseData, error } = await supabase.functions.invoke('consultar-data-horarios', {
+  // Adiciona timeout de 8 segundos
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 8000)
+  );
+
+  const requestPromise = supabase.functions.invoke('consultar-data-horarios', {
     body: {
       equipeId: parseInt(equipeId),
       profissionalId: parseInt(profissionalId),
       data: data
     }
   });
+
+  const { data: responseData, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function consultar-data-horarios:', { data: responseData, error });
 
@@ -201,7 +229,12 @@ export const consultarAgendamentosStatus = async (
     situacaoId, dataInicio, dataFinal, individuoID, pagina 
   });
   
-  const { data, error } = await supabase.functions.invoke('consultar-agendamentos-status', {
+  // Adiciona timeout de 12 segundos para consulta de agendamentos
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 12000)
+  );
+
+  const requestPromise = supabase.functions.invoke('consultar-agendamentos-status', {
     body: {
       situacaoId,
       dataInicio,
@@ -210,6 +243,8 @@ export const consultarAgendamentosStatus = async (
       pagina
     }
   });
+
+  const { data, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function consultar-agendamentos-status:', { data, error });
 
@@ -234,9 +269,16 @@ export const agendarConsulta = async (dados: {
 }): Promise<AgendarConsultaResponse> => {
   console.log('Chamando edge function agendar-consulta:', dados);
   
-  const { data: result, error } = await supabase.functions.invoke('agendar-consulta', {
+  // Adiciona timeout de 15 segundos para agendamento
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 15000)
+  );
+
+  const requestPromise = supabase.functions.invoke('agendar-consulta', {
     body: dados
   });
+
+  const { data: result, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function agendar-consulta:', { data: result, error });
 
@@ -256,12 +298,19 @@ export interface CancelarConsultaResponse {
 export const cancelarConsulta = async (atendimentoId: string, observacao?: string): Promise<CancelarConsultaResponse> => {
   console.log('Chamando edge function cancelar-consulta:', { atendimentoId, observacao });
   
-  const { data: result, error } = await supabase.functions.invoke('cancelar-consulta', {
+  // Adiciona timeout de 10 segundos para cancelamento
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Tempo limite de requisição excedido')), 10000)
+  );
+
+  const requestPromise = supabase.functions.invoke('cancelar-consulta', {
     body: {
       atendimentoId,
       observacao: observacao || "Cancelando"
     }
   });
+
+  const { data: result, error } = await Promise.race([requestPromise, timeoutPromise]) as any;
 
   console.log('Resposta da edge function cancelar-consulta:', { data: result, error });
 

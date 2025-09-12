@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAppStore } from "@/store/useAppStore";
 import { consultarDataHorarios, DataHorariosResponse } from "@/lib/services/agendamento";
 import { format, addDays, isAfter, isSameDay } from "date-fns";
@@ -160,9 +161,8 @@ export default function HorariosAgendamento() {
                 </div>}
             </div>
 
-            {loadingHorarios ? <div className="space-y-2">
-                <SkeletonCard />
-                <SkeletonCard />
+            {loadingHorarios ? <div className="flex items-center justify-center p-8">
+                <LoadingSpinner size="lg" text="Buscando horários disponíveis..." />
               </div> : mensagemIndisponivel ? <div className="text-center py-8">
                 <Calendar className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
                 <h4 className="font-medium mb-2">Nenhum horário disponível</h4>

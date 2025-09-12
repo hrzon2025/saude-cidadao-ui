@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { SkeletonCard } from "@/components/skeletons/skeleton-card";
 import { ErrorBanner } from "@/components/ui/error-banner";
 import { EmptyState } from "@/components/ui/empty-state";
+import { LoadingSpinner, LoadingCard } from "@/components/ui/loading-spinner";
 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useAppStore } from "@/store/useAppStore";
@@ -91,9 +92,11 @@ export default function ListaAgendamentos() {
     return () => clearTimeout(timeoutId);
   }, [busca]);
 
+  const [loadingCancel, setLoadingCancel] = useState<string | null>(null);
+
   const handleCancelar = async (agendamentoId: string) => {
     try {
-      setLoading(true);
+      setLoadingCancel(agendamentoId);
       await cancelarConsulta(agendamentoId, "Cancelando");
       showNotification('Consulta cancelada com sucesso', 'success');
       // Recarregar a lista de agendamentos
@@ -102,7 +105,7 @@ export default function ListaAgendamentos() {
       console.error('Erro ao cancelar consulta:', error);
       showNotification('Erro ao cancelar consulta. Tente novamente.', 'error');
     } finally {
-      setLoading(false);
+      setLoadingCancel(null);
     }
   };
 
@@ -177,11 +180,7 @@ export default function ListaAgendamentos() {
 
         {/* Lista */}
         {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
+          <LoadingCard text="Carregando seus agendamentos..." />
         ) : error ? (
           <ErrorBanner 
             message={error}
@@ -307,12 +306,17 @@ export default function ListaAgendamentos() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Não, manter</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleCancelar(String(agendamento.atendimentoId || ''))}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                >
-                                  Sim, cancelar
-                                </AlertDialogAction>
+                                 <AlertDialogAction 
+                                   onClick={() => handleCancelar(String(agendamento.atendimentoId || ''))}
+                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                   disabled={loadingCancel === String(agendamento.atendimentoId)}
+                                 >
+                                   {loadingCancel === String(agendamento.atendimentoId) ? (
+                                     <LoadingSpinner size="sm" />
+                                   ) : (
+                                     "Sim, cancelar"
+                                   )}
+                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
