@@ -11,35 +11,35 @@ import { Unidade, Profissional, TipoConsulta } from "@/lib/types";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-
 export default function ConfirmacaoAgendamento() {
   const navigate = useNavigate();
-  const { showNotification, agendamento } = useAppStore();
-  
+  const {
+    showNotification,
+    agendamento
+  } = useAppStore();
+
   // Pegar dados do estado global
-  const { 
-    unidadeId, 
-    equipeId, 
-    tipoConsultaId, 
-    profissionalId, 
-    dataSelecionada, 
+  const {
+    unidadeId,
+    equipeId,
+    tipoConsultaId,
+    profissionalId,
+    dataSelecionada,
     horaSelecionada,
     individuoID,
     cns,
     cpf
   } = agendamento;
-  
   const [confirmando, setConfirmando] = useState(false);
   const [dadosCarregados, setDadosCarregados] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   // Dados para exibir
   const [unidade, setUnidade] = useState<Unidade | null>(null);
   const [profissional, setProfissional] = useState<Profissional | null>(null);
   const [tipoConsulta, setTipoConsulta] = useState<TipoConsulta | null>(null);
-
   useEffect(() => {
     // Validar parâmetros obrigatórios do estado global
     if (!unidadeId || !profissionalId || !tipoConsultaId || !dataSelecionada || !horaSelecionada || !individuoID || !cns || !cpf) {
@@ -47,18 +47,11 @@ export default function ConfirmacaoAgendamento() {
       navigate('/agendamentos/novo');
       return;
     }
-    
     loadDadosConfirmacao();
   }, [unidadeId, profissionalId, tipoConsultaId, dataSelecionada, horaSelecionada, individuoID, cns, cpf]);
-
   const loadDadosConfirmacao = async () => {
     try {
-      const [unidades, profissionais, tipos] = await Promise.all([
-        obterUnidades(),
-        obterProfissionaisPorUnidade(unidadeId!),
-        obterTiposConsulta()
-      ]);
-      
+      const [unidades, profissionais, tipos] = await Promise.all([obterUnidades(), obterProfissionaisPorUnidade(unidadeId!), obterTiposConsulta()]);
       setUnidade(unidades.find(u => u.id === unidadeId) || null);
       setProfissional(profissionais.find(p => p.id === profissionalId) || null);
       setTipoConsulta(tipos.find(t => t.id === tipoConsultaId) || null);
@@ -68,28 +61,32 @@ export default function ConfirmacaoAgendamento() {
       console.error('Erro ao carregar dados:', err);
     }
   };
-
   const handleConfirmar = async () => {
     console.log('=== INICIANDO CONFIRMAÇÃO ===');
     console.log('Estado do agendamento:', agendamento);
-    
     try {
       setConfirmando(true);
-      
+
       // Verificar todos os dados necessários
       if (!unidadeId || !profissionalId || !tipoConsultaId || !equipeId || !dataSelecionada || !horaSelecionada || !individuoID || !cns || !cpf) {
         console.error('Dados incompletos:', {
-          unidadeId, profissionalId, tipoConsultaId, equipeId, 
-          dataSelecionada, horaSelecionada, individuoID, cns, cpf
+          unidadeId,
+          profissionalId,
+          tipoConsultaId,
+          equipeId,
+          dataSelecionada,
+          horaSelecionada,
+          individuoID,
+          cns,
+          cpf
         });
         showNotification('Dados incompletos para o agendamento', 'error');
         return;
       }
-      
+
       // Formatar data para YYYYMMDD
       const dataFormatada = dataSelecionada.replace(/-/g, '');
       console.log('Data formatada:', dataFormatada);
-      
       const dadosAgendamento = {
         unidadeId: unidadeId,
         profissionalId: profissionalId,
@@ -101,12 +98,9 @@ export default function ConfirmacaoAgendamento() {
         cns: cns,
         cpf: cpf
       };
-      
       console.log('Dados enviados para API:', dadosAgendamento);
-      
       const resultado = await agendarConsulta(dadosAgendamento);
       console.log('Resultado da API:', resultado);
-      
       if (resultado.atendimentoId) {
         console.log('Agendamento criado com sucesso:', resultado.atendimentoId);
         setShowSuccessDialog(true);
@@ -133,29 +127,34 @@ export default function ConfirmacaoAgendamento() {
       setConfirmando(false);
     }
   };
-
   const handleVoltar = () => {
     navigate('/agendamentos/horarios');
   };
-
   const formatarData = () => {
     try {
       const dataConsulta = new Date(`${dataSelecionada}T${horaSelecionada}`);
       return {
-        data: format(dataConsulta, "dd/MM/yyyy", { locale: ptBR }),
-        hora: format(dataConsulta, "HH:mm", { locale: ptBR }),
-        diaSemana: format(dataConsulta, "EEEE", { locale: ptBR })
+        data: format(dataConsulta, "dd/MM/yyyy", {
+          locale: ptBR
+        }),
+        hora: format(dataConsulta, "HH:mm", {
+          locale: ptBR
+        }),
+        diaSemana: format(dataConsulta, "EEEE", {
+          locale: ptBR
+        })
       };
     } catch {
-      return { data: dataSelecionada, hora: horaSelecionada, diaSemana: '' };
+      return {
+        data: dataSelecionada,
+        hora: horaSelecionada,
+        diaSemana: ''
+      };
     }
   };
-
   const formatted = formatarData();
-
   if (!dadosCarregados) {
-    return (
-      <div className="min-h-screen bg-background pb-20">
+    return <div className="min-h-screen bg-background pb-20">
         <AppHeader title="Carregando..." />
         <div className="max-w-md mx-auto p-4">
           <div className="animate-pulse space-y-4">
@@ -164,17 +163,10 @@ export default function ConfirmacaoAgendamento() {
             <div className="h-20 bg-muted rounded"></div>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background pb-20">
-      <AppHeader 
-        title="Novo Agendamento" 
-        showBack 
-        onBack={handleVoltar} 
-      />
+  return <div className="min-h-screen bg-background pb-20">
+      <AppHeader title="Novo Agendamento" showBack onBack={handleVoltar} />
 
       <div className="max-w-md mx-auto p-4 space-y-6">
         {/* Stepper */}
@@ -213,20 +205,17 @@ export default function ConfirmacaoAgendamento() {
               </div>
 
               {/* Unidade */}
-              {unidade && (
-                <div className="flex items-start space-x-3">
+              {unidade && <div className="flex items-start space-x-3">
                   <MapPin className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <p className="font-medium">Unidade de Saúde</p>
                     <p className="text-sm text-muted-foreground">{unidade.nome}</p>
                     <p className="text-xs text-muted-foreground">{unidade.endereco}</p>
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Profissional */}
-              {profissional && (
-                <div className="flex items-start space-x-3">
+              {profissional && <div className="flex items-start space-x-3">
                   <User className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <p className="font-medium">Profissional</p>
@@ -235,12 +224,10 @@ export default function ConfirmacaoAgendamento() {
                       {profissional.especialidade} • {profissional.crm}
                     </p>
                   </div>
-                </div>
-              )}
+                </div>}
 
               {/* Tipo */}
-              {tipoConsulta && (
-                <div className="flex items-start space-x-3">
+              {tipoConsulta && <div className="flex items-start space-x-3">
                   <Stethoscope className="h-5 w-5 text-primary mt-0.5" />
                   <div>
                     <p className="font-medium">Tipo de Consulta</p>
@@ -250,8 +237,7 @@ export default function ConfirmacaoAgendamento() {
                       Duração: {tipoConsulta.duracao} minutos
                     </div>
                   </div>
-                </div>
-              )}
+                </div>}
             </div>
           </div>
         </Card>
@@ -273,38 +259,25 @@ export default function ConfirmacaoAgendamento() {
 
         {/* CTAs */}
         <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            onClick={handleVoltar}
-            disabled={confirmando}
-            className="flex-1"
-          >
+          <Button variant="outline" onClick={handleVoltar} disabled={confirmando} className="flex-1">
             <ChevronLeft className="h-4 w-4 mr-2" />
             Voltar
           </Button>
-          <Button 
-            onClick={handleConfirmar}
-            disabled={confirmando}
-            className="flex-1"
-          >
-            {confirmando ? (
-              'Confirmando...'
-            ) : (
-              <>
+          <Button onClick={handleConfirmar} disabled={confirmando} className="flex-1">
+            {confirmando ? 'Confirmando...' : <>
                 <Check className="h-4 w-4 mr-2" />
                 Confirmar
-              </>
-            )}
+              </>}
           </Button>
         </div>
       </div>
 
       {/* Success Dialog */}
-      <Dialog open={showSuccessDialog} onOpenChange={(open) => {
-        if (!open) {
-          navigate('/inicio');
-        }
-      }}>
+      <Dialog open={showSuccessDialog} onOpenChange={open => {
+      if (!open) {
+        navigate('/inicio');
+      }
+    }}>
         <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
           <DialogTitle className="sr-only">Agendamento Confirmado</DialogTitle>
           <div className="p-8 text-center space-y-6">
@@ -330,32 +303,7 @@ export default function ConfirmacaoAgendamento() {
             </div>
 
             {/* Details */}
-            <div className="space-y-3 text-left bg-muted rounded-2xl p-4">
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Paciente:</span>
-                <span className="text-muted-foreground text-right">Usuário do Sistema</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Consulta:</span>
-                <span className="text-muted-foreground text-right">{tipoConsulta?.nome}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Unidade:</span>
-                <span className="text-muted-foreground text-right">{unidade?.nome}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Endereço:</span>
-                <span className="text-muted-foreground text-right text-sm">{unidade?.endereco}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Data:</span>
-                <span className="text-muted-foreground text-right">{formatted.data}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-foreground">Hora:</span>
-                <span className="text-muted-foreground text-right">{formatted.hora}</span>
-              </div>
-            </div>
+            
 
             {/* Bottom Text */}
             <p className="text-sm text-muted-foreground italic">
@@ -367,10 +315,7 @@ export default function ConfirmacaoAgendamento() {
             </p>
 
             {/* Action Button */}
-            <Button 
-              onClick={() => navigate('/agendamentos/lista')}
-              className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold"
-            >
+            <Button onClick={() => navigate('/agendamentos/lista')} className="w-full bg-primary hover:bg-primary-hover text-primary-foreground py-3 rounded-2xl text-lg font-semibold">
               <Calendar className="w-5 h-5 mr-2" />
               Meus Agendamentos
             </Button>
@@ -379,12 +324,12 @@ export default function ConfirmacaoAgendamento() {
       </Dialog>
 
       {/* Error Dialog */}
-      <Dialog open={showErrorDialog} onOpenChange={(open) => {
-        if (!open) {
-          setShowErrorDialog(false);
-          setErrorMessage('');
-        }
-      }}>
+      <Dialog open={showErrorDialog} onOpenChange={open => {
+      if (!open) {
+        setShowErrorDialog(false);
+        setErrorMessage('');
+      }
+    }}>
         <DialogContent className="max-w-sm mx-auto p-0 bg-card rounded-3xl border-0 shadow-xl">
           <DialogTitle className="sr-only">Erro no Agendamento</DialogTitle>
           <div className="p-8 text-center space-y-6">
@@ -408,19 +353,15 @@ export default function ConfirmacaoAgendamento() {
             </div>
 
             {/* Action Button */}
-            <Button 
-              onClick={() => {
-                setShowErrorDialog(false);
-                setErrorMessage('');
-                navigate('/agendamentos');
-              }}
-              className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground py-3 rounded-2xl text-lg font-semibold"
-            >
+            <Button onClick={() => {
+            setShowErrorDialog(false);
+            setErrorMessage('');
+            navigate('/agendamentos');
+          }} className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground py-3 rounded-2xl text-lg font-semibold">
               Entendi
             </Button>
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 }
