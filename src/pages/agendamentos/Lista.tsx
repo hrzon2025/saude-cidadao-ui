@@ -55,10 +55,47 @@ export default function ListaAgendamentos() {
         1 // página
       );
       
-      // Filtrar apenas agendamentos com status "Agendado"
-      const agendamentosAgendados = data.filter(agendamento => 
-        agendamento.status === 'Agendado'
-      );
+      // Filtrar apenas agendamentos com status "Agendado" e que ainda não passaram do horário
+      const agendamentosAgendados = data.filter(agendamento => {
+        if (agendamento.status !== 'Agendado') {
+          return false;
+        }
+
+        // Verificar se a data/hora já passou
+        if (agendamento.data) {
+          try {
+            // Parse da data no formato "20250912 10:00"
+            const dataStr = agendamento.data.trim();
+            const [datePart, timePart] = dataStr.split(' ');
+            
+            if (datePart && datePart.length === 8) {
+              const ano = parseInt(datePart.substring(0, 4));
+              const mes = parseInt(datePart.substring(4, 6)) - 1; // JavaScript months are 0-indexed
+              const dia = parseInt(datePart.substring(6, 8));
+              
+              let hora = 0;
+              let minuto = 0;
+              
+              if (timePart && timePart.includes(':')) {
+                const [horaStr, minutoStr] = timePart.split(':');
+                hora = parseInt(horaStr);
+                minuto = parseInt(minutoStr);
+              }
+              
+              const dataAgendamento = new Date(ano, mes, dia, hora, minuto);
+              const agora = new Date();
+              
+              // Só retorna se a data/hora for futura
+              return dataAgendamento > agora;
+            }
+          } catch (error) {
+            console.warn('Erro ao parsear data do agendamento:', agendamento.data, error);
+          }
+        }
+        
+        // Se não conseguiu parsear a data, mantém o agendamento (para não perder dados)
+        return true;
+      });
 
       // Aplicar filtro de busca se existir
       let agendamentosFiltrados = agendamentosAgendados;
